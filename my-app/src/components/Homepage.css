@@ -1,6 +1,31 @@
-header{
+header {
+    align-content: center;
     background-color: maroon;
-    font-size: xx-large;
-    height: 100px;
     color: white;
+    display: block;
+    font: 50px Arial, sans-serif;
+    height: 60px;
+ 
 }
+ul{
+  text-align: left;;
+}
+li {
+  display: inline-block;
+  font: 20px Arial, sans-serif;
+  
+}
+h1{
+  font: 40px Arial, sans-serif;
+}
+div{
+  text-align: center;
+}
+a{
+    margin-right: 10px;
+}
+.logo{
+    height: 30px;
+    width: 30px;
+    float: right;
+  }
