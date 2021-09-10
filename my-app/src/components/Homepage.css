@@ -1,4 +1,4 @@
-header {
+.bar {
     align-content: center;
     background-color: maroon;
     color: white;
@@ -8,7 +8,7 @@ header {
  
 }
 ul{
-  text-align: left;;
+  text-align: left;
 }
 li {
   display: inline-block;
@@ -25,7 +25,21 @@ a{
     margin-right: 10px;
 }
 .logo{
-    height: 30px;
-    width: 30px;
-    float: right;
+    height: 50px;
+    width: 50px;
   }
+  body{
+      background-image: url("https://images.pexels.com/photos/129731/pexels-photo-129731.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
+  }
+.schoolImg{
+    padding-top: 50px;
+    width: 80%;
+    height: 500px;
+}
+p{
+    overflow: scroll;
+}
+.schedule{
+    width: 75%;
+    overflow: scroll;
+}
