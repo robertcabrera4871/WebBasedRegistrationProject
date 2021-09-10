@@ -28,6 +28,7 @@ function Homepage(){
            <img class="schedule" src={schedule}/>
            <h1 class="bar">Group Log</h1>
            <img class="schedule" src={groupLog}/>
+           <p></p>
             </div>
     );
 
