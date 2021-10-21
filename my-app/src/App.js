@@ -11,7 +11,7 @@ function App() {
        <img className="schoolImg" src="http://wagner.edu/about/wp-content/blogs.dir/54/files/2005/11/10675scr.jpg"/>
        <HeaderBar title = "Academic Calendar" />
        <img src="https://www.academycollege.edu/wp-content/uploads/2020/10/2021-Academic-Calendar.png"/>
-       <HeaderBar title = "Scheduel Search" />
+       <HeaderBar title = "Schedule Search" />
        <SchedSearch />
        <HeaderBar title = "Group Log" />
        <img class="schedule" src={groupLog}/>

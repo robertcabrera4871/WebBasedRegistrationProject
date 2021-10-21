@@ -1,6 +1,5 @@
 import schedule from '../assets/fakeSchedule.png';
 
-
 function SchedSearch(){
     return (
          <div>

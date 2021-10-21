@@ -1,4 +1,4 @@
-function HeaderBar({title}){
+function HeaderBar({title,}){
     return (
          <div>
              <header className="bar">{title}</header>
