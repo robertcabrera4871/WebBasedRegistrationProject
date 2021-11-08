@@ -42,7 +42,7 @@ function Home(){
        return(
         <div id="align-center">
             <h2 id="sched-h-tag">Schedule Search</h2><br/>
-            <ChoseSemester/>
+            <ChoseSemester semesterSelect={semesterSelect} onClick={onClick}/>
             <br/><br/><h3 id="sched-h-tag">Sort By</h3>
             <input type="checkbox" onClick={() => nameOnCheck()}id="nameSort"/>
             <label for="nameSort">Course Name</label>

@@ -1,12 +1,7 @@
 import Dropdown from "react-bootstrap/Dropdown";
-import { useState } from "react";
 
-function ChoseSemester(){
-    const [semesterSelect, setSemester]= useState()
+function ChoseSemester({semesterSelect, onClick}){
 
-    function onClick(semesterChosen){
-        setSemester(semesterChosen) 
-         }
     return(
         <Dropdown>
         <Dropdown.Toggle id="dropdown-basic ">
