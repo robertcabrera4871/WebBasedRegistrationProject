@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './index.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter, Route } from "react-router-dom";
 import { Component } from "react"
 import HeaderBar from './components/HeaderBar';
@@ -9,8 +11,16 @@ import Programs from './components/Programs';
 import Academics from './components/Academics'
 import Registration from './components/Registration'
 import Schedule from './components/Schedule'
-import './index.css'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import Transcript from './components/Transcript';
+import AddMajorMinor from './components/AddMajorMinor';
+import ChangeMajorMinor from './components/ChangMajorMinor'
+import AddClass from './components/AddClass';
+import DropClass from './components/DropClass';
+import ViewHolds from './components/ViewHolds';
+import DegreeAudit from './components/DegreeAudit';
+import Advisors from './components/Advisors'
+import UndergradCatalog from './components/UndergradCatalog';
+import GradCatalog from './components/GradCatalog';
 
 class App extends Component{
   render(){ 
@@ -23,6 +33,17 @@ class App extends Component{
     <Route path="/academics" component={Academics}></Route>
     <Route path="/registration" component={Registration}></Route>
     <Route path="/schedule" component={Schedule}></Route>
+    <Route path="/transcript" component={Transcript}></Route>
+    <Route path="/addMajorMinor" component={AddMajorMinor}></Route>
+    <Route path="/changeMajorMinor" component={ChangeMajorMinor}></Route>
+    <Route path="/addClass" component={AddClass}></Route>
+    <Route path="/dropClass" component={DropClass}></Route>
+    <Route path="/viewHolds" component={ViewHolds}></Route>
+    <Route path="/advisors" component={Advisors}></Route>
+    <Route path="/degreeAudit" component={DegreeAudit}></Route>
+    <Route path="/undergradCatalog" component={UndergradCatalog}></Route>
+    <Route path="/gradCatalog" component={GradCatalog}></Route>
+
     </div>
     )
   }

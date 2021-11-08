@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button'
 
 function Login(){
     return(
-    <Form>
+    <Form id='align-center'>
   <FormGroup className="mb-3" controlId="formUsername">
     <FormLabel>Username</FormLabel>
     <Form.Control type="text" placeholder="Enter Username" />

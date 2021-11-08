@@ -12,3 +12,10 @@
 #sched-h-tag{
     text-align: center;
 }
+.text-align{
+    text-align: center;
+}
+.checkbox-pad{
+    padding-right: 10px;
+    padding-left: 10px;
+}

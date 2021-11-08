@@ -1,17 +1,14 @@
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container'
-import NavDropdown from 'react-bootstrap/NavDropdown'
 import logo from '../assets/logo.jpg'
-import Home from "./Home"
-
 
 function HeaderBar(){
     return (
         <Navbar bg="light" expand="sm">
         <Container>
              <Navbar.Brand>
-             <img src={logo} width='30'height='30'/>
+             <img src={logo} alt="school logo" width='30'height='30'/>
             </Navbar.Brand>
           <Navbar.Brand href="/home">Suny Hogwarts</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
