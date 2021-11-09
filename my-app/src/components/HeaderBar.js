@@ -8,7 +8,7 @@ function HeaderBar(){
         <Navbar bg="light" expand="sm">
         <Container>
              <Navbar.Brand>
-             <img src={logo} alt="school logo" width='30'height='30'/>
+             <a href="/home"><img src={logo} alt="school logo" width='30'height='30'/></a>
             </Navbar.Brand>
           <Navbar.Brand href="/home">Suny Hogwarts</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -20,6 +20,9 @@ function HeaderBar(){
               <Nav.Link href="/academics">Academics</Nav.Link>
               <Nav.Link href="/registration">Registration</Nav.Link>
               <Nav.Link href="/users">Users</Nav.Link>
+              <Nav.Link href="/facHistory">Faculty History</Nav.Link>
+              <Nav.Link href="/timeWindow">Time Window</Nav.Link>
+              <Nav.Link href="/statData">Statistical Data</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>

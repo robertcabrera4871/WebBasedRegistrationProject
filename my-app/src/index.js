@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route} from "react-router-dom";
 import { Component } from "react"
 import HeaderBar from './components/HeaderBar';
 import Login from './components/Login';
@@ -21,6 +21,13 @@ import DegreeAudit from './components/DegreeAudit';
 import Advisors from './components/Advisors'
 import UndergradCatalog from './components/UndergradCatalog';
 import GradCatalog from './components/GradCatalog';
+import Advisees from './components/Advisees';
+import TeachScedule from './components/TeachSchedule';
+import Users from './components/Users';
+import FacHistory from './components/FacHistory';
+import ModifyCatalog from './components/ModifyCatalog';
+import TimeWindow from './components/TimeWindow';
+import StatData from './components/StatData';
 
 class App extends Component{
   render(){ 
@@ -43,7 +50,13 @@ class App extends Component{
     <Route path="/degreeAudit" component={DegreeAudit}></Route>
     <Route path="/undergradCatalog" component={UndergradCatalog}></Route>
     <Route path="/gradCatalog" component={GradCatalog}></Route>
-
+    <Route path="/modifyCatalog" component={ModifyCatalog}></Route>
+    <Route path="/advisees" component={Advisees}></Route>
+    <Route path="/teachSchedule" component={TeachScedule}></Route>
+    <Route path="/users" component={Users}></Route>
+    <Route path="/facHistory" component={FacHistory}></Route>
+    <Route path="/timeWindow" component={TimeWindow}></Route>
+    <Route path="/statData" component={StatData}></Route>
     </div>
     )
   }

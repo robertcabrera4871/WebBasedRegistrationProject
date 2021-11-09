@@ -5,25 +5,25 @@ function Registration(){
     return(
      <ListGroup id="align-center">
      <ListGroup.Item action href="/schedule">
-       My Schedule
+       My Schedule (S)
      </ListGroup.Item>
      <ListGroup.Item action href="/transcript">
-      My Transcript
+      My Transcript (S)
      </ListGroup.Item>
      <ListGroup.Item action href="/addMajorMinor">
-      Add Major/Minor
+      Add Major/Minor (S)
      </ListGroup.Item>
      <ListGroup.Item action href="/changeMajorMinor">
-      Change Major/Minor
+      Change Major/Minor (S)
      </ListGroup.Item>
      <ListGroup.Item action href="/addClass">
-      Add Classes
+      Add Classes (S)
      </ListGroup.Item>
      <ListGroup.Item action href="/dropClass">
-      Drop Classes
+      Drop Classes (S)
      </ListGroup.Item>
      <ListGroup.Item action href="/viewHolds">
-      View Holds
+      View Holds (S)
      </ListGroup.Item>
      </ListGroup>
      );

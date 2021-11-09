@@ -39,7 +39,10 @@ function Home(){
     }
 
        return(
-        <Form id="align-center">
+        <div id="align-center">
+        <Form>
+
+            {/* Admin will be able to edit after searching */}
             <h2 id="sched-h-tag">Schedule Search</h2><br/>
             <ChoseSemester semesterSelect={semesterSelect} onClick={onClick}/>
             <br/><br/><h3 id="sched-h-tag">Sort By</h3>
@@ -101,12 +104,16 @@ function Home(){
             </Form.Group>
             
             <br/>
-            <Button variant="dark" type="sumbit">Submit</Button>
+            <Button variant="primary" type="submit">Submit</Button>
 
-            
         {/* MAKE SURE HIDDEN ATTRIBUTES ARENT SENT BY FORM!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! */}
-                <h3 id="sched-h-tag">Academic calendar</h3>
         </Form>
+
+             <h3 id="sched-h-tag">Academic calendar</h3>
+             <Button variant="warning" type="button">Edit</Button>
+            </div>
+        
+        
         
 
 
