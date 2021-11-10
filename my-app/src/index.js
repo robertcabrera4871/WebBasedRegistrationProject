@@ -17,7 +17,7 @@ function App(){
 
     return(
     <div> 
-    <HeaderBar />
+    <HeaderBar setToken={setToken}/>
     <ComponentSwitch />
     </div>
     )

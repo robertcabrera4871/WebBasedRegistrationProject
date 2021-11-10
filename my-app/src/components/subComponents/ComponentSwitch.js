@@ -27,8 +27,8 @@ function ComponentSwitch(){
     return(
         <Switch>
         <Route path="/home" component={Home}></Route>
-        <Route path="/login" component={Login}></Route>
-        <Route path="/programs" component={Programs}></Route>
+        {/* <Route path="/login" component={Login} ></Route> */}
+        <Route path="/programs" component={Programs} ></Route>
         <Route path="/academics" component={Academics}></Route>
         <Route path="/registration" component={Registration}></Route>
         <Route path="/schedule" component={Schedule}></Route>

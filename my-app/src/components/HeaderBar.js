@@ -2,8 +2,8 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container'
 import logo from '../assets/logo.jpg'
-
-function HeaderBar(){
+import Button from 'react-bootstrap/Button'
+function HeaderBar({setToken}){
     return (
         <Navbar bg="light" expand="sm">
         <Container>
@@ -15,7 +15,6 @@ function HeaderBar(){
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link href="/home">Home</Nav.Link>
-              <Nav.Link href="/login">Login</Nav.Link>
               <Nav.Link href="/programs">Program and Courses</Nav.Link>
               <Nav.Link href="/academics">Academics</Nav.Link>
               <Nav.Link href="/registration">Registration</Nav.Link>
@@ -23,6 +22,8 @@ function HeaderBar(){
               <Nav.Link href="/facHistory">Faculty History</Nav.Link>
               <Nav.Link href="/timeWindow">Time Window</Nav.Link>
               <Nav.Link href="/statData">Statistical Data</Nav.Link>
+              <Nav.Link></Nav.Link>
+              <Button variant="outline-danger" onClick={() => setToken("")}>Logout</Button>
             </Nav>
           </Navbar.Collapse>
         </Container>
