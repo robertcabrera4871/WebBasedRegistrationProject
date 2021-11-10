@@ -11,10 +11,10 @@ function Registration(){
       My Transcript (S)
      </ListGroup.Item>
      <ListGroup.Item action href="/addMajorMinor">
-      Add Major/Minor (S)
+      Add Major/Minor (A)
      </ListGroup.Item>
      <ListGroup.Item action href="/changeMajorMinor">
-      Change Major/Minor (S)
+      Change Major/Minor (A)
      </ListGroup.Item>
      <ListGroup.Item action href="/addClass">
       Add Classes (S)

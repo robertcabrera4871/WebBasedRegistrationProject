@@ -111,6 +111,9 @@ function Home(){
 
              <h3 id="sched-h-tag">Academic calendar</h3>
              <Button variant="warning" type="button">Edit</Button>
+             <h2>
+                 Fair day! 
+             </h2>
             </div>
         
         

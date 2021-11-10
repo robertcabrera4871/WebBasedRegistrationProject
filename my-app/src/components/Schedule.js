@@ -8,6 +8,7 @@ function Schedule(){
     const onClick = (semesterChosen) => {
         setSemester(semesterChosen) 
     }
+
     
     return(
         <div id="align-center">
