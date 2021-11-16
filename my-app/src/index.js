@@ -7,13 +7,15 @@ import HeaderBar from './components/HeaderBar';
 import ComponentSwitch from './components/subComponents/ComponentSwitch';
 import Login from './components/Login';
 import useToken from './utilities/useTokens';
+import { useState } from 'react';
 
 function App(){
-  const {token, setToken} = useToken();
+       const {token, setToken} = useToken();
+      //  const[token, setToken] = useState();
 
     if(!token){
       return <Login setToken={setToken} />
-    }
+    } 
 
     return(
     <div> 

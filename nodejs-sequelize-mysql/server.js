@@ -4,18 +4,18 @@ const cors = require("cors");
 
 const app = express();
 
-// var corsOptions = {
-//   origin: "http://localhost:8080"
-// };
+var corsOptions = {
+  origin: "http://localhost:8081"
+};
 
 const db = require("./models");
 
-db.sequelize.sync({ force: true }).then(() => {
-  console.log("Drop and re-sync db.");
-});
+// db.sequelize.sync().then(() => {
+//   console.log("Drop and re-sync db.");
+// });
 
-// app.use(cors(corsOptions));
-app.use(cors())
+app.use(cors(corsOptions));
+// app.use(cors())
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -28,12 +28,12 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to my application." });
 });
 
-//Will be more specific then use later
-app.use('/login', (req, res) => {
-  res.send({
-    token: 'test123'
-  })
-})
+//Will be more specific then use later Tutorial!!!!!
+// app.use('/login', (req, res) => {
+//   res.send({
+//     token: 'test123'
+//   })
+// })
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;

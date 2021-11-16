@@ -24,3 +24,6 @@
     width: 50%;
     padding: 10px;
 }
+.login-button-right{
+    float: right;
+}
