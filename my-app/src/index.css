@@ -27,3 +27,7 @@
 .login-button-right{
     float: right;
 }
+.logout-button{
+    margin-left: auto;
+    order: 2;
+}

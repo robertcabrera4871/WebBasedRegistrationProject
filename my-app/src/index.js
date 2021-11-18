@@ -7,19 +7,21 @@ import HeaderBar from './components/HeaderBar';
 import ComponentSwitch from './components/subComponents/ComponentSwitch';
 import Login from './components/Login';
 import useToken from './utilities/useTokens';
-import { useState } from 'react';
+import useUser from './utilities/useUser'
 
 function App(){
+      //BASE 64 ENCRYPTION TO TOKEN
        const {token, setToken} = useToken();
-      //  const[token, setToken] = useState();
+       const {user, setUser} = useUser();
+
 
     if(!token){
-      return <Login setToken={setToken} />
+      return <Login setUser={setUser} setToken={setToken} />
     } 
 
     return(
     <div> 
-    <HeaderBar setToken={setToken}/>
+    <HeaderBar setToken={setToken} userType={user.userType} setUser={setUser}/>
     <ComponentSwitch />
     </div>
     )

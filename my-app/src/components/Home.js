@@ -49,15 +49,15 @@ function Home(){
 
             <fieldset data-role="controlgroup" data-type="horizontal" id="sched-h-tag">
             <input  type="checkbox"  onClick={() => nameOnCheck()}id="nameSort"/>
-            <label className="checkbox-pad" for="nameSort">Course Name</label>
+            <label className="checkbox-pad" htmlFor="nameSort">Course Name</label>
             <input type="checkbox" onClick={() => dayOnCheck()}id="daySort"/>
-            <label className="checkbox-pad" for="daySort">Day</label>
+            <label className="checkbox-pad" htmlFor="daySort">Day</label>
             <input type="checkbox"onClick={() => timeOnCheck()} id="timeSort"/>
-            <label className="checkbox-pad" for="timeSort">Time</label>
+            <label className="checkbox-pad" htmlFor="timeSort">Time</label>
             <input type="checkbox"onClick={() => courseOnCheck()} id="sectionSort"/>
-            <label className="checkbox-pad" for="sectionSort">Course Section</label>
+            <label className="checkbox-pad" htmlFor="sectionSort">Course Section</label>
             <input type="checkbox" onClick={() => profOnCheck()}id="profSort"/>
-            <label className="checkbox-pad"for="profSort">Professor</label>
+            <label className="checkbox-pad"htmlFor="profSort">Professor</label>
             <br/> <br/>
             </fieldset>
 
@@ -70,19 +70,19 @@ function Home(){
                 <Form.Label>Select day:</Form.Label>
                 <fieldset data-role="controlgroup" data-type="horizontal" id="sched-h-tag">
                 <input type="checkbox" id="monday"/>
-                <label className="checkbox-pad" for="monday">Monday</label>
+                <label className="checkbox-pad" htmlFor="monday">Monday</label>
                 <input  type="checkbox" id="tuesday"/>
-                <label className="checkbox-pad" for="tuesday">Tuesday</label>
+                <label className="checkbox-pad" htmlFor="tuesday">Tuesday</label>
                 <input type="checkbox" id="wednesday"/>
-                <label className="checkbox-pad" for="wednesday">Wednesday</label>
+                <label className="checkbox-pad" htmlFor="wednesday">Wednesday</label>
                 <input type="checkbox" id="thursday"/>
-                <label className="checkbox-pad" for="thursday">Thursday</label>
+                <label className="checkbox-pad" htmlFor="thursday">Thursday</label>
                 <input type="checkbox" id="friday"/>
-                <label className="checkbox-pad" for="friday">Friday</label>
+                <label className="checkbox-pad" htmlFor="friday">Friday</label>
                 <input type="checkbox" id="saturday"/>
-                <label className="checkbox-pad" for="saturday">Saturday</label>
+                <label className="checkbox-pad" htmlFor="saturday">Saturday</label>
                 <input type="checkbox" id="sunday"/>
-                <label className="checkbox-pad" for="sunday">Sunday</label>
+                <label className="checkbox-pad" htmlFor="sunday">Sunday</label>
                 </fieldset>
             </Form.Group>
 

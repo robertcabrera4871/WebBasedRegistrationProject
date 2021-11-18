@@ -1,4 +1,3 @@
-import Login from '../Login';
 import Home from '../Home';
 import Programs from '../Programs';
 import Academics from '../Academics'
@@ -21,34 +20,153 @@ import FacHistory from '../FacHistory';
 import ModifyCatalog from '../ModifyCatalog';
 import TimeWindow from '../TimeWindow';
 import StatData from '../StatData';
-import { Switch, Route} from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
+import checkPrivs from '../../utilities/checkPrivs';
 
-function ComponentSwitch(){
-    return(
+
+function ComponentSwitch() {
+
+    const privs = checkPrivs()
+    console.log(privs)
+
+    return (
         <Switch>
-        <Route path="/home" component={Home}></Route>
-        {/* <Route path="/login" component={Login} ></Route> */}
-        <Route path="/programs" component={Programs} ></Route>
-        <Route path="/academics" component={Academics}></Route>
-        <Route path="/registration" component={Registration}></Route>
-        <Route path="/schedule" component={Schedule}></Route>
-        <Route path="/transcript" component={Transcript}></Route>
-        <Route path="/addMajorMinor" component={AddMajorMinor}></Route>
-        <Route path="/changeMajorMinor" component={ChangeMajorMinor}></Route>
-        <Route path="/addClass" component={AddClass}></Route>
-        <Route path="/dropClass" component={DropClass}></Route>
-        <Route path="/viewHolds" component={ViewHolds}></Route>
-        <Route path="/advisors" component={Advisors}></Route>
-        <Route path="/degreeAudit" component={DegreeAudit}></Route>
-        <Route path="/undergradCatalog" component={UndergradCatalog}></Route>
-        <Route path="/gradCatalog" component={GradCatalog}></Route>
-        <Route path="/modifyCatalog" component={ModifyCatalog}></Route>
-        <Route path="/advisees" component={Advisees}></Route>
-        <Route path="/teachSchedule" component={TeachScedule}></Route>
-        <Route path="/users" component={Users}></Route>
-        <Route path="/facHistory" component={FacHistory}></Route>
-        <Route path="/timeWindow" component={TimeWindow}></Route>
-        <Route path="/statData" component={StatData}></Route>
+            <Route exact path="/">
+                <Redirect to="/home" />
+            </Route>
+
+            <Route exact path="/home" component={Home}></Route>
+            <Route exact path="/programs" component={Programs}></Route>
+
+
+            {
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                    <Route exact path="/academics" component={Academics}></Route> :
+                    <Redirect to="/home" />
+            }
+
+
+            {
+                (privs.isAdmin || privs.isFaculty) ?
+                    <Route exact path="/facHistory" component={FacHistory}></Route> :
+                    <Redirect to="/home" />
+            }
+
+            {
+                (privs.isAdmin || privs.isFaculty) ?
+                    <Route exact path="/users" component={Users}></Route> :
+                    <Redirect to="/home" />
+            }
+              {
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                    (<Route exact path="/undergradCatalog" component={UndergradCatalog}></Route>) :
+                    (<Redirect to="/home" />)
+              }
+              
+            {
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                    <Route exact path="/gradCatalog" component={GradCatalog}></Route> :
+                    <Redirect to="/home" />
+            }
+
+
+            {/* Registration is cauising Fachistory to redirect??? */}
+            {
+                (privs.isStudent || privs.isAdmin) ?
+                    <Route exact path="/registration" component={Registration}></Route> :
+                    <Redirect to="/home" />
+            }
+
+
+            {
+                (privs.isStudent || privs.isAdmin) ?
+                    <Route exact path="/schedule" component={Schedule}></Route> :
+                    <Redirect to="/home" />
+            }
+
+            {
+                (privs.isStudent || privs.isAdmin) ?
+                    <Route exact path="/transcript" component={Transcript}></Route> :
+                    <Redirect to="/home" />
+            }
+
+            {
+                (privs.isStudent || privs.isAdmin) ?
+                    <Route exact path="/addMajorMinor" component={AddMajorMinor}></Route> :
+                    <Redirect to="/home" />
+            }
+
+            {
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                    <Route exact path="/changeMajorMinor" component={ChangeMajorMinor}></Route> :
+                    <Redirect to="/home" />
+            }
+
+            {
+                (privs.isStudent || privs.isAdmin) ?
+                    <Route exact path="/addClass" component={AddClass}></Route> :
+                    <Redirect to="/home" />
+            }
+
+            {
+                (privs.isStudent || privs.isAdmin) ?
+                    <Route exact path="/dropClass" component={DropClass}></Route> :
+                    <Redirect to="/home" />
+            }
+
+            {
+                (privs.isStudent || privs.isAdmin) ?
+                    <Route exact path="/viewHolds" component={ViewHolds}></Route> :
+                    <Redirect to="/home" />
+            }
+
+            {
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                    <Route exact path="/advisors" component={Advisors}></Route> :
+                    <Redirect to="/home" />
+            }
+
+            {
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                    <Route exact path="/degreeAudit" component={DegreeAudit}></Route> :
+                    <Redirect to="/home" />
+            }
+
+          
+
+            {
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                    <Route exact path="/modifyCatalog" component={ModifyCatalog}></Route> :
+                    <Redirect to="/home" />
+            }
+
+            {
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                    <Route exact path="/advisees" component={Advisees}></Route> :
+                    <Redirect to="/home" />
+            }
+
+            {
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                    <Route exact path="/teachSchedule" component={TeachScedule}></Route> :
+                    <Redirect to="/home" />
+
+            }
+
+
+            {
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                    <Route exact path="/timeWindow" component={TimeWindow}></Route> :
+                    <Redirect to="/home" />
+
+            }
+            {
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                    <Route exact path="/statData" component={StatData}></Route> :
+                    <Redirect to="/home" />
+            }
+
+
         </Switch>
     );
 }

@@ -1,5 +1,7 @@
 import ListGroup from 'react-bootstrap/ListGroup'
 
+
+
 function Academics(){
     return(
         <ListGroup id="align-center">

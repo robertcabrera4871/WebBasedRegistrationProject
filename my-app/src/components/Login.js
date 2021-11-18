@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import Form from 'react-bootstrap/Form'
 import FormGroup from "react-bootstrap/esm/FormGroup";
 import FormLabel from "react-bootstrap/esm/FormLabel";
+import Alert from "react-bootstrap/Alert"
 import Button from 'react-bootstrap/Button'
 import Axios from 'axios';
 import PropTypes from 'prop-types';
@@ -14,25 +15,39 @@ async function login(email, password){
   return response.data
 }
 
-export default function Login({ setToken }){
-
-
+export default function Login({setUser, setToken}){
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [invalidCred, setInvalidCred] = useState(false);
 
   const handleSubmit = e => {
     e.preventDefault();
     login(email, password).then(data => {
        if(data.message){
-      console.log(data)
-      console.log(data.message)
-      setToken("fail");
+          setInvalidCred(true);
       } 
        else if(data[0].userType === "admin")
        {
-          console.log(data)
+          setUser(data[0])
           setToken({token: 'admin'});
       }
+      else if(data[0].userType === "student")
+      {
+         setUser(data[0])
+         setToken({token: 'student'});
+     }
+     else if(data[0].userType === "faculty")
+      {
+         setUser(data[0])
+         setToken({token: 'faculty'});
+     }
+     else if(data[0].userType === "research")
+     {
+        setUser(data[0])
+        setToken({token: 'research'});
+    }
+     
+
   }).catch(err => console.log(err))
 }
 
@@ -43,6 +58,7 @@ export default function Login({ setToken }){
       console.log(data.message)
       } else if(data[0].userType === "guest"){
         console.log(data)
+        setUser(data[0])
         setToken({token: 'guest'});
         }
   }).catch(err => console.log(err))
@@ -50,7 +66,8 @@ export default function Login({ setToken }){
 
     return(
     <Form id='align-center' onSubmit={handleSubmit}>
-      <h3 className="align-center text-align">User Login</h3>
+    <h3 className="align-center text-align">User Login</h3>
+    {invalidCred && <Alert variant='danger'>Invalid Credentials</Alert>}
   <FormGroup className="mb-3" controlId="formUsername">
     <FormLabel>Username</FormLabel>
     <Form.Control type="text" placeholder="Enter Username"
