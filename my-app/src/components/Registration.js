@@ -1,30 +1,32 @@
 import ListGroup from 'react-bootstrap/ListGroup'
+import checkPrivs from '../utilities/checkPrivs';
 
+const privs = checkPrivs();
 
 function Registration(){
     return(
      <ListGroup id="align-center">
-     <ListGroup.Item action href="/schedule">
+     {(privs.isStudent || privs.isAdmin) && <ListGroup.Item action href="/schedule">
        My Schedule (S)
-     </ListGroup.Item>
-     <ListGroup.Item action href="/transcript">
+     </ListGroup.Item>}
+     {(privs.isStudent || privs.isAdmin) && <ListGroup.Item action href="/transcript">
       My Transcript (S)
-     </ListGroup.Item>
-     <ListGroup.Item action href="/addMajorMinor">
+     </ListGroup.Item>}
+     {privs.isAdmin && <ListGroup.Item action href="/addMajorMinor">
       Add Major/Minor (A)
-     </ListGroup.Item>
-     <ListGroup.Item action href="/changeMajorMinor">
+     </ListGroup.Item>}
+     {privs.isAdmin && <ListGroup.Item action href="/changeMajorMinor">
       Change Major/Minor (A)
-     </ListGroup.Item>
-     <ListGroup.Item action href="/addClass">
+     </ListGroup.Item>}
+     {(privs.isStudent || privs.isAdmin) &&<ListGroup.Item action href="/addClass">
       Add Classes (S)
-     </ListGroup.Item>
-     <ListGroup.Item action href="/dropClass">
+     </ListGroup.Item>}
+     {(privs.isStudent || privs.isAdmin) &&<ListGroup.Item action href="/dropClass">
       Drop Classes (S)
-     </ListGroup.Item>
-     <ListGroup.Item action href="/viewHolds">
+     </ListGroup.Item>}
+     {(privs.isStudent || privs.isAdmin) &&<ListGroup.Item action href="/viewHolds">
       View Holds (S)
-     </ListGroup.Item>
+     </ListGroup.Item>}
      </ListGroup>
      );
 }

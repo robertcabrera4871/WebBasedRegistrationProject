@@ -6,8 +6,10 @@ import Alert from "react-bootstrap/Alert"
 import Button from 'react-bootstrap/Button'
 import Axios from 'axios';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router';
 
 async function login(email, password){
+
   const response = await Axios.post("http://localhost:8000/login", {
     email: email,
     password: password
@@ -19,6 +21,11 @@ export default function Login({setUser, setToken}){
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [invalidCred, setInvalidCred] = useState(false);
+  let history = useHistory();
+
+  const redirect = () =>{
+    history.push('/home')
+  }
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -28,23 +35,27 @@ export default function Login({setUser, setToken}){
       } 
        else if(data[0].userType === "admin")
        {
-          setUser(data[0])
+          setUser(data[0]);
           setToken({token: 'admin'});
+          redirect();
       }
       else if(data[0].userType === "student")
       {
          setUser(data[0])
          setToken({token: 'student'});
+         redirect();
      }
      else if(data[0].userType === "faculty")
       {
          setUser(data[0])
          setToken({token: 'faculty'});
+         redirect();
      }
      else if(data[0].userType === "research")
      {
         setUser(data[0])
         setToken({token: 'research'});
+        redirect();
     }
      
 
@@ -60,6 +71,7 @@ export default function Login({setUser, setToken}){
         console.log(data)
         setUser(data[0])
         setToken({token: 'guest'});
+        redirect();
         }
   }).catch(err => console.log(err))
     }

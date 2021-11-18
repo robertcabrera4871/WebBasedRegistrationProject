@@ -1,6 +1,9 @@
 //Faculty can only search for students
 import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
+import checkPrivs from "../utilities/checkPrivs";
+
+const privs = checkPrivs();
 
 function Users(){
     return(
@@ -11,9 +14,9 @@ function Users(){
             <Form.Control type="text"></Form.Control>   
             <br/>
             <Button variant="primary" type="sumbit">Submit</Button>
-            {/* FOR ADMIN ONLY */}
             <br/> <br/>
-            <Button variant="info" type="sumbit">View all users</Button>
+            {privs.isAdmin && 
+            <Button variant="info" type="sumbit">View all users</Button>}
         </Form>
     
     );
