@@ -8,19 +8,19 @@ function Academics(){
         <ListGroup id="align-center">
         {(privs.isStudent || privs.isAdmin) && 
          <ListGroup.Item action href="/advisors">
-          My Advisors (S)
+          My Advisors 
         </ListGroup.Item>}
         {(privs.isFaculty || privs.isAdmin) && 
         <ListGroup.Item action href="/advisees">
-          My Advisees (F)
+          My Advisees 
         </ListGroup.Item>}
         {(privs.isStudent || privs.isAdmin) && 
         <ListGroup.Item action href="/degreeAudit">
-          Degree Progress (S)
+          Degree Progress
         </ListGroup.Item>}
         {(privs.isFaculty || privs.isAdmin) && 
         <ListGroup.Item action href="/teachSchedule">
-          Teaching Schedule (F)
+          Teaching Schedule
         </ListGroup.Item>}
         </ListGroup>
         );

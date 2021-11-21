@@ -91,7 +91,7 @@ function ComponentSwitch() {
             }
 
             {
-                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                (privs.isStudent || privs.isAdmin) ?
                     <ProtectedRoute exact path="/changeMajorMinor" component={ChangeMajorMinor} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/changeMajorMinor" component={ChangeMajorMinor} allowed={false}></ProtectedRoute> 
             }
@@ -114,13 +114,13 @@ function ComponentSwitch() {
                     <ProtectedRoute exact path="/viewHolds" component={ViewHolds} allowed={true}></ProtectedRoute> 
             }
             {
-                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                (privs.isStudent || privs.isAdmin ) ?
                     <ProtectedRoute exact path="/degreeAudit" component={DegreeAudit} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/degreeAudit" component={DegreeAudit} allowed={false}></ProtectedRoute> 
             }
 
             {
-                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                (privs.isAdmin) ?
                     <ProtectedRoute exact path="/modifyCatalog" component={ModifyCatalog} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/modifyCatalog" component={ModifyCatalog} allowed={false}></ProtectedRoute> 
             }
@@ -138,13 +138,13 @@ function ComponentSwitch() {
             }
 
             {
-                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                (privs.isAdmin) ?
                     <ProtectedRoute exact path="/timeWindow" component={TimeWindow} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/timeWindow" component={TimeWindow} allowed={false}></ProtectedRoute> 
 
             }
             {
-                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
+                (privs.isAdmin || privs.isResearch) ?
                     <ProtectedRoute exact path="/statData" component={StatData} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/statData" component={StatData} allowed={false}></ProtectedRoute>
             }

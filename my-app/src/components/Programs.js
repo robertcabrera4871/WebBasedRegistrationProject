@@ -10,13 +10,13 @@ function Programs(){
     return(
       <ListGroup id="align-center">
      <ListGroup.Item action href="/undergradCatalog">
-       Undergraduate Catalog (ALL)
+       Undergraduate Catalog
      </ListGroup.Item>
      <ListGroup.Item action href="/gradCatalog" >
-        Graduate Catalog (ALL)
+        Graduate Catalog 
      </ListGroup.Item>
      {privs.isAdmin && <ListGroupItem action href="/modifyCatalog">
-      Modify Course Catalog (A)
+      Modify Course Catalog
      </ListGroupItem>}
      </ListGroup>
     );

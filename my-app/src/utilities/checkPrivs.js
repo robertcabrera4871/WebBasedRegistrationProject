@@ -1,5 +1,9 @@
 export default function checkPrivs(){
-    const user = JSON.parse(sessionStorage.getItem('user'));
+
+
+    var user = (JSON.parse(sessionStorage.getItem('user')))
+    user = ( user ) ? user : "";
+    console.log(user)
     var isAdmin = false;
     var isStudent = false;
     var isFaculty = false;

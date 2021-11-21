@@ -7,25 +7,25 @@ function Registration(){
     return(
      <ListGroup id="align-center">
      {(privs.isStudent || privs.isAdmin) && <ListGroup.Item action href="/schedule">
-       My Schedule (S)
+       My Schedule
      </ListGroup.Item>}
      {(privs.isStudent || privs.isAdmin) && <ListGroup.Item action href="/transcript">
-      My Transcript (S)
+      My Transcript
      </ListGroup.Item>}
-     {privs.isAdmin && <ListGroup.Item action href="/addMajorMinor">
-      Add Major/Minor (A)
+     { (privs.isStudent || privs.isAdmin) && <ListGroup.Item action href="/addMajorMinor">
+      Add Major/Minor
      </ListGroup.Item>}
-     {privs.isAdmin && <ListGroup.Item action href="/changeMajorMinor">
-      Change Major/Minor (A)
+     {(privs.isStudent || privs.isAdmin) && <ListGroup.Item action href="/changeMajorMinor">
+      Change Major/Minor
      </ListGroup.Item>}
      {(privs.isStudent || privs.isAdmin) &&<ListGroup.Item action href="/addClass">
-      Add Classes (S)
+      Add Classes 
      </ListGroup.Item>}
      {(privs.isStudent || privs.isAdmin) &&<ListGroup.Item action href="/dropClass">
-      Drop Classes (S)
+      Drop Classes
      </ListGroup.Item>}
      {(privs.isStudent || privs.isAdmin) &&<ListGroup.Item action href="/viewHolds">
-      View Holds (S)
+      View Holds
      </ListGroup.Item>}
      </ListGroup>
      );
