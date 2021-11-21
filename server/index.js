@@ -26,8 +26,6 @@ app.post('/login', (req, res) =>{
                 res.send({err: err})
             } 
             if(result.length > 0) {
-                console.log(result) 
-                // res.send({token: 'test123'});
                 res.send(result)
              } 
              else{
@@ -37,10 +35,23 @@ app.post('/login', (req, res) =>{
     );
 });
 
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-});
+app.get('/emailExist', (req, res) =>{
+    const email = req.query.email;
 
+    db.query(
+        "SELECT EXISTS (SELECT 1 FROM LoginInfo WHERE email = ?)",
+        [email],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                console.log(result)
+                res.send(result)
+             } 
+        }
+    )
+})
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`)
 });
