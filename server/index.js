@@ -58,8 +58,26 @@ app.put('/resetPassword', (req, res) =>{
     const tempPassword = Math.random().toString(16).substr(2, 8);
 
     db.query(
-        `UPDATE logininfo SET password = "${tempPassword}" WHERE email = ?`,
+        `UPDATE logininfo SET password = "${tempPassword}" , status = "locked" WHERE email = ?`,
         [email],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+             } 
+        }
+    )
+})
+
+app.put('/updateAndUnlock', (req, res) =>{
+    const email = req.body.params.email;
+    const newPass = req.body.params.newPass;
+
+    db.query(
+        `UPDATE logininfo SET password = "${newPass}", status="active" WHERE email = ?`,
+        [email, newPass],
         (err, result) =>{
             if(err){
                 res.send({err: err})

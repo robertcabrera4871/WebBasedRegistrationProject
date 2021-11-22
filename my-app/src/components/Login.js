@@ -30,17 +30,25 @@ async function login(email, password){
 }
 
 async function resetPassword(email){
-  console.log(email)
   const resetResponse = await Axios.put("http://localhost:8000/resetPassword", {
     params: {
       email: email
     }
   })
-
   console.log(resetResponse)
-
   return resetResponse.data
 }
+
+async function unlockAccount(email, newPass){
+  const unlockResponse = await Axios.put("http://localhost:8000/updateAndUnlock", {
+    params: {
+      email: email,
+      newPass: newPass
+    }
+  })
+  return unlockResponse.data
+}
+
 
 
 export default function Login({setUser, setToken}){
@@ -49,6 +57,9 @@ export default function Login({setUser, setToken}){
   const [invalidCred, setInvalidCred] = useState(false);
   const [alertMessage, setAlertMessage] = useState();
   const [incorrectCount, setIncorrectCount] = useState(3);
+  const [resetSuccess, setResetSuccess] = useState(false);
+  const [inReset, setInReset] = useState(false)
+  const[newPass, setNewPass] = useState();
 
   let history = useHistory();
 
@@ -57,7 +68,7 @@ export default function Login({setUser, setToken}){
     if(incorrectCount === 0){
       resetPassword(email).then(
       setAlertMessage("Password reset. Check email for temporary password"),
-      setIncorrectCount(incorrectCount - 1)
+      setIncorrectCount(incorrectCount - 1),
       )
     } else if(incorrectCount !== -1){
     setIncorrectCount(incorrectCount - 1)
@@ -72,9 +83,13 @@ export default function Login({setUser, setToken}){
   const handleSubmit = e => {
     e.preventDefault();
     login(email, password).then(data => {
+      console.log(data)
        if(data.message){
           setInvalidCred(true);
           resetCounter()
+       }
+       else if(data[0].status === "locked"){
+          setInReset(true)  
        }
        else if(data === 0){
          setInvalidCred(true);
@@ -126,6 +141,23 @@ export default function Login({setUser, setToken}){
         }
   }).catch(err => console.log(err))
     }
+  
+
+  //SET PASSWORD IS NOT RE RENDERING BEFORE HANDLE SUBMIT IS CALLED FML
+  //Need to press button twice
+  const unlockAndLogin = (e) =>{
+    e.preventDefault();
+    unlockAccount(email, newPass).then(data => {
+      if(data.affectedRows === 1){
+        setPassword(newPass);
+      } else{
+        setResetSuccess(true)
+      }
+    }
+    )
+    handleSubmit(e);
+  }
+
 
     return(
     <Form id='align-center' onSubmit={handleSubmit}>
@@ -133,12 +165,12 @@ export default function Login({setUser, setToken}){
     {invalidCred && <Alert variant='danger'>{alertMessage} </Alert>}
   <FormGroup className="mb-3" controlId="formUsername">
     <FormLabel>Username</FormLabel>
-    <Form.Control type="text" placeholder="Enter Username"
+    <Form.Control readOnly={inReset} type="text" placeholder="Enter Username"
     onChange={e => setEmail(e.target.value)}/>
   </FormGroup>
   <FormGroup className="mb-3" controlId="formPassword">
     <FormLabel>Password</FormLabel>
-    <Form.Control type="password" placeholder="Password"
+    <Form.Control readOnly={inReset} type="password" placeholder="Password"
      onChange={e => setPassword(e.target.value)}/>
   </FormGroup>
   <FormGroup>
@@ -149,6 +181,23 @@ export default function Login({setUser, setToken}){
     Continue as Guest
   </Button>{' '}
   </FormGroup>
+
+
+ {inReset && 
+    <div>
+    <FormGroup className="topSpace">
+    {resetSuccess && <Alert variant='danger'>Invalid Password</Alert>}
+    <FormLabel>Enter new password (No more then 25 characters)</FormLabel>
+    <Form.Control onChange={e => setNewPass(e.target.value)} type="password">
+    </Form.Control>
+    </FormGroup>
+    <FormGroup>
+    <Button className="topSpace" variant="success" type="submit" onClick={(e) => unlockAndLogin(e)}>
+    Submit Change
+  </Button>{' '}
+  </FormGroup>
+  </div>}
+
   </Form>
     );
 }
