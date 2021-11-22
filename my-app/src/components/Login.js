@@ -29,24 +29,38 @@ async function login(email, password){
 }
 }
 
-// async function passwordReset(){
+async function resetPassword(email){
+  console.log(email)
+  const resetResponse = await Axios.put("http://localhost:8000/resetPassword", {
+    params: {
+      email: email
+    }
+  })
 
-// }
+  console.log(resetResponse)
+
+  return resetResponse.data
+}
+
 
 export default function Login({setUser, setToken}){
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [invalidCred, setInvalidCred] = useState(false);
   const [alertMessage, setAlertMessage] = useState();
-  const [incorrectCount, setIncorrecCount] = useState(3);
+  const [incorrectCount, setIncorrectCount] = useState(3);
 
   let history = useHistory();
 
   function resetCounter(){
-    setIncorrecCount(incorrectCount - 1)
+
     if(incorrectCount === 0){
-      setAlertMessage("Password reset. Check email for temporary password")
-    } else{
+      resetPassword(email).then(
+      setAlertMessage("Password reset. Check email for temporary password"),
+      setIncorrectCount(incorrectCount - 1)
+      )
+    } else if(incorrectCount !== -1){
+    setIncorrectCount(incorrectCount - 1)
     setAlertMessage("Incorrect password. Attempts left:  " + incorrectCount)
     } 
   }

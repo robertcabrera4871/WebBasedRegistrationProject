@@ -3,7 +3,6 @@ export default function checkPrivs(){
 
     var user = (JSON.parse(sessionStorage.getItem('user')))
     user = ( user ) ? user : "";
-    console.log(user)
     var isAdmin = false;
     var isStudent = false;
     var isFaculty = false;
