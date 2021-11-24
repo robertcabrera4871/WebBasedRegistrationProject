@@ -19,7 +19,6 @@ const db = mysql.createConnection({
 app.post('/login', (req, res) =>{
     const email = req.body.email;
     const password = req.body.password;
-
     db.query(
         "SELECT * FROM logininfo WHERE email = ? AND password = ?",
         [email, password],
