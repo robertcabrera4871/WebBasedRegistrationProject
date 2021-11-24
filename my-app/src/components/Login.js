@@ -154,9 +154,6 @@ export default function Login({ setUser, setToken }) {
         setInvalidNewPass(true);
       }
     })
-    login(email, password).then(data => {
-      privSwitch(data);
-    }).catch(err => console.log(err))
 
   }
 
