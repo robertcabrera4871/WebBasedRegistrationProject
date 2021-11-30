@@ -5,50 +5,9 @@ import FormLabel from "react-bootstrap/esm/FormLabel";
 import Alert from "react-bootstrap/Alert"
 import Button from 'react-bootstrap/Button'
 import Axios from 'axios';
+import dbUtil from '../utilities/dbUtil'
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
-
-
-async function login(email, password) {
-  const existResponse = await Axios.get("http://localhost:8000/emailExist", {
-    params: {
-      email: email
-    }
-  })
-  const existResponseData = existResponse.data[0]
-  const doesExist = (existResponseData["EXISTS (SELECT 1 FROM LoginInfo WHERE email = '" + email + "')"])
-
-  if (!doesExist) {
-    return doesExist;
-  } else {
-    const loginResponse = await Axios.post("http://localhost:8000/login", {
-      email: email,
-      password: password
-    })
-    return loginResponse.data
-  }
-}
-
-async function resetPassword(email) {
-  const resetResponse = await Axios.put("http://localhost:8000/resetPassword", {
-    params: {
-      email: email
-    }
-  })
-  console.log(resetResponse)
-  return resetResponse.data
-}
-
-async function unlockAccount(email, newPass) {
-  const unlockResponse = await Axios.put("http://localhost:8000/updateAndUnlock", {
-    params: {
-      email: email,
-      newPass: newPass
-    }
-  })
-  return unlockResponse.data
-}
-
 
 
 
@@ -67,7 +26,7 @@ export default function Login({ setUser, setToken }) {
   function resetCounter() {
 
     if (incorrectCount === 0) {
-      resetPassword(email).then(
+      dbUtil.resetPassword(email).then(
         setAlertMessage("Password reset. Check email for temporary password"),
         setIncorrectCount(incorrectCount - 1),
       )
@@ -121,14 +80,14 @@ export default function Login({ setUser, setToken }) {
 
   const handleSubmit = e => {
     e.preventDefault();
-    login(email, password).then(data => {
+    dbUtil.login(email, password).then(data => {
       privSwitch(data);
     }).catch(err => console.log(err))
   }
 
   const guestLogin = (e) => {
     e.preventDefault();
-    login("guest", "guest").then(data => {
+    dbUtil.login("guest", "guest").then(data => {
       if (data.message) {
         console.log(data.message)
       } else if (data[0].userType === "guest") {
@@ -144,9 +103,9 @@ export default function Login({ setUser, setToken }) {
   //Yikes
   const unlockAndLogin = (e) => {
     e.preventDefault();
-    unlockAccount(email, newPass).then(data => {
+    dbUtil.unlockAccount(email, newPass).then(data => {
       if (data.affectedRows === 1) {
-        login(email, newPass).then(data => {
+        dbUtil.login(email, newPass).then(data => {
           privSwitch(data);
         }).catch(err => console.log(err))
       }

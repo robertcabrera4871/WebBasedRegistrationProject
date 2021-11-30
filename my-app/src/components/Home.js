@@ -20,23 +20,6 @@ function Home(){
         setSemester(semesterChosen) 
     }
     
-    function nameOnCheck(){
-        nameShow === "hidden" ? setNameShow("show") : setNameShow("hidden");
-    }
-    function dayOnCheck(){
-        dayShow === "hidden" ? setDayShow("show") : setDayShow("hidden");
-    }
-
-    function timeOnCheck(){
-        timeShow === "hidden" ? setTimeShow("show") : setTimeShow("hidden");
-    }
-
-    function courseOnCheck(){
-        courseShow === "hidden" ? setCourseShow("show") : setCourseShow("hidden");
-    }
-    function profOnCheck(){
-        profShow === "hidden" ? setProfShow("show") : setProfShow("hidden");
-    }
 
        return(
         <div id="align-center">
