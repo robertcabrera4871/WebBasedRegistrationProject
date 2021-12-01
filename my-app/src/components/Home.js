@@ -3,27 +3,33 @@ import Form from "react-bootstrap/Form";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import ChoseSemester from "./subComponents/ChoseSemester";
+import { useHistory } from 'react-router';
+
 
 
 function Home(){
 
-    const [semesterSelect, setSemester]= useState()
+    let history = useHistory();
 
+    const [semesterSelect, setSemester]= useState()
     const [nameShow, setNameShow]= useState(false)
     const [dayShow, setDayShow]= useState(false)
     const [timeShow, setTimeShow]= useState(false)
     const [courseShow, setCourseShow]= useState(false)
     const [profShow, setProfShow]= useState(false)
 
-
     const onClick = (semesterChosen) => {
         setSemester(semesterChosen) 
+    }
+
+    const handleSubmit = e => {
+        history.push('/masterSchedule')
     }
     
 
        return(
-        <div id="align-center">
-        <Form>
+        <div id="align-center" >
+        <Form onSubmit={handleSubmit}>
 
             {/* Admin will be able to edit after searching */}
             <h2 id="sched-h-tag">Schedule Search</h2><br/>

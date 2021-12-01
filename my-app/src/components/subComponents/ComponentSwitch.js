@@ -23,6 +23,8 @@ import StatData from '../StatData';
 import { Switch, Route, Redirect } from "react-router-dom";
 import checkPrivs from '../../utilities/checkPrivs';
 import ProtectedRoute from '../subComponents/ProtectedRoute'
+import MasterSchedule from '../MasterSchedule';
+import AllUsers from '../AllUsers';
 
 
 function ComponentSwitch() {
@@ -39,6 +41,7 @@ function ComponentSwitch() {
             <Route exact path="/programs" component={Programs}></Route>
             <Route exact path="/gradCatalog" component={GradCatalog}></Route>
             <Route exact path="/undergradCatalog" component={UndergradCatalog}></Route>
+            <Route exact path="/masterSchedule" component={MasterSchedule}></Route>
 
 
             {
@@ -147,6 +150,11 @@ function ComponentSwitch() {
                 (privs.isAdmin || privs.isResearch) ?
                     <ProtectedRoute exact path="/statData" component={StatData} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/statData" component={StatData} allowed={false}></ProtectedRoute>
+            }
+            {
+                (privs.isAdmin) ?
+                <ProtectedRoute exact path="/allUsers" component={AllUsers} allowed={true}></ProtectedRoute>:
+                <ProtectedRoute exact path="/allUsers" component={AllUsers} allowed={false}></ProtectedRoute>            
             }
 
 

@@ -41,4 +41,14 @@ import Axios from 'axios';
         })
         return unlockResponse.data
       }
+
+      static async getMasterSchedule(){
+          const mSchedResponse = await Axios.get("http://localhost:8000/masterSchedule")
+          return mSchedResponse.data
+      }
+
+      static async getAllUsers(){
+        const userResponse = await Axios.get("http://localhost:8000/allUsers")
+        return userResponse.data
+      }
     }

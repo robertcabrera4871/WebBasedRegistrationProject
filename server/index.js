@@ -88,6 +88,37 @@ app.put('/updateAndUnlock', (req, res) =>{
     )
 })
 
+app.get('/masterSchedule', (req, res) =>{
+    db.query(
+        'SELECT * FROM MasterSchedule',
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.get('/allUsers', (req, res) =>{
+    db.query(
+        'SELECT * FROM User',
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`)
 });
