@@ -20,8 +20,6 @@ export default function MasterSchedule(){
         )
      } 
 
-
-      const data = schedule;
       
 
       const columns = React.useMemo( () => [
@@ -86,7 +84,7 @@ export default function MasterSchedule(){
 
     ], []);
 
-      const tableInstance = useTable({ columns, data })
+      const tableInstance = useTable({ columns, data: schedule })
       
       const {
         getTableProps,

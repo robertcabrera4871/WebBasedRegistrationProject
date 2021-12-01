@@ -118,6 +118,76 @@ app.get('/allUsers', (req, res) =>{
     )
 })
 
+app.get('/majors',  (req, res) =>{
+    db.query(
+        'SELECT * FROM Major',
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.get('/majorRequirements',  (req, res) =>{
+    db.query(
+        'SELECT * FROM MajorRequirements',
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.get('/minors' , (req, res) =>{
+    db.query(
+        'SELECT * FROM Minor',
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.get('/minorRequirements',  (req, res) =>{
+    db.query(
+        'SELECT * FROM MinorRequirements',
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.get('/courses',  (req, res) =>{
+    db.query(
+        'SELECT * FROM Course',
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`)

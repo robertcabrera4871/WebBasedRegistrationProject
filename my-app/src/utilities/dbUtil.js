@@ -51,4 +51,25 @@ import Axios from 'axios';
         const userResponse = await Axios.get("http://localhost:8000/allUsers")
         return userResponse.data
       }
+
+      static async getMajors(){
+        const majorsResponse = await Axios.get("http://localhost:8000/majors")
+        return majorsResponse.data      
+      }
+      static async getMajorRequirements(){
+        const majorRequireResponse = await Axios.get("http://localhost:8000/majorRequirements")
+        return majorRequireResponse.data      
+      }
+      static async getMinors(){
+        const minorsResponse = await Axios.get("http://localhost:8000/minors")
+        return minorsResponse.data
+      }
+      static async getMinorRequirements(){
+        const minorRequireResponse = await Axios.get("http://localhost:8000/minorRequirements")
+        return minorRequireResponse.data      
+      }
+      static async getCourses(){
+        const courseResponse = await Axios.get("http://localhost:8000/courses")
+        return courseResponse.data
+      }
     }
