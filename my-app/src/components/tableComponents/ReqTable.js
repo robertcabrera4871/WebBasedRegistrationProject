@@ -11,10 +11,6 @@ export default function ReqTable({major, minor, requirements}) {
         Header: "Course Name",
         accessor: "courseID"
     },
-    {
-      Header: "Major",
-      accessor: "majorID"
-    },
      {
         Header: "Minimum Grade",
         accessor: "minCourseGrade"
