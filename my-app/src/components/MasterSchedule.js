@@ -1,7 +1,8 @@
 import React, { useState, useEffect} from "react";
-import { useTable } from "react-table";
+import { useTable, useFilters } from "react-table";
 import dbUtil from '../utilities/dbUtil'
 import Table from 'react-bootstrap/Table'
+import ColumnFilter from "./tableComponents/ColumnFilter";
 
 export default function MasterSchedule(){
 
@@ -25,66 +26,80 @@ export default function MasterSchedule(){
       const columns = React.useMemo( () => [
         {
             Header: "CRN",
-            accessor: "CRN"
+            accessor: "CRN",
+            Filter: ColumnFilter
          },
 
          {
             Header: "Course Section",
-            accessor: "CourseSection"
+            accessor: "CourseSection",
+            Filter: ColumnFilter
          },
          {
             Header: "CourseID",
-            accessor: "CourseID"
+            accessor: "CourseID",
+            Filter: ColumnFilter
          },
          {
             Header: "Department",
-            accessor: "Department"
+            accessor: "Department",
+            Filter: ColumnFilter
          },
          {
             Header: "Day",
-            accessor: "Day"
+            accessor: "Day",
+            Filter: ColumnFilter
          },
          {
             Header: "Start Time",
-            accessor: "StartTime"
+            accessor: "StartTime",
+            Filter: ColumnFilter
          },
          {
             Header: "End Time",
-            accessor: "EndTime"
+            accessor: "EndTime",
+            Filter: ColumnFilter
          },
 
          {
             Header: "Semester",
-            accessor: "Semester"
+            accessor: "Semester",
+            Filter: ColumnFilter
          },
          {
             Header: "Year",
-            accessor: "Year"
+            accessor: "Year",
+            Filter: ColumnFilter
          },
          {
             Header: "Room No.",
-            accessor: "RoomNumber"
+            accessor: "RoomNumber",
+            Filter: ColumnFilter
          },
          {
             Header: "Prof Last Name",
-            accessor: "ProfLastName"
+            accessor: "ProfLastName",
+            Filter: ColumnFilter
          },
          {
             Header: "Prof First Name",
-            accessor: "ProfFirstName"
+            accessor: "ProfFirstName",
+            Filter: ColumnFilter
          },
          {
             Header: "Seats",
-            accessor: "Seats"
+            accessor: "Seats",
+            Filter: ColumnFilter
          },
          {
             Header: "Capacity",
-            accessor: "Capacity"
+            accessor: "Capacity",
+            Filter: ColumnFilter
          }
 
     ], []);
 
-      const tableInstance = useTable({ columns, data: schedule })
+      const tableInstance = useTable({ columns, data: schedule }, useFilters)
       
       const {
         getTableProps,
@@ -95,14 +110,15 @@ export default function MasterSchedule(){
       } = tableInstance
 
      return (
-      
+      <div >
       <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         { headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map(column => (
-              <th {...column.getHeaderProps()}>
+              <th className='column'{...column.getHeaderProps()}>
                 { column.render('Header')}
+                <div className='filter'>{column.canFilter? column.render('Filter') : null }</div>
               </th>
             ))}
           </tr>
@@ -126,5 +142,6 @@ export default function MasterSchedule(){
         })}
       </tbody>
     </Table>
+    </div>
  )
 }

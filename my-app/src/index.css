@@ -39,3 +39,20 @@
 .topSpace{
     margin-top: 25px;
 }
+ .filter{
+    display:none;
+}
+
+@media (hover: hover){
+    .column:hover .filter{
+        display: block;
+    }    
+}
+
+.column:hover{
+    background-color: lightblue;
+}
+
+
+
+
