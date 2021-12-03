@@ -50,9 +50,14 @@
 }
 
 .column:hover{
-    background-color: lightblue;
+    background-color:bisque;
 }
 
+.buttonDivider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
 
 
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from "react";
-import { useTable, useFilters } from "react-table";
+import { useTable, useFilters, useSortBy, useRowSelect } from "react-table";
 import dbUtil from '../utilities/dbUtil'
 import Table from 'react-bootstrap/Table'
 import ColumnFilter from "./tableComponents/ColumnFilter";
@@ -20,6 +20,11 @@ export default function MasterSchedule(){
             }
         )
      } 
+
+
+     function editRow(row){
+      console.log(row)
+     }
 
       
 
@@ -99,7 +104,6 @@ export default function MasterSchedule(){
 
     ], []);
 
-      const tableInstance = useTable({ columns, data: schedule }, useFilters)
       
       const {
         getTableProps,
@@ -107,7 +111,27 @@ export default function MasterSchedule(){
         headerGroups,
         rows,
         prepareRow,
-      } = tableInstance
+        selectedFlatRows,
+      } = useTable({ columns, data: schedule },
+          useFilters, useSortBy, useRowSelect,
+          (hooks) => {
+            hooks.visibleColumns.push((columns) => {
+               return [
+                  {
+                     id: 'edit',
+                     Cell: ({row}) => (
+                        <div>
+                        <button className='editButton' onClick={() => editRow(row.original)}>✏️</button>
+                        <div className='buttonDivider'/>
+                        <button onClick={() => console.log(row.original)}>❌</button>
+                        </div>
+                     ) 
+                  },
+                  ...columns
+               ]
+            })
+          })
+
 
      return (
       <div >
@@ -116,9 +140,11 @@ export default function MasterSchedule(){
         { headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
             {headerGroup.headers.map(column => (
-              <th className='column'{...column.getHeaderProps()}>
+              <th className='column'{...column.getHeaderProps(column.getSortByToggleProps())}>
                 { column.render('Header')}
+                <span>{column.isSorted ? (column.isSortedDesc ?  ' 🔽' : ' 🔼' ) : ''}</span>
                 <div className='filter'>{column.canFilter? column.render('Filter') : null }</div>
+                
               </th>
             ))}
           </tr>
