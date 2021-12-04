@@ -4,6 +4,8 @@ import dbUtil from '../utilities/dbUtil'
 import Table from 'react-bootstrap/Table'
 import ColumnFilter from "./tableComponents/ColumnFilter";
 import { useHistory } from 'react-router';
+import checkPrivs from '../utilities/checkPrivs'
+
 
 
 export default function MasterSchedule(){
@@ -12,6 +14,7 @@ export default function MasterSchedule(){
 
     const [schedule, setSchedule] = useState([]);
     let history = useHistory();
+    const privs = checkPrivs();
 
      useEffect(() =>{
          getSchedule();
@@ -134,6 +137,7 @@ export default function MasterSchedule(){
       } = useTable({ columns, data: schedule },
           useFilters, useSortBy, useRowSelect,
           (hooks) => {
+            if(privs.isAdmin){
             hooks.visibleColumns.push((columns) => {
                return [
                   {
@@ -142,7 +146,6 @@ export default function MasterSchedule(){
                         <div>
                         <button className='editButton' onClick={() => editRow(row.original)}>✏️</button>
                         <div className='buttonDivider'/>
-                        {/* <button onClick={() => deleteRow(row.original)}>❌</button> */}
                         <button className='delete-button' onClick={(e) => { 
                            if (window.confirm('Are you sure you wish to delete this item?')) 
                            {
@@ -150,17 +153,17 @@ export default function MasterSchedule(){
                            } }}>❌</button>
                         </div>
                      ) 
-                  },
+                  }, 
                   ...columns
-               ]
-            })
+                  ]
+            })}
           })
 
 
      return (
       <div >
       <b>Hover column to search, Click column to sort</b>
-      <div>Add to Master Schedule <button onClick={(e) => {newRow()}}>➕</button></div>
+      { privs.isAdmin && <div>Add to Master Schedule <button onClick={(e) => {newRow()}}>➕</button></div>}
       
       <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>

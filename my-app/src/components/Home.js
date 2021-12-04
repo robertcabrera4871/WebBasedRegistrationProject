@@ -20,7 +20,6 @@ function Home(){
         <h1 className='text-align'>Master Schedule</h1>
       
         <MasterSchedule/>
-
              <h3 id="sched-h-tag">Academic calendar</h3>
              <h2>
                  Fair day! 

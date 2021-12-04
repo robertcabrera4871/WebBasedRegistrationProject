@@ -38,6 +38,19 @@ export default function Login({ setUser, setToken }) {
   const redirect = () => {
     history.push('/home')
   }
+  
+  function randomToken(){
+          {
+      var result = '';
+      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      var charactersLength = characters.length;
+      for ( var i = 0; i < 15; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * 
+   charactersLength));
+     }
+     return result;
+  }
+  }
 
   function privSwitch(data) {
     if (data.message) {
@@ -54,22 +67,22 @@ export default function Login({ setUser, setToken }) {
 
     else if (data[0].userType === "admin") {
       setUser(data[0]);
-      setToken({ token: 'admin' });
+      setToken({ token: randomToken() });
       redirect();
     }
     else if (data[0].userType === "student") {
       setUser(data[0])
-      setToken({ token: 'student' });
+      setToken({ token: randomToken() });
       redirect();
     }
     else if (data[0].userType === "faculty") {
       setUser(data[0])
-      setToken({ token: 'faculty' });
+      setToken({ token: randomToken() });
       redirect();
     }
     else if (data[0].userType === "research") {
       setUser(data[0])
-      setToken({ token: 'research' });
+      setToken({ token: randomToken() });
       redirect();
     }
     else {

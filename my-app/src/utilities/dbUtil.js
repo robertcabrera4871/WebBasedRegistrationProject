@@ -47,6 +47,28 @@ import Axios from 'axios';
         return editResponse.data
       }
 
+     static async addMS(row){
+       const addResponse = await Axios.put("http://localhost:8000/addMS", {
+         params:{
+          CRN: row.CRN,
+          Capacity: row.Capacity,
+          CourseID: row.CourseID,
+          CourseSection: row.CourseSection,
+          Day: row.Day,
+          Department: row.Department,
+          EndTime: row.EndTime,
+          ProfFirstName: row.ProfFirstName,
+          ProfLastName: row.ProfLastName,
+          RoomNumber: row.RoomNumber,
+          Seats: row.Seats,
+          Semester: row.Semester,
+          StartTime: row.StartTime,
+          Year: row.Year
+         }
+       })
+       return addResponse.data
+     }
+
       static async deleteMS(row){
         const deleteResponse = await Axios.put("http://localhost:8000/deleteMS", {
           params: {

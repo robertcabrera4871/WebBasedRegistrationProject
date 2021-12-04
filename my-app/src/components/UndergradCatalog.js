@@ -51,18 +51,18 @@ export default function UndergradCatalog() {
 
     let majorsTables = majors.map((major, index) =>{
         return (
-            <div>
+            <span>
             <h4 key={index}>{major.majorID}:</h4>
             <ReqTable major={major.majorID} requirements={majorRequire}/>
-            </div>
+            </span>
         )});
 
      let minorsTables = minors.map((minor, index) =>{
         return (
-            <div>
+            <span>
             <h4 key={index}>{minor.minorID}:</h4>
             <ReqTable minor={minor.minorID} requirements={minorRequire}/>
-            </div>
+            </span>
         )});
 
     return (

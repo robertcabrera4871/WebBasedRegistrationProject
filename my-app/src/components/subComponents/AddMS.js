@@ -1,5 +1,4 @@
 import React from "react";
-import Alert from "react-bootstrap/Alert";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
@@ -26,14 +25,23 @@ export default function AddMS(){
         Seats:"",
         Capacity:""}
 
-        function submitChanges(){
-            for(var value in newRow){
-               if(newRow.value == null){
-                   window.alert("Please ensure no fields are left empty"); break;
-               }else{
-                   console.log("nah")
-               }
+        function submitChanges(e){
+            e.preventDefault();
+            for(const property in newRow){
+               if(`${newRow[property].trim()}` === ""){
+                   window.alert("Please ensure no fields are left empty");
+                   return("")
+               } 
             }
+             dbUtil.addMS(newRow).then(data =>{
+                 console.log(data.err)
+                 if(data.err){
+                     window.alert(data.err.sqlMessage)
+                 }else{
+                     //change to reroute after
+                     console.log(data)
+                 }
+             })
         }
 
 

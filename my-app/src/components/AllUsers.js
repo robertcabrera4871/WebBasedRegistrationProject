@@ -74,6 +74,8 @@ export default function AllUsers(){
      } = tableInstance
 
     return(
+      <div className='table-center'>
+        <h1 className='text-align'>All Users</h1>
         <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         {// Loop over the header rows
@@ -115,5 +117,6 @@ export default function AllUsers(){
         })}
       </tbody>
     </Table>
+    </div>
     );
 }

@@ -73,6 +73,24 @@ app.put('/editMS', (req, res) =>{
      )
  })
 
+ app.put('/addMS' , (req, res) =>{
+     const params = req.body.params
+     db.query(
+        "INSERT INTO MasterSchedule Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        [params.CRN, params.CourseSection, params.CourseID, params.Department,
+        params.Day, params.StartTime, params.EndTime, params.Semester, params.Year, params.RoomNumber,
+        params.ProfLastName,params.ProfFirstName, params.Seats, params.Capacity],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+     )
+ })
+
 app.get('/emailExist', (req, res) =>{
     const email = req.query.email;
     db.query(
