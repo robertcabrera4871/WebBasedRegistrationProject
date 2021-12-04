@@ -1,17 +1,13 @@
 import React from "react";
 import { useState } from "react";
-import Button from "react-bootstrap/Button";
 import ChoseSemester from "./subComponents/ChoseSemester";
-import { useHistory } from 'react-router';
 import MasterSchedule from "./MasterSchedule";
 
 
 
 function Home(){
 
-    //delete old masterSchdule
-
-    const [semesterSelect, setSemester]= useState()
+    const [semesterSelect, setSemester]= useState("Spring 2021")
     const onClick = (semesterChosen) => {
         setSemester(semesterChosen) 
     }
@@ -26,7 +22,6 @@ function Home(){
         <MasterSchedule/>
 
              <h3 id="sched-h-tag">Academic calendar</h3>
-             <Button variant="warning" type="button">Edit</Button>
              <h2>
                  Fair day! 
              </h2>

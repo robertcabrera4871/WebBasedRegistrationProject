@@ -8,6 +8,7 @@ import Axios from 'axios';
             email: email
           }
         })
+        
         const existResponseData = existResponse.data[0]
         const doesExist = (existResponseData["EXISTS (SELECT 1 FROM LoginInfo WHERE email = '" + email + "')"])
       
@@ -20,6 +21,29 @@ import Axios from 'axios';
           })
           return loginResponse.data
         }
+      }
+
+      static async editMS(row){
+    
+        const editResponse = await Axios.put("http://localhost:8000/editMS", {
+          params: {
+            CRN: row.CRN,
+            Capacity: row.Capacity,
+            CourseID: row.CourseID,
+            CourseSection: row.CourseSection,
+            Day: row.Day,
+            Department: row.Department,
+            EndTime: row.EndTime,
+            ProfFirstName: row.ProfFirstName,
+            ProfLastName: row.ProfLastName,
+            RoomNumber: row.RoomNumber,
+            Seats: row.Seats,
+            Semester: row.Semester,
+            StartTime: row.StartTime,
+            Year: row.Year
+          }
+        })
+        return editResponse.data
       }
       
        static async resetPassword(email) {
@@ -72,4 +96,5 @@ import Axios from 'axios';
         const courseResponse = await Axios.get("http://localhost:8000/courses")
         return courseResponse.data
       }
+      
     }

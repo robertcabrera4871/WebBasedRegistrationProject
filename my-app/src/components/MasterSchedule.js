@@ -3,10 +3,15 @@ import { useTable, useFilters, useSortBy, useRowSelect } from "react-table";
 import dbUtil from '../utilities/dbUtil'
 import Table from 'react-bootstrap/Table'
 import ColumnFilter from "./tableComponents/ColumnFilter";
+import { useHistory } from 'react-router';
+
 
 export default function MasterSchedule(){
 
+   //Needs more sorting options
+
     const [schedule, setSchedule] = useState([]);
+    let history = useHistory();
 
      useEffect(() =>{
          getSchedule();
@@ -22,10 +27,17 @@ export default function MasterSchedule(){
      } 
 
 
-     function editRow(row){
-      console.log(row)
-     }
+     function editRow(rowData){
+      history.push({
+         pathname: '/editMS', 
+         state: rowData
+      })
+   }
+   
 
+     function deleteRow(row){
+   
+     }
       
 
       const columns = React.useMemo( () => [
@@ -111,7 +123,6 @@ export default function MasterSchedule(){
         headerGroups,
         rows,
         prepareRow,
-        selectedFlatRows,
       } = useTable({ columns, data: schedule },
           useFilters, useSortBy, useRowSelect,
           (hooks) => {
@@ -123,7 +134,12 @@ export default function MasterSchedule(){
                         <div>
                         <button className='editButton' onClick={() => editRow(row.original)}>✏️</button>
                         <div className='buttonDivider'/>
-                        <button onClick={() => console.log(row.original)}>❌</button>
+                        {/* <button onClick={() => deleteRow(row.original)}>❌</button> */}
+                        <button className='delete-button' onClick={(e) => { 
+                           if (window.confirm('Are you sure you wish to delete this item?')) 
+                           {
+                              deleteRow(row.original)
+                           } }}>❌</button>
                         </div>
                      ) 
                   },

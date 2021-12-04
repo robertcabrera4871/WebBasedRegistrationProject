@@ -36,6 +36,28 @@ app.post('/login', (req, res) =>{
     );
 });
 
+app.put('/editMS', (req, res) =>{
+    const params = req.body.params
+    console.log(params)
+    db.query(
+        "UPDATE MasterSchedule SET CRN = ? , CourseSection = ?,"+
+         "CourseID = ?, Department = ?, Day = ?, StartTime = ?,"+
+         "EndTime = ?, Semester = ?, Year = ?,RoomNumber= ?, ProfLastName= ?,"+
+         "ProfFirstName= ?, Seats= ?, Capacity=? WHERE CRN=? " ,
+        [params.CRN, params.CourseSection, params.CourseID, params.Department,
+        params.Day, params.StartTime, params.EndTime, params.Semester, params.Year, params.RoomNumber,
+        params.ProfLastName,params.ProfFirstName, params.Seats, params.Capacity, params.CRN],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+ })
+
 app.get('/emailExist', (req, res) =>{
     const email = req.query.email;
     db.query(
@@ -188,6 +210,8 @@ app.get('/courses',  (req, res) =>{
         }
     )
 })
+
+
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`)

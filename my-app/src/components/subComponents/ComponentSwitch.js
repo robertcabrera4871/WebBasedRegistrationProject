@@ -25,6 +25,7 @@ import checkPrivs from '../../utilities/checkPrivs';
 import ProtectedRoute from '../subComponents/ProtectedRoute'
 import MasterSchedule from '../MasterSchedule';
 import AllUsers from '../AllUsers';
+import EditMS from './EditMS';
 
 
 function ComponentSwitch() {
@@ -43,7 +44,12 @@ function ComponentSwitch() {
             <Route exact path="/undergradCatalog" component={UndergradCatalog}></Route>
             <Route exact path="/masterSchedule" component={MasterSchedule}></Route>
 
-
+            {
+                (privs.isAdmin) ?
+                <ProtectedRoute exact path ="/editMS" component={EditMS} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/editMS" component={EditMS} allowed={false}></ProtectedRoute> 
+                
+            }
             {
                 (privs.isStudent || privs.isAdmin) ?
                     <ProtectedRoute exact path="/registration" component={Registration} allowed={true}></ProtectedRoute> :
