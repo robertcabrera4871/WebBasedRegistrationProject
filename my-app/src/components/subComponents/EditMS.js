@@ -3,6 +3,8 @@ import Alert from "react-bootstrap/Alert";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import dbUtil from "../../utilities/dbUtil";
+import Row from 'react-bootstrap/Row'
+import Col from "react-bootstrap/Col";
 import { useHistory } from 'react-router';
 
 
@@ -12,6 +14,9 @@ export default function EditMS(rowData){
     const row = rowData.location.state
     var rowChanges = {...row}
 
+
+    let history = useHistory();
+    
     function submitChanges(e){
         e.preventDefault();
         console.log(row.CRN)
@@ -23,8 +28,6 @@ export default function EditMS(rowData){
         }
         })
     }
-
-    let history = useHistory();
 
 
 
@@ -38,7 +41,10 @@ export default function EditMS(rowData){
     }
     return(
         <Form id='align-center'>
+            <h1 className="text-align">Editing: {row.CourseID}</h1>
         <Form.Group>
+            <Row>
+                <Col>
             <Form.Label>CRN</Form.Label>
             <Form.Control onChange={e => rowChanges.CRN = e.target.value} placeholder={row.CRN}></Form.Control>
             <Form.Label>CourseSection</Form.Label>
@@ -53,7 +59,9 @@ export default function EditMS(rowData){
             <Form.Control onChange={e => rowChanges.StartTime = e.target.value} placeholder={row.StartTime}></Form.Control>
             <Form.Label>EndTime</Form.Label>
             <Form.Control onChange={e => rowChanges.EndTime = e.target.value} placeholder={row.EndTime}></Form.Control>
-            <Form.Label>Semester</Form.Label>
+            </Col>
+                <Col>
+           <Form.Label>Semester</Form.Label>
             <Form.Control onChange={e => rowChanges.Semester = e.target.value} placeholder={row.Semester}></Form.Control>
             <Form.Label>Year</Form.Label>
             <Form.Control onChange={e => rowChanges.Year = e.target.value} placeholder={row.Year}></Form.Control>
@@ -67,11 +75,9 @@ export default function EditMS(rowData){
             <Form.Control onChange={e => rowChanges.Seats = e.target.value} placeholder={row.Seats}></Form.Control>
             <Form.Label>Capacity</Form.Label>
             <Form.Control onChange={e => rowChanges.Capacity = e.target.value} placeholder={row.Capacity}></Form.Control>
-            
-           
-           
-           
             <Button variant='success' onClick={(e) => submitChanges(e)}>Save Changes</Button>{' '}
+            </Col>
+            </Row>
          </Form.Group>
         </Form>
     )

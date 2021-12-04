@@ -26,7 +26,9 @@ export default function MasterSchedule(){
         )
      } 
 
-
+     function newRow(){
+        history.push('/addMS')
+     }
      function editRow(rowData){
       history.push({
          pathname: '/editMS', 
@@ -37,12 +39,12 @@ export default function MasterSchedule(){
 
      function deleteRow(row){
          dbUtil.deleteMS(row).then(data =>{
-            console.log(data)
+            if(data.err){
+               window.alert(data.err.sqlMessage)
+           }else{
+            window.location.reload(false);
+           }
          })
-     }
-
-     function refreshPage(){
-        window.location.reload(false);
      }
       
 
@@ -145,7 +147,6 @@ export default function MasterSchedule(){
                            if (window.confirm('Are you sure you wish to delete this item?')) 
                            {
                               deleteRow(row.original)
-                              refreshPage()
                            } }}>❌</button>
                         </div>
                      ) 
@@ -159,7 +160,7 @@ export default function MasterSchedule(){
      return (
       <div >
       <b>Hover column to search, Click column to sort</b>
-      <div>Add to Master Schedule <button>➕</button></div>
+      <div>Add to Master Schedule <button onClick={(e) => {newRow()}}>➕</button></div>
       
       <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
