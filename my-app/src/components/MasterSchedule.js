@@ -36,7 +36,13 @@ export default function MasterSchedule(){
    
 
      function deleteRow(row){
-   
+         dbUtil.deleteMS(row).then(data =>{
+            console.log(data)
+         })
+     }
+
+     function refreshPage(){
+        window.location.reload(false);
      }
       
 
@@ -139,6 +145,7 @@ export default function MasterSchedule(){
                            if (window.confirm('Are you sure you wish to delete this item?')) 
                            {
                               deleteRow(row.original)
+                              refreshPage()
                            } }}>❌</button>
                         </div>
                      ) 
@@ -151,6 +158,9 @@ export default function MasterSchedule(){
 
      return (
       <div >
+      <b>Hover column to search, Click column to sort</b>
+      <div>Add to Master Schedule <button>➕</button></div>
+      
       <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         { headerGroups.map(headerGroup => (

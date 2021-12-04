@@ -3,21 +3,28 @@ import Alert from "react-bootstrap/Alert";
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import dbUtil from "../../utilities/dbUtil";
+import { useHistory } from 'react-router';
 
 
 
 export default function EditMS(rowData){
     
     const row = rowData.location.state
-    var rowChanges = row
-    console.log(row)
+    var rowChanges = {...row}
 
     function submitChanges(e){
         e.preventDefault();
-        dbUtil.editMS(rowChanges).then(data =>{
-            console.log(data);
+        console.log(row.CRN)
+        dbUtil.editMS(rowChanges, row.CRN).then(data =>{
+        if(data.err){
+            window.alert(data.err.sqlMessage)
+        }else{
+         history.push('/home')
+        }
         })
     }
+
+    let history = useHistory();
 
 
 

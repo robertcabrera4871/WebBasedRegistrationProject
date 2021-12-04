@@ -38,7 +38,6 @@ app.post('/login', (req, res) =>{
 
 app.put('/editMS', (req, res) =>{
     const params = req.body.params
-    console.log(params)
     db.query(
         "UPDATE MasterSchedule SET CRN = ? , CourseSection = ?,"+
          "CourseID = ?, Department = ?, Day = ?, StartTime = ?,"+
@@ -46,7 +45,7 @@ app.put('/editMS', (req, res) =>{
          "ProfFirstName= ?, Seats= ?, Capacity=? WHERE CRN=? " ,
         [params.CRN, params.CourseSection, params.CourseID, params.Department,
         params.Day, params.StartTime, params.EndTime, params.Semester, params.Year, params.RoomNumber,
-        params.ProfLastName,params.ProfFirstName, params.Seats, params.Capacity, params.CRN],
+        params.ProfLastName,params.ProfFirstName, params.Seats, params.Capacity, params.OldCRN],
         (err, result) =>{
             if(err){
                 res.send({err: err})
@@ -56,6 +55,22 @@ app.put('/editMS', (req, res) =>{
             }
         }
     )
+ })
+
+ app.put('/deleteMS', (req, res) =>{
+     const CRN = req.body.params.CRN
+     db.query(
+         "DELETE FROM MasterSchedule WHERE CRN = ? ", 
+         [CRN],
+         (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+     )
  })
 
 app.get('/emailExist', (req, res) =>{

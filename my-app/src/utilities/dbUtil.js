@@ -23,10 +23,11 @@ import Axios from 'axios';
         }
       }
 
-      static async editMS(row){
+      static async editMS(row, oldCRN){
     
         const editResponse = await Axios.put("http://localhost:8000/editMS", {
           params: {
+            OldCRN: oldCRN,
             CRN: row.CRN,
             Capacity: row.Capacity,
             CourseID: row.CourseID,
@@ -44,6 +45,15 @@ import Axios from 'axios';
           }
         })
         return editResponse.data
+      }
+
+      static async deleteMS(row){
+        const deleteResponse = await Axios.put("http://localhost:8000/deleteMS", {
+          params: {
+            CRN: row.CRN
+          }
+        })
+        return deleteResponse.data
       }
       
        static async resetPassword(email) {
