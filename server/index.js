@@ -125,23 +125,7 @@ app.put('/resetPassword', (req, res) =>{
     )
 })
 
-app.put('/updateAndUnlock', (req, res) =>{
-    const email = req.body.params.email;
-    const newPass = req.body.params.newPass;
 
-    db.query(
-        `UPDATE logininfo SET password = "${newPass}", status="active" WHERE email = ?`,
-        [email, newPass],
-        (err, result) =>{
-            if(err){
-                res.send({err: err})
-            } 
-            else{
-                res.send(result)
-             } 
-        }
-    )
-})
 
 app.get('/masterSchedule', (req, res) =>{
     db.query(
@@ -229,6 +213,40 @@ app.get('/minorRequirements',  (req, res) =>{
         }
     )
 })
+app.put('/updateAndUnlock', (req, res) =>{
+    const email = req.body.params.email;
+    const newPass = req.body.params.newPass;
+
+    db.query(
+        `UPDATE logininfo SET password = "${newPass}", status="active" WHERE email = ?`,
+        [email, newPass],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+             } 
+        }
+    )
+})
+
+app.post('/myAdvisors', (req, res) =>{
+    const studentID = req.body.params.userID;
+    db.query(
+        `SELECT f.FirstName, f.lastName, a.dateOfAppointment FROM FacultyAdvising a JOIN User f ON studentID= ? WHERE a.facultyID = f.userID`,
+    [studentID],
+    (err, result) =>{
+        if(err){
+            res.send({err:err})
+        }
+        else{
+            res.send(result)
+        }
+    }
+    )
+})
+
 app.get('/courses',  (req, res) =>{
     db.query(
         'SELECT * FROM Course',
@@ -243,8 +261,6 @@ app.get('/courses',  (req, res) =>{
         }
     )
 })
-
-
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`)

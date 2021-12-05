@@ -23,10 +23,10 @@ function HeaderBar({setToken, setUser, userType}){
             <Nav className="me-auto">
               <Nav.Link href="/home">Home</Nav.Link>
               <Nav.Link href="/programs">Program and Courses</Nav.Link>
-              {(privs.isAdmin || privs.isStudent || privs.isFaculty ) && <Nav.Link href="/academics">Academics</Nav.Link>}
-              {(privs.isAdmin || privs.isStudent) && <Nav.Link href="/registration">Registration</Nav.Link>}
+              {(privs.isStudent || privs.isFaculty ) && <Nav.Link href="/academics">Academics</Nav.Link>}
+              {(privs.isStudent) && <Nav.Link href="/registration">Registration</Nav.Link>}
               {(privs.isAdmin || privs.isFaculty) &&  <Nav.Link href="/users">Users</Nav.Link>}
-              {(privs.isAdmin || privs.isFaculty) && <Nav.Link href="/facHistory">Faculty History</Nav.Link>}
+              {privs.isFaculty && <Nav.Link href="/facHistory">Faculty History</Nav.Link>}
               {privs.isAdmin && <Nav.Link href="/timeWindow">Time Window</Nav.Link> }
               {(privs.isAdmin || privs.isResearch)  && <Nav.Link href="/statData">Statistical Data</Nav.Link>}
               <Nav.Link></Nav.Link>

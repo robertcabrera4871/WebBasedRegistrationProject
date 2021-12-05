@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from "react";
-import { useTable, useFilters, useSortBy, useRowSelect } from "react-table";
+import { useTable, useFilters, useSortBy, usePagination } from "react-table";
 import dbUtil from '../utilities/dbUtil'
 import Table from 'react-bootstrap/Table'
 import ColumnFilter from "./tableComponents/ColumnFilter";
@@ -34,11 +34,12 @@ export default function MasterSchedule(){
         dbUtil.getMasterSchedule().then(
             data =>{
                 if(semesterSelect === "Spring 2021"){
-                  console.log(data)
                   data = data.filter(item => (item.Semester === "Spring" && item.Year === "2021"))
-               } else{
-                  data = data
-               }
+               } 
+               //ADD BACK IN LATER
+               // else if(semesterSelect === "Fall 2022"){
+               //    data = data.filter(item => (item.Semester === "Fall" && item.Year === "2021"))
+               // }
                setSchedule(data)
             }
         )
@@ -147,10 +148,16 @@ export default function MasterSchedule(){
         getTableProps,
         getTableBodyProps,
         headerGroups,
-        rows,
+        page,
+        nextPage,
+        previousPage,
+        canNextPage,
+        canPreviousPage,
+        pageOptions,
+        state,
         prepareRow,
       } = useTable({ columns, data: schedule },
-          useFilters, useSortBy, useRowSelect,
+          useFilters, useSortBy, usePagination,
           (hooks) => {
             if(privs.isAdmin){
             hooks.visibleColumns.push((columns) => {
@@ -175,13 +182,16 @@ export default function MasterSchedule(){
           })
 
 
+         const {pageIndex} = state
+
+
      return (
       <div >
       <ChoseSemester onClick={choseSemester} semesterSelect={semesterSelect} />
       <h1 className='text-align'>Master Schedule</h1>
 
       <b>Hover column to search, Click column to sort</b>
-      { privs.isAdmin && <div>Add to Master Schedule <button onClick={(e) => {newRow()}}>➕</button></div>}
+         { privs.isAdmin && <div><button onClick={(e) => newRow()}>➕ Add to Master Schedule </button></div>}
       
       <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
@@ -200,7 +210,7 @@ export default function MasterSchedule(){
       </thead>
  
       <tbody {...getTableBodyProps()}>
-        {rows.map(row => {
+        {page.map(row => {
           prepareRow(row)
           return (
             <tr {...row.getRowProps()}>
@@ -216,6 +226,14 @@ export default function MasterSchedule(){
         })}
       </tbody>
     </Table>
+    <span className='align-center'>
+       Page{' '}
+       <strong>
+          {pageIndex + 1} of {pageOptions.length}
+       </strong>
+       <button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</button>
+       <button onClick={() => nextPage()} disabled={!canNextPage}>Next</button>
+    </span>
     </div>
  )
 }

@@ -17,7 +17,6 @@ import Advisees from '../Advisees';
 import TeachScedule from '../TeachSchedule';
 import Users from '../Users';
 import FacHistory from '../FacHistory';
-import ModifyCatalog from '../ModifyCatalog';
 import TimeWindow from '../TimeWindow';
 import StatData from '../StatData';
 import { Switch, Route, Redirect } from "react-router-dom";
@@ -133,12 +132,6 @@ function ComponentSwitch() {
                 (privs.isStudent || privs.isAdmin ) ?
                     <ProtectedRoute exact path="/degreeAudit" component={DegreeAudit} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/degreeAudit" component={DegreeAudit} allowed={false}></ProtectedRoute> 
-            }
-
-            {
-                (privs.isAdmin) ?
-                    <ProtectedRoute exact path="/modifyCatalog" component={ModifyCatalog} allowed={true}></ProtectedRoute> :
-                    <ProtectedRoute exact path="/modifyCatalog" component={ModifyCatalog} allowed={false}></ProtectedRoute> 
             }
 
             {

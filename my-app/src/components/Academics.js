@@ -6,19 +6,19 @@ const privs = checkPrivs();
 function Academics(){
     return(
         <ListGroup id="align-center">
-        {(privs.isStudent || privs.isAdmin) && 
+        {(privs.isStudent) && 
          <ListGroup.Item action href="/advisors">
           My Advisors 
         </ListGroup.Item>}
-        {(privs.isFaculty || privs.isAdmin) && 
+        {(privs.isFaculty) && 
         <ListGroup.Item action href="/advisees">
           My Advisees 
         </ListGroup.Item>}
-        {(privs.isStudent || privs.isAdmin) && 
+        {(privs.isStudent) && 
         <ListGroup.Item action href="/degreeAudit">
           Degree Progress
         </ListGroup.Item>}
-        {(privs.isFaculty || privs.isAdmin) && 
+        {(privs.isFaculty) && 
         <ListGroup.Item action href="/teachSchedule">
           Teaching Schedule
         </ListGroup.Item>}

@@ -1,12 +1,28 @@
 import React from "react";
 import { useTable } from "react-table";
-import Table from 'react-bootstrap/Table'
-
-
+import Table from 'react-bootstrap/Table';
+import checkPrivs from "../../utilities/checkPrivs";
 
 export default function ReqTable({major, minor, requirements}) {
 
+    function clicked(row){
+      console.log(row)
+    }
+
+    const privs = checkPrivs();
+
     const columns = React.useMemo( () =>[
+      {
+        accessor: 'Actions',
+        width: 100,
+        Cell: ({cell}) => (
+          <div>
+          <button onClick={() => clicked(cell.row.original)}>✏️</button>
+          <div className='bigDivider'/>
+          <button onClick={() => clicked(cell.row.original)}>❌</button>
+          </div>
+        )
+      },
     {
         Header: "Course Name",
         accessor: "courseID"
@@ -21,15 +37,18 @@ export default function ReqTable({major, minor, requirements}) {
     major ? requirements = requirements.filter(item => (item.majorID === major)):
     requirements = requirements.filter(item => (item.minorID === minor));
 
-
-    const courseTable = useTable({columns, data: requirements});
+    var initialState = ""
+    if(!privs.isAdmin){
+      initialState = {hiddenColumns: ['Actions']}
+    }
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
         rows,
         prepareRow,
-    } = courseTable
+    } = useTable({columns, data: requirements, initialState})
+    
 
 
 
@@ -39,7 +58,9 @@ export default function ReqTable({major, minor, requirements}) {
        { headerGroups.map(headerGroup => (
          <tr {...headerGroup.getHeaderGroupProps()}>
            {headerGroup.headers.map(column => (
-             <th {...column.getHeaderProps()}>
+             <th {...column.getHeaderProps({
+               style: {width: column.width}
+             })}>
                { column.render('Header')}
              </th>
            ))}

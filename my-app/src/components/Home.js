@@ -1,6 +1,4 @@
 import React from "react";
-import { useState } from "react";
-import ChoseSemester from "./subComponents/ChoseSemester";
 import MasterSchedule from "./MasterSchedule";
 
 

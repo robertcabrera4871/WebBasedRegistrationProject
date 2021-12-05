@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useTable } from "react-table";
 import dbUtil from "../../utilities/dbUtil";
 import Table from 'react-bootstrap/Table'
-
+import checkPrivs from "../../utilities/checkPrivs";
 
 
 export default function CourseTable() {
     const [courses, setCourses] = useState([]);
+
+    const privs = checkPrivs();
 
     useEffect(() => {
         getCourses();
@@ -20,7 +22,23 @@ export default function CourseTable() {
         )
     }
 
+    
+    function clicked(row){
+      console.log(row)
+    }
+
     const columns = React.useMemo( () =>[
+      {
+        accessor: 'Actions',
+        width: 10,
+        Cell: ({cell}) => (
+          <div>
+          <button onClick={() => clicked(cell.row.original)}>✏️</button>
+          <div className='bigDivider'/>
+          <button onClick={() => clicked(cell.row.original)}>❌</button>
+          </div>
+        )
+      },
     {
         Header: "Course Name",
         accessor: "courseID"
@@ -35,14 +53,18 @@ export default function CourseTable() {
      },
     ], []);
 
-    const courseTable = useTable({columns, data: courses});
+    var initialState = ""
+    if(!privs.isAdmin){
+      initialState = {hiddenColumns: ['Actions']}
+    }
+
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
         rows,
         prepareRow,
-    } = courseTable
+    } =  useTable({columns, data: courses, initialState})
 
 
 

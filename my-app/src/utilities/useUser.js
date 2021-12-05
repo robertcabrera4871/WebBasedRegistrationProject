@@ -9,10 +9,6 @@ export default function useUser(){
       const decrypteObject = decrypted.toString(enc.Utf8);
       return decrypteObject
       }
-        // const userInStorage = sessionStorage.getItem('user');
-        // const userString = JSON.parse(userInStorage);
-        // console.log(userString)
-        // console.log(decrypteObject)
         return ""
       };
       

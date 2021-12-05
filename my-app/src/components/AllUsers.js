@@ -1,13 +1,12 @@
 import React, { useState, useEffect} from "react";
-import { useTable } from "react-table";
+import { useTable,usePagination } from "react-table";
 import dbUtil from '../utilities/dbUtil'
 import Table from 'react-bootstrap/Table'
-
 
 export default function AllUsers(){
 
     const [users, setUsers] = useState([]);
-
+    
     useEffect(() =>{
         getUsers();
     }, []
@@ -21,9 +20,24 @@ export default function AllUsers(){
         )
      } 
 
+     function clicked(row){
+      console.log(row)
+    }
+
      const data = users;
 
      const columns = React.useMemo( () =>[
+      {
+        accessor: 'Actions',
+        width: 100,
+        Cell: ({cell}) => (
+          <div>
+          <button onClick={() => clicked(cell.row.original)}>✏️</button>
+          <div className='bigDivider'/>
+          <button onClick={() => clicked(cell.row.original)}>❌</button>
+          </div>
+        )
+      },
         {
             Header: "User ID",
             accessor: "userID"
@@ -63,19 +77,29 @@ export default function AllUsers(){
 
      ], []);
 
-     const tableInstance = useTable({ columns, data })
-      
+     
+
      const {
        getTableProps,
        getTableBodyProps,
        headerGroups,
-       rows,
+       page,
+        nextPage,
+        previousPage,
+        canNextPage,
+        canPreviousPage,
+        pageOptions,
+        state,
        prepareRow,
-     } = tableInstance
+     } = useTable({ columns, data }, usePagination)
+      
+
+     const {pageIndex} = state
 
     return(
       <div className='table-center'>
         <h1 className='text-align'>All Users</h1>
+        <button>➕ Add User</button>
         <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         {// Loop over the header rows
@@ -85,7 +109,10 @@ export default function AllUsers(){
             {// Loop over the headers in each row
             headerGroup.headers.map(column => (
               // Apply the header cell props
-              <th {...column.getHeaderProps()}>
+              <th {...column.getHeaderProps({
+                style: {width: column.width}
+              }
+              )}>
                 {// Render the header
                 column.render('Header')}
               </th>
@@ -96,7 +123,7 @@ export default function AllUsers(){
       {/* Apply the table body props */}
       <tbody {...getTableBodyProps()}>
         {// Loop over the table rows
-        rows.map(row => {
+        page.map(row => {
           // Prepare the row for display
           prepareRow(row)
           return (
@@ -117,6 +144,14 @@ export default function AllUsers(){
         })}
       </tbody>
     </Table>
+    <span className='align-center'>
+       Page{' '}
+       <strong>
+          {pageIndex + 1} of {pageOptions.length}
+       </strong>
+       <button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</button>
+       <button onClick={() => nextPage()} disabled={!canNextPage}>Next</button>
+    </span>
     </div>
     );
 }

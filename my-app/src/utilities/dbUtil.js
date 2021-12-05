@@ -97,6 +97,14 @@ import Axios from 'axios';
         })
         return unlockResponse.data
       }
+      static async getMyAdvisors(userID){
+        const myAdvisorsResponse = await Axios.post("http://localhost:8000/myAdvisors", {
+          params: {
+            userID: userID
+          }
+        })
+        return myAdvisorsResponse.data
+      }
 
       static async getMasterSchedule(){
           const mSchedResponse = await Axios.get("http://localhost:8000/masterSchedule")
@@ -128,5 +136,6 @@ import Axios from 'axios';
         const courseResponse = await Axios.get("http://localhost:8000/courses")
         return courseResponse.data
       }
+     
       
     }
