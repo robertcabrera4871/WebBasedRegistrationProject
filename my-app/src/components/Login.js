@@ -40,7 +40,6 @@ export default function Login({ setUser, setToken }) {
   }
   
   function randomToken(){
-          {
       var result = '';
       var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
       var charactersLength = characters.length;
@@ -49,7 +48,6 @@ export default function Login({ setUser, setToken }) {
    charactersLength));
      }
      return result;
-  }
   }
 
   function privSwitch(data) {

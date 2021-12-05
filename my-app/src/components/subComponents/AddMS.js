@@ -8,6 +8,8 @@ import { useHistory } from 'react-router';
 
 
 export default function AddMS(){
+    
+    let history = useHistory()
 
     const newRow = {
         CRN: "",
@@ -34,12 +36,10 @@ export default function AddMS(){
                } 
             }
              dbUtil.addMS(newRow).then(data =>{
-                 console.log(data.err)
                  if(data.err){
                      window.alert(data.err.sqlMessage)
-                 }else{
-                     //change to reroute after
-                     console.log(data)
+                 }else if(data.affectedRows === 1){
+                     history.push('/home')
                  }
              })
         }

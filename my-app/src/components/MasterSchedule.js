@@ -5,6 +5,7 @@ import Table from 'react-bootstrap/Table'
 import ColumnFilter from "./tableComponents/ColumnFilter";
 import { useHistory } from 'react-router';
 import checkPrivs from '../utilities/checkPrivs'
+import ChoseSemester from "./subComponents/ChoseSemester";
 
 
 
@@ -13,18 +14,32 @@ export default function MasterSchedule(){
    //Needs more sorting options
 
     const [schedule, setSchedule] = useState([]);
+    const [semesterSelect, setSemester]= useState("Spring 2021")
     let history = useHistory();
     const privs = checkPrivs();
 
      useEffect(() =>{
          getSchedule();
-     }, []
+     }, [semesterSelect]
      );
 
+     
+     function choseSemester (semesterChosen) {
+         setSemester(semesterChosen) 
+         getSchedule()
+     }
+ 
+ 
      function getSchedule(){
         dbUtil.getMasterSchedule().then(
             data =>{
-                setSchedule(data)
+                if(semesterSelect === "Spring 2021"){
+                  console.log(data)
+                  data = data.filter(item => (item.Semester === "Spring" && item.Year === "2021"))
+               } else{
+                  data = data
+               }
+               setSchedule(data)
             }
         )
      } 
@@ -162,6 +177,9 @@ export default function MasterSchedule(){
 
      return (
       <div >
+      <ChoseSemester onClick={choseSemester} semesterSelect={semesterSelect} />
+      <h1 className='text-align'>Master Schedule</h1>
+
       <b>Hover column to search, Click column to sort</b>
       { privs.isAdmin && <div>Add to Master Schedule <button onClick={(e) => {newRow()}}>➕</button></div>}
       
