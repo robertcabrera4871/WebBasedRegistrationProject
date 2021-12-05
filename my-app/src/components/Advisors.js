@@ -28,7 +28,19 @@ export default function Advisors(){
             }
         )
     }
+
+    let advisements = myAdvisors.map((assignment, index) =>{
+        return(
+            <span>
+                <div>{assignment.FirstName} {assignment.lastName}
+                {assignment.dateOfAppointment}</div>
+            </span>
+        )
+    })
+
     return(
-    <div>{myAdvisors.firstName}</div>
+    <div>
+    {advisements}
+    </div>
     );
 }
