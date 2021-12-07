@@ -1,7 +1,9 @@
-function Transcript(){
+import Schedule from "./Schedule";
+
+export default function Transcript(){
     return(
-    <div>Transcript Page</div>
+    <div>
+        <Schedule isTranscript={true}/>
+    </div>
     );
 }
-
-export default Transcript

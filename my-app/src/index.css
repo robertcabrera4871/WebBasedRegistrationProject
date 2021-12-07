@@ -63,5 +63,19 @@
     height:auto;
     display:inline-block;
 }
-
+.verticalDivider{
+    height: 50px;
+    width: auto;
+    display: inline-block;
+}
+.leftTable{
+    width:50%;
+    margin:auto;
+    float:left;
+}
+.rightTable{
+    width:50%;
+    margin: auto;
+    float: right;
+}
 

@@ -1,6 +1,10 @@
+import MasterSchedule from "./MasterSchedule";
+
 function AddClass(){
     return(
-    <div>AddClass Page</div>
+    <div>
+        <MasterSchedule isAddClass={true}/>
+    </div>
     );
 }
 

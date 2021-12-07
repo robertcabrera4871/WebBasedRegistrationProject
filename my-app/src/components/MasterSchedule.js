@@ -9,7 +9,7 @@ import ChoseSemester from "./subComponents/ChoseSemester";
 
 
 
-export default function MasterSchedule(){
+export default function MasterSchedule({isAddClass}){
 
    //Needs more sorting options
 
@@ -27,6 +27,10 @@ export default function MasterSchedule(){
      function choseSemester (semesterChosen) {
          setSemester(semesterChosen) 
          getSchedule()
+     }
+
+     function addClass(row){
+        console.log(row)
      }
  
  
@@ -66,7 +70,7 @@ export default function MasterSchedule(){
          })
      }
       
-
+     
       const columns = React.useMemo( () => [
         {
             Header: "CRN",
@@ -143,6 +147,7 @@ export default function MasterSchedule(){
 
     ], []);
 
+     
       
       const {
         getTableProps,
@@ -179,8 +184,23 @@ export default function MasterSchedule(){
                   ...columns
                   ]
             })}
+            else if(isAddClass){
+               hooks.visibleColumns.push((columns) =>{
+                  return[
+                      { 
+                        id: "addClass",
+                        Cell: ({cell}) => (
+                           <div>
+                              <button title="Add to Schedule" onClick={() =>addClass(cell.row.original)}>➕</button>
+                           </div>
+                        )
+                     },
+                     ...columns
+                  ]
+               })
+            }
           })
-
+ 
 
          const {pageIndex} = state
 

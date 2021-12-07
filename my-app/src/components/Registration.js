@@ -13,10 +13,7 @@ function Registration(){
       My Transcript
      </ListGroup.Item>}
      { (privs.isStudent || privs.isAdmin) && <ListGroup.Item action href="/addMajorMinor">
-      Add Major/Minor
-     </ListGroup.Item>}
-     {(privs.isStudent || privs.isAdmin) && <ListGroup.Item action href="/changeMajorMinor">
-      Change Major/Minor
+      My Major/Minors
      </ListGroup.Item>}
      {(privs.isStudent || privs.isAdmin) &&<ListGroup.Item action href="/addClass">
       Add Classes 

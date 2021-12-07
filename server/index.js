@@ -4,6 +4,7 @@ const mysql = require('mysql')
 const app = express();
 const port = 8000;
 const cors = require("cors");
+const e = require('express');
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -15,6 +16,7 @@ const db = mysql.createConnection({
     password: "password",
     database: "test",
 });
+
 
 app.post('/login', (req, res) =>{
     const email = req.body.email;
@@ -124,7 +126,6 @@ app.put('/resetPassword', (req, res) =>{
         }
     )
 })
-
 
 
 app.get('/masterSchedule', (req, res) =>{
@@ -247,6 +248,32 @@ app.post('/myAdvisors', (req, res) =>{
     )
 })
 
+app.post('/getUserSched', (req, res) =>{
+    const userID = req.body.params.userID;
+
+    db.query(
+        `SELECT  c.CourseID, c.CRN, c.roomID, u2.firstName, u2.lastName, c.semesterYearID, t.day, t.period, e.grade, e.enrollDate
+        FROM Enrollment e
+        JOIN User u
+        ON studentID= ? AND u.userID = ?
+        JOIN CourseSection c
+        ON e.CRN = c.CRN
+        JOIN Timeslot t
+        ON c.timeSlotID = t.timeSlotID
+        JOIN User u2 
+        ON c.facultyID = u2.userID;
+        `, [userID, userID],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        }else{
+            res.send(result)
+        }
+    }
+    )
+})
+
+
 app.get('/courses',  (req, res) =>{
     db.query(
         'SELECT * FROM Course',
@@ -261,7 +288,56 @@ app.get('/courses',  (req, res) =>{
         }
     )
 })
+app.post('/myMajors',  (req, res) =>{
+    const studentID = req.body.params.userID;
+    db.query(
+        'SELECT * FROM StudentMajor WHERE studentID = ? ',
+        [studentID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.post('/myMinors',  (req, res) =>{
+    const studentID = req.body.params.userID;
+    db.query(
+        'SELECT * FROM StudentMinor WHERE studentID = ?',
+        [studentID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
 
+app.post('/getHolds', (req, res) =>{
+    const studentID = req.body.params.userID;
+    db.query(
+        `SELECT DISTINCT s.dateOfHold, h.holdType
+        FROM Hold h
+        JOIN StudentHold s
+        ON s.studentID = ?;
+         `,
+    [studentID],
+    (err, result) => {
+        if(err){
+            res.send({err: err})
+        }
+        else{
+            res.send(result)
+        }
+    }
+    )
+})
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`)
 });

@@ -1,6 +1,8 @@
+import Schedule from "./Schedule";
+
 function DropClass(){
     return(
-    <div>DropClass Page</div>
+    <Schedule isDrop={true}/>
     );
 }
 

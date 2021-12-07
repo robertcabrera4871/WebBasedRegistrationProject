@@ -106,6 +106,32 @@ import Axios from 'axios';
         return myAdvisorsResponse.data
       }
 
+      static async getUserSched(userID){
+        const userSchedResponse = await Axios.post("http://localhost:8000/getUserSched", {
+          params: {
+            userID: userID
+          }
+        })
+        return userSchedResponse.data
+      }
+
+      static async getMyMajors(userID){
+        const myMajorsResponse = await Axios.post("http://localhost:8000/myMajors", {
+        params: {
+          userID: userID
+        }
+      })
+        return myMajorsResponse.data
+      }
+      static async getMyMinors(userID){
+        const myMinorsResponse = await Axios.post("http://localhost:8000/myMinors", {
+          params: {
+            userID: userID
+          }
+        })
+        return myMinorsResponse.data
+      }
+
       static async getMasterSchedule(){
           const mSchedResponse = await Axios.get("http://localhost:8000/masterSchedule")
           return mSchedResponse.data
@@ -136,6 +162,16 @@ import Axios from 'axios';
         const courseResponse = await Axios.get("http://localhost:8000/courses")
         return courseResponse.data
       }
+      static async getHolds(userID){
+        const holdResponse = await Axios.post("http://localhost:8000/getHolds", {
+        params: {
+          userID: userID
+        }
+      })
+        return holdResponse.data
+    }
+     
+ 
      
       
     }

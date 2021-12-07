@@ -5,7 +5,6 @@ import Registration from '../Registration'
 import Schedule from '../Schedule'
 import Transcript from '../Transcript';
 import AddMajorMinor from '../AddMajorMinor';
-import ChangeMajorMinor from '../ChangMajorMinor'
 import AddClass from '../AddClass';
 import DropClass from '../DropClass';
 import ViewHolds from '../ViewHolds';
@@ -103,12 +102,6 @@ function ComponentSwitch() {
                 (privs.isStudent || privs.isAdmin) ?
                     <ProtectedRoute exact path="/addMajorMinor" component={AddMajorMinor} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/addMajorMinor" component={AddMajorMinor} allowed={false}></ProtectedRoute> 
-            }
-
-            {
-                (privs.isStudent || privs.isAdmin) ?
-                    <ProtectedRoute exact path="/changeMajorMinor" component={ChangeMajorMinor} allowed={true}></ProtectedRoute> :
-                    <ProtectedRoute exact path="/changeMajorMinor" component={ChangeMajorMinor} allowed={false}></ProtectedRoute> 
             }
 
             {
