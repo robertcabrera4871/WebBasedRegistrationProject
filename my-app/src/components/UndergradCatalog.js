@@ -3,7 +3,7 @@ import dbUtil from '../utilities/dbUtil'
 import CourseTable from "./tableComponents/CourseTable";
 import ReqTable from "./tableComponents/ReqTable";
 import checkPrivs from "../utilities/checkPrivs";
-
+import { useHistory } from 'react-router';
 
 
 export default function UndergradCatalog() {
@@ -15,6 +15,7 @@ export default function UndergradCatalog() {
     const [majorRequire, setMajorRequire] = useState([]);
 
     const privs = checkPrivs();
+    let history = useHistory();
 
     useEffect(() => {
         getMajors();
@@ -53,11 +54,21 @@ export default function UndergradCatalog() {
         )
     }
 
+    function addMajor(){
+        history.push({
+           pathname: '/AddMajor'
+        })
+     }
+
     let majorsTables = majors.map((major, index) =>{
         return (
             <span>
             {privs.isAdmin && <button>➕ Add Requirement</button>}
-            <h4 key={index}>{major.majorID}:</h4>
+            <div key={index}>
+            <button>❌ Delete Major</button>
+            <h4>{major.majorID}:</h4>
+            </div>
+            
             <ReqTable major={major.majorID} requirements={majorRequire}/>
             </span>
         )});
@@ -76,8 +87,11 @@ export default function UndergradCatalog() {
             <h1 className="text-align"> Undergraduate Courses</h1>
             {privs.isAdmin && <button>➕ Add Course</button>}
             <CourseTable/>
+            {privs.isAdmin && <button onClick={() =>{addMajor()}}
+            >📘 Add Major</button>}
             <h1 className="text-align">Major Requirements</h1>
             {majorsTables}
+            {privs.isAdmin && <button>📙 Add Minor</button>}
             <h1 className="text-align">Minor Requirements</h1>
             {minorsTables}
         </div>

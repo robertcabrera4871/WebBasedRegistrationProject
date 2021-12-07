@@ -103,6 +103,22 @@ app.put('/editMS', (req, res) =>{
      )
  })
 
+ app.put('/addMajor', (req, res) => {
+     const params = req.body.params;
+     db.query(
+         "INSERT INTO Major VALUES(?,?,?)",
+         [params.majorID, params.departmentID, params.creditsRequired],
+         (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+         }
+     )
+ })
+
 app.get('/emailExist', (req, res) =>{
     const email = req.query.email;
     db.query(

@@ -68,6 +68,17 @@ import Axios from 'axios';
        })
        return addResponse.data
      }
+     
+    static async addMajor(newMajor){
+      const addResponse = await Axios.put("http://localhost:8000/addMajor",{
+        params :{
+          majorID: newMajor.majorID,
+          departmentID: newMajor.departmentID,
+          creditsRequired: newMajor.creditsRequired
+        }
+      })
+      return addResponse.data
+    }
 
       static async deleteMS(row){
         const deleteResponse = await Axios.put("http://localhost:8000/deleteMS", {
@@ -216,6 +227,7 @@ import Axios from 'axios';
       })
       return addResponse.data
     }
+
  
      
       

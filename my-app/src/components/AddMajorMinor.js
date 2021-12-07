@@ -53,6 +53,7 @@ export default function AddMajorMinor(){
             }
         )
     }
+    
     function declareMyMajor(majorID){
          if(myMajors.length === 2)
         {
