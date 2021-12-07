@@ -2,7 +2,7 @@ import Schedule from "./Schedule";
 
 function DropClass(){
     return(
-    <Schedule isDrop={true}/>
+    <Schedule title='Drop Classes' semesterPicker={true}/>
     );
 }
 

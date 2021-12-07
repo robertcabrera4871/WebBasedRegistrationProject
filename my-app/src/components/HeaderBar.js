@@ -4,7 +4,6 @@ import Container from 'react-bootstrap/Container'
 import logo from '../assets/logo.jpg'
 import Button from 'react-bootstrap/Button'
 import checkPrivs from '../utilities/checkPrivs'
-import decryptUser from '../utilities/decryptUser'
 
 
 
@@ -12,15 +11,16 @@ function HeaderBar({setToken}){
 
     const privs = checkPrivs();  
     return (
-        <Navbar  bg="light" expand="sm">
+        <Navbar bg="light" expand="sm">
         <Container className="align-center">
-             <Navbar.Brand>
+        <Navbar.Brand>
              <a href="/home"><img src={logo} alt="school logo" width='30'height='30'/></a>
             </Navbar.Brand>
           <Navbar.Brand href="/home">Suny Hogwarts</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
+          <Navbar.Collapse id="basic-navbar-nav">  
+            <Nav style={{ width: "100%" }}>
+            
               <Nav.Link href="/home">Home</Nav.Link>
               <Nav.Link href="/programs">Program and Courses</Nav.Link>
               {(privs.isStudent || privs.isFaculty ) && <Nav.Link href="/academics">Academics</Nav.Link>}
@@ -30,7 +30,8 @@ function HeaderBar({setToken}){
               {privs.isAdmin && <Nav.Link href="/timeWindow">Time Window</Nav.Link> }
               {(privs.isAdmin || privs.isResearch)  && <Nav.Link href="/statData">Statistical Data</Nav.Link>}
               <Nav.Link></Nav.Link>
-              <div className="logout-button">
+              <Nav className='justify-content-end'style={{ width: "40%" }} >
+              <div>
                 {privs.isGuest ? <Button variant="outline-success"  onClick={() =>{
                 setToken("")
                 sessionStorage.setItem('user', "")
@@ -38,7 +39,7 @@ function HeaderBar({setToken}){
               <Button variant="outline-danger"  onClick={() =>{
                 setToken("")
                 sessionStorage.setItem('user', "")
-                }}>Logout</Button> }</div>
+                }}>Logout</Button> }</div></Nav>
             </Nav>
           </Navbar.Collapse>
         </Container>

@@ -8,6 +8,7 @@
     margin: auto;
     width: 50%;
     padding: 10px;
+    
 }
 #sched-h-tag{
     text-align: center;
@@ -63,7 +64,7 @@
     height:auto;
     display:inline-block;
 }
-.verticalDivider{
+.vertical{
     height: 50px;
     width: auto;
     display: inline-block;

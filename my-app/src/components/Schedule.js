@@ -6,7 +6,7 @@ import React from 'react';
 import Table from 'react-bootstrap/Table'
 import decryptUser from '../utilities/decryptUser';
 
-function Schedule({isTranscript, isDrop}){
+function Schedule({title, semesterPicker}){
 
     const [semesterSelect, setSemester]= useState("Spring 2021")
     const [schedule, setSchedule] = useState([]);
@@ -26,19 +26,25 @@ function Schedule({isTranscript, isDrop}){
     
    }
 
+   if(!title){
+    title = 'My Schedule';
+    semesterPicker = true;
+   }
+
     function getUserSched(){
         dbUtil.getUserSched(user.userID).then(
             data =>{
-                if(isTranscript){
+                console.log(data)
+                if(title === 'Transcript'){
                     data = data.filter(item => ( item.grade !== 'IP'))
                 }
-                else if(!isTranscript){
+                else if(title === 'My Schedule'){
                     data = data.filter(item => (item.grade === "IP") )
                 }
-                if(semesterSelect === "Spring 2021"){
+                if(semesterSelect === "Spring 2021" && semesterPicker){
                     data = data.filter(item => (item.semesterYearID === 'spring21' ))
                  } 
-                 else if(semesterSelect === "Fall 2022"){
+                 else if(semesterSelect === "Fall 2022" && semesterPicker){
                     data = data.filter(item => (item.Semester === "Fall" && item.Year === "2021"))
                  }
                  setSchedule(data)
@@ -103,7 +109,7 @@ function Schedule({isTranscript, isDrop}){
     ], [])
 
     var initialState = ""
-    if(!isDrop){
+    if(title !== "Drop Classes"){
       initialState = {hiddenColumns: ['Actions']}
     }
 
@@ -117,9 +123,10 @@ function Schedule({isTranscript, isDrop}){
 
     
     return(
-        <div>
-        {(!isTranscript)  && <ChoseSemester semesterSelect={semesterSelect} onClick={choseSemester}/>}
-        <h1 className="text-align">{isTranscript ? "My Transcript" : "My Schedule"}</h1>   
+        <div  className="table-center">
+        {(semesterPicker !== false) ? <ChoseSemester semesterSelect={semesterSelect} onClick={choseSemester}/>
+        : ""}
+        <h1 className="text-align">{title ? title: "My Schedule"}</h1>   
         <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         { headerGroups.map(headerGroup => (

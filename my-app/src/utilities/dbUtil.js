@@ -176,6 +176,46 @@ import Axios from 'axios';
       return gradResponse.data
     }
      
+    static async dropMyMajor(majorID, userID){
+      const dropResponse = await Axios.put("http://localhost:8000/dropMyMajor", {
+        params: {
+          majorID: majorID,
+          userID: userID
+        }
+      })
+      return dropResponse.data
+    }
+
+    static async dropMyMinor(minorID, userID){
+      const dropResponse = await Axios.put("http://localhost:8000/dropMyMinor", {
+        params: {
+          minorID: minorID,
+          userID: userID
+        }
+      })
+      return dropResponse.data
+    }
+
+
+
+    static async declareMyMajor(majorID, userID){
+      const addResponse = await Axios.put("http://localhost:8000/declareMyMajor" ,{
+        params: {
+          majorID: majorID,
+          userID: userID
+        }
+      })
+      return addResponse.data
+    }
+    static async declareMyMinor(minorID, userID){
+      const addResponse = await Axios.put("http://localhost:8000/declareMyMinor" ,{
+        params: {
+          minorID: minorID,
+          userID: userID
+        }
+      })
+      return addResponse.data
+    }
  
      
       

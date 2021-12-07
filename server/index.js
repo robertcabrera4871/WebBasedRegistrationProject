@@ -18,6 +18,16 @@ const db = mysql.createConnection({
 });
 
 
+
+function getDate(){
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    today = yyyy + '/' + mm + '/' + dd
+    return today
+    }
+
 app.post('/login', (req, res) =>{
     const email = req.body.email;
     const password = req.body.password;
@@ -313,6 +323,77 @@ app.post('/myMajors',  (req, res) =>{
         'SELECT * FROM StudentMajor WHERE studentID = ? ',
         [studentID],
         (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.put('/dropMyMajor', (req, res) =>{
+    const majorID = req.body.params.majorID;
+    const userID = req.body.params.userID;
+    db.query(
+        `DELETE FROM StudentMajor
+        WHERE studentID = ? AND majorID = ?`,
+        [userID, majorID],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.put('/dropMyMinor', (req, res) =>{
+    const minorID = req.body.params.minorID;
+    const userID = req.body.params.userID;
+    db.query(
+        `DELETE FROM StudentMinor
+        WHERE studentID = ? AND minorID = ?`,
+        [userID, minorID],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.put('/declareMyMajor', (req, res) => {
+    const major = req.body.params.majorID;
+    const userID = req.body.params.userID;
+    const currentDate = getDate();
+
+    db.query(
+        `INSERT INTO StudentMajor VALUES (? ,  ? ,  ?)`,
+        [major, userID, currentDate],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.put('/declareMyMinor', (req, res) => {
+    const minor = req.body.params.minorID;
+    const userID = req.body.params.userID;
+    const currentDate = getDate();
+
+    db.query(
+        `INSERT INTO StudentMinor VALUES (? ,  ? ,  ?)`,
+        [minor, userID, currentDate],
+        (err, result) => {
             if(err){
                 res.send({err: err})
             }

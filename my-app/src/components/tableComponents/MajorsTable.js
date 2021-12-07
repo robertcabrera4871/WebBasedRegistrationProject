@@ -1,8 +1,10 @@
 import React from "react"
 import Table from 'react-bootstrap/Table'
 import {useTable} from 'react-table'
+import { useEffect } from "react"
 
 export default function MajorsTable({majors, addMajor}){
+
     const columns = React.useMemo( () => [
         {
             accessor: 'addMajor',

@@ -3,7 +3,8 @@ import Table from 'react-bootstrap/Table'
 import {useTable} from 'react-table'
 
 export default function StudentMajors({studentMajors, dropMajor}){
-    const columns = React.useMemo( () => [
+  
+  const columns = React.useMemo( () => [
         {
             accessor: 'dropMajor',
             width: 30,
