@@ -170,6 +170,11 @@ import Axios from 'axios';
       })
         return holdResponse.data
     }
+
+    static async getGradCourses(){
+      const gradResponse = await Axios.get("http://localhost:8000/getGradCourses")
+      return gradResponse.data
+    }
      
  
      

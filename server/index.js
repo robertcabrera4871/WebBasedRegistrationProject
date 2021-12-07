@@ -273,6 +273,25 @@ app.post('/getUserSched', (req, res) =>{
     )
 })
 
+app.get('/getGradCourses', (req,res) =>{
+
+    db.query(
+        `SELECT cs.courseID, c.departmentID, c.numOfCredits
+        FROM CourseSection cs
+        JOIN Course c
+        ON cs.courseID = c.courseID
+        WHERE cs.CRN LIKE  '%3';`,
+     [],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        } else{
+            res.send(result)
+        }
+    }
+    )
+})
+
 
 app.get('/courses',  (req, res) =>{
     db.query(

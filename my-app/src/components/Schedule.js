@@ -18,8 +18,7 @@ function Schedule({isTranscript, isDrop}){
 
     useEffect(() =>{
         getUserSched();
-    }, [semesterSelect]
-    );
+    }, [semesterSelect]);
 
     var user = decryptUser();
 
@@ -119,7 +118,6 @@ function Schedule({isTranscript, isDrop}){
     
     return(
         <div>
-    
         {(!isTranscript)  && <ChoseSemester semesterSelect={semesterSelect} onClick={choseSemester}/>}
         <h1 className="text-align">{isTranscript ? "My Transcript" : "My Schedule"}</h1>   
         <Table size="sm" striped bordered hover {...getTableProps()}>

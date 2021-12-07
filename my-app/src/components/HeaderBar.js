@@ -4,13 +4,13 @@ import Container from 'react-bootstrap/Container'
 import logo from '../assets/logo.jpg'
 import Button from 'react-bootstrap/Button'
 import checkPrivs from '../utilities/checkPrivs'
+import decryptUser from '../utilities/decryptUser'
 
 
 
-function HeaderBar({setToken, setUser, userType}){
+function HeaderBar({setToken}){
 
-    const privs = checkPrivs();
-  
+    const privs = checkPrivs();  
     return (
         <Navbar  bg="light" expand="sm">
         <Container className="align-center">
@@ -31,10 +31,14 @@ function HeaderBar({setToken, setUser, userType}){
               {(privs.isAdmin || privs.isResearch)  && <Nav.Link href="/statData">Statistical Data</Nav.Link>}
               <Nav.Link></Nav.Link>
               <div className="logout-button">
+                {privs.isGuest ? <Button variant="outline-success"  onClick={() =>{
+                setToken("")
+                sessionStorage.setItem('user', "")
+                }}>Login</Button> :
               <Button variant="outline-danger"  onClick={() =>{
                 setToken("")
                 sessionStorage.setItem('user', "")
-                }}>Logout</Button> </div>
+                }}>Logout</Button> }</div>
             </Nav>
           </Navbar.Collapse>
         </Container>

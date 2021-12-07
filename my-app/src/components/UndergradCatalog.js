@@ -73,7 +73,7 @@ export default function UndergradCatalog() {
 
     return (
         <div className="align-center">
-            <h1 className="text-align">Courses</h1>
+            <h1 className="text-align"> Undergraduate Courses</h1>
             {privs.isAdmin && <button>➕ Add Course</button>}
             <CourseTable/>
             <h1 className="text-align">Major Requirements</h1>

@@ -17,7 +17,7 @@ export default function StudentMinors({studentMinors, dropMinor}){
             Header: 'Minors',
             accessor: 'minorID'
         }
-    ], [])
+    ], [dropMinor])
 
     const {
         getTableProps,

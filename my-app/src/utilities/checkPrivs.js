@@ -1,13 +1,8 @@
-import {AES, enc} from 'crypto-js'
+import decryptUser from './decryptUser';
 
 export default function checkPrivs(){
 
-    var user = ""
-     if(sessionStorage.getItem('user')){
-    const decrypted = AES.decrypt(sessionStorage.getItem('user'), 'secret-key1')
-     user = decrypted.toString(enc.Utf8);
-     user = JSON.parse(user)
-    }
+    var user = decryptUser();
     
     user = ( user ) ? user : "";
     
@@ -15,13 +10,15 @@ export default function checkPrivs(){
     var isStudent = false;
     var isFaculty = false;
     var isResearch = false;
+    var isGuest = false;
   
     switch(user.userType){
       case 'admin': isAdmin = true; break;
       case 'student': isStudent = true; break;
       case 'faculty': isFaculty = true; break;
       case 'research': isResearch = true; break;
-      default: //is guest;
+      case 'guest': isGuest = true; break;
+      default:
     }
 
     var priveleges = {
@@ -29,6 +26,7 @@ export default function checkPrivs(){
         'isStudent': isStudent,
         'isFaculty': isFaculty,
         'isResearch': isResearch,
+        'isGuest': isGuest,
     }
     return priveleges
 

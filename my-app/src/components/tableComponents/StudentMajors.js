@@ -17,7 +17,7 @@ export default function StudentMajors({studentMajors, dropMajor}){
             Header: 'Majors',
             accessor: 'majorID'
         }
-    ], [])
+    ], [dropMajor])
 
     const {
         getTableProps,

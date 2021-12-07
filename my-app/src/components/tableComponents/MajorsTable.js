@@ -17,7 +17,7 @@ export default function MajorsTable({majors, addMajor}){
             Header: 'Majors',
             accessor: 'majorID'
         }
-    ], [])
+    ], [addMajor])
 
     const {
         getTableProps,

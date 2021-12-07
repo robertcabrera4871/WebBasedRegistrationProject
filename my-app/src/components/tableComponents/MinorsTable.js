@@ -17,7 +17,7 @@ export default function MinorsTable({minors, addMinor}){
             Header: 'Minors',
             accessor: 'minorID'
         }
-    ], [])
+    ], [addMinor])
 
     const {
         getTableProps,
