@@ -60,6 +60,12 @@ export default function UndergradCatalog() {
         })
      }
 
+     function addCourse(){
+        history.push({
+            pathname: '/AddCourse'
+         })
+     }
+
     let majorsTables = majors.map((major, index) =>{
         return (
             <span>
@@ -85,7 +91,7 @@ export default function UndergradCatalog() {
     return (
         <div className="align-center">
             <h1 className="text-align"> Undergraduate Courses</h1>
-            {privs.isAdmin && <button>➕ Add Course</button>}
+            {privs.isAdmin && <button onClick={() =>{addCourse()}}>➕ Add Course</button>}
             <CourseTable/>
             {privs.isAdmin && <button onClick={() =>{addMajor()}}
             >📘 Add Major</button>}

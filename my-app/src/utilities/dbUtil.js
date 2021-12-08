@@ -27,43 +27,52 @@ import Axios from 'axios';
     
         const editResponse = await Axios.put("http://localhost:8000/editMS", {
           params: {
-            OldCRN: oldCRN,
-            CRN: row.CRN,
-            Capacity: row.Capacity,
-            CourseID: row.CourseID,
-            CourseSection: row.CourseSection,
-            Day: row.Day,
-            Department: row.Department,
-            EndTime: row.EndTime,
-            ProfFirstName: row.ProfFirstName,
-            ProfLastName: row.ProfLastName,
-            RoomNumber: row.RoomNumber,
-            Seats: row.Seats,
-            Semester: row.Semester,
-            StartTime: row.StartTime,
-            Year: row.Year
+        OldCRN: oldCRN,
+        CRN: row.CRN,
+        sectionNum: row.sectionNum,
+        courseID: row.courseID,
+        departmentID: row.departmentID,
+        day: row.day,
+        startTime: row.startTime,
+        endTime: row.endTime,
+        semesterYearID: row.semesterYearID,
+        roomID: row.roomID,
+        lastName: row.lastName,
+        firstName: row.firstName,
+        availableSeats: row.availableSeats,
+        capacity: row.capacity
           }
         })
         return editResponse.data
       }
 
+    static async editCourse(row, oldCourseID){
+      const editResponse = await Axios.put("http://localhost:8000/editCourse", {
+        params:{
+          oldCourseID: oldCourseID,
+          courseID: row.courseID,
+          departmentID: row.departmentID,
+          credits: row.numOfCredits
+        }
+      })
+      return editResponse.data
+    }
+
      static async addMS(row){
        const addResponse = await Axios.put("http://localhost:8000/addMS", {
          params:{
-          CRN: row.CRN,
-          Capacity: row.Capacity,
-          CourseID: row.CourseID,
-          CourseSection: row.CourseSection,
-          Day: row.Day,
-          Department: row.Department,
-          EndTime: row.EndTime,
-          ProfFirstName: row.ProfFirstName,
-          ProfLastName: row.ProfLastName,
-          RoomNumber: row.RoomNumber,
-          Seats: row.Seats,
-          Semester: row.Semester,
-          StartTime: row.StartTime,
-          Year: row.Year
+        CRN: row.CRN,
+        sectionNum: row.sectionNum,
+        courseID: row.courseID,
+        departmentID: row.departmentID,
+        day: row.day,
+        startTime: row.startTime,
+        endTime: row.endTime,
+        semesterYearID: row.semesterYearID,
+        roomID: row.roomID,
+        facultyID: row.facultyID,
+        availableSeats: row.availableSeats,
+        capacity: row.capacity
          }
        })
        return addResponse.data
@@ -80,10 +89,31 @@ import Axios from 'axios';
       return addResponse.data
     }
 
+    static async addCourse(newCourse){
+      const addResponse = await Axios.put("http://localhost:8000/addClass", {
+        params: {
+          courseID: newCourse.courseName,
+          departmentID: newCourse.departmentID,
+          credits: newCourse.credits,
+        }
+      })
+      return addResponse.data
+    }
+
       static async deleteMS(row){
         const deleteResponse = await Axios.put("http://localhost:8000/deleteMS", {
           params: {
             CRN: row.CRN
+          }
+        })
+        return deleteResponse.data
+      }
+
+      static async deleteCourse(row){
+        console.log(row.courseID)
+        const deleteResponse = await Axios.put("http://localhost:8000/deleteCourse", {
+          params: {
+            courseID: row.courseID
           }
         })
         return deleteResponse.data
@@ -226,6 +256,25 @@ import Axios from 'axios';
         }
       })
       return addResponse.data
+    }
+    static async getFacultyID(firstName, lastName){
+      const getResponse = await Axios.post("http://localhost:8000/getFacultyID",{
+        params: {
+          firstName: firstName,
+          lastName: lastName
+        }
+      })
+      return getResponse.data
+    }
+
+    static async getTimeSlotID(startTime, endTime){
+      const getResponse = await Axios.post("http://localhost:8000/getTimeSlotID",{
+        params: {
+          startTime: startTime,
+          endTime: endTime
+        }
+      })
+      return getResponse.data
     }
 
  

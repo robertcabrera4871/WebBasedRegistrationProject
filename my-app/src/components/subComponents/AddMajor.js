@@ -19,7 +19,6 @@ export default function AddMajor(){
         for(const property in newMajor){
             if(`${newMajor[property].trim()}` === ""){
                 window.alert("Please ensure no fields are left empty");
-                console.log(newMajor)
                 return("")
             } 
          }

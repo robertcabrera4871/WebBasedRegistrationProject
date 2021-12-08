@@ -36,10 +36,11 @@ export default function MasterSchedule({isAddClass}){
  
      function getSchedule(){
         dbUtil.getMasterSchedule().then(
+           //CHANGE!!I
             data =>{
                 if(semesterSelect === "Spring 2021"){
-                  data = data.filter(item => (item.Semester === "Spring" && item.Year === "2021"))
-               } 
+                  data = data.filter(item => (item.semesterYearID === "spring21"))
+               }
                //ADD BACK IN LATER
                // else if(semesterSelect === "Fall 2022"){
                //    data = data.filter(item => (item.Semester === "Fall" && item.Year === "2021"))
@@ -80,68 +81,63 @@ export default function MasterSchedule({isAddClass}){
 
          {
             Header: "Course Section",
-            accessor: "CourseSection",
+            accessor: "sectionNum",
             Filter: ColumnFilter
          },
          {
             Header: "CourseID",
-            accessor: "CourseID",
+            accessor: "courseID",
             Filter: ColumnFilter
          },
          {
             Header: "Department",
-            accessor: "Department",
+            accessor: "departmentID",
             Filter: ColumnFilter
          },
          {
             Header: "Day",
-            accessor: "Day",
+            accessor: "day",
             Filter: ColumnFilter
          },
          {
             Header: "Start Time",
-            accessor: "StartTime",
+            accessor: "startTime",
             Filter: ColumnFilter
          },
          {
             Header: "End Time",
-            accessor: "EndTime",
+            accessor: "endTime",
             Filter: ColumnFilter
          },
 
          {
             Header: "Semester",
-            accessor: "Semester",
-            Filter: ColumnFilter
-         },
-         {
-            Header: "Year",
-            accessor: "Year",
+            accessor: "semesterYearID",
             Filter: ColumnFilter
          },
          {
             Header: "Room No.",
-            accessor: "RoomNumber",
+            accessor: "roomID",
             Filter: ColumnFilter
          },
          {
             Header: "Prof Last Name",
-            accessor: "ProfLastName",
+            accessor: "lastName",
             Filter: ColumnFilter
          },
          {
             Header: "Prof First Name",
-            accessor: "ProfFirstName",
+            accessor: "firstName",
             Filter: ColumnFilter
          },
          {
             Header: "Seats",
-            accessor: "Seats",
+            accessor: "availableSeats",
             Filter: ColumnFilter
          },
          {
             Header: "Capacity",
-            accessor: "Capacity",
+            accessor: "capacity",
             Filter: ColumnFilter
          }
 

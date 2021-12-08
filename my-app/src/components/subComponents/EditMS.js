@@ -19,7 +19,6 @@ export default function EditMS(rowData){
     
     function submitChanges(e){
         e.preventDefault();
-        console.log(row.CRN)
         dbUtil.editMS(rowChanges, row.CRN).then(data =>{
         if(data.err){
             window.alert(data.err.sqlMessage)
@@ -41,42 +40,42 @@ export default function EditMS(rowData){
     }
     return(
         <Form id='align-center'>
-            <h1 className="text-align">Editing: {row.CourseID}</h1>
+            <h1 className="text-align">Editing: {row.courseID}</h1>
         <Form.Group>
             <Row>
                 <Col>
             <Form.Label>CRN</Form.Label>
             <Form.Control onChange={e => rowChanges.CRN = e.target.value} placeholder={row.CRN}></Form.Control>
             <Form.Label>CourseSection</Form.Label>
-            <Form.Control onChange={e => rowChanges.CourseSection = e.target.value} placeholder={row.CourseSection}></Form.Control>
+            <Form.Control onChange={e => rowChanges.sectionNum = e.target.value} placeholder={row.sectionNum}></Form.Control>
             <Form.Label>CourseID</Form.Label>
-            <Form.Control onChange={e => rowChanges.CourseID = e.target.value} placeholder={row.CourseID}></Form.Control>
+            <Form.Control onChange={e => rowChanges.courseID = e.target.value} placeholder={row.courseID}></Form.Control>
             <Form.Label>Department</Form.Label>
-            <Form.Control onChange={e => rowChanges.Department = e.target.value} placeholder={row.Department}></Form.Control>
+            <Form.Control onChange={e => rowChanges.departmentID = e.target.value} placeholder={row.departmentID}></Form.Control>
             <Form.Label>Day</Form.Label>
-            <Form.Control onChange={e => rowChanges.Day = e.target.value} placeholder={row.Day}></Form.Control>
+            <Form.Control onChange={e => rowChanges.day = e.target.value} placeholder={row.day}></Form.Control>
             <Form.Label>StartTime</Form.Label>
-            <Form.Control onChange={e => rowChanges.StartTime = e.target.value} placeholder={row.StartTime}></Form.Control>
+            <Form.Control onChange={e => rowChanges.startTime = e.target.value} placeholder={row.startTime}></Form.Control>
             <Form.Label>EndTime</Form.Label>
-            <Form.Control onChange={e => rowChanges.EndTime = e.target.value} placeholder={row.EndTime}></Form.Control>
+            <Form.Control onChange={e => rowChanges.endTime = e.target.value} placeholder={row.endTime}></Form.Control>
             </Col>
                 <Col>
            <Form.Label>Semester</Form.Label>
-            <Form.Control onChange={e => rowChanges.Semester = e.target.value} placeholder={row.Semester}></Form.Control>
-            <Form.Label>Year</Form.Label>
-            <Form.Control onChange={e => rowChanges.Year = e.target.value} placeholder={row.Year}></Form.Control>
+            <Form.Control onChange={e => rowChanges.semesterYearID = e.target.value} placeholder={row.semesterYearID}></Form.Control>
             <Form.Label>RoomNumber</Form.Label>
-            <Form.Control onChange={e => rowChanges.RoomNumber = e.target.value} placeholder={row.RoomNumber}></Form.Control>
+            <Form.Control onChange={e => rowChanges.roomID = e.target.value} placeholder={row.roomID}></Form.Control>
             <Form.Label>ProfLastName</Form.Label>
-            <Form.Control onChange={e => rowChanges.ProfLastName = e.target.value} placeholder={row.ProfLastName}></Form.Control>
+            <Form.Control onChange={e => rowChanges.lastName = e.target.value} placeholder={row.lastName}></Form.Control>
             <Form.Label>ProfFirstName</Form.Label>
-            <Form.Control onChange={e => rowChanges.ProfFirstName = e.target.value} placeholder={row.ProfFirstName}></Form.Control>
+            <Form.Control onChange={e => rowChanges.firstName = e.target.value} placeholder={row.firstName}></Form.Control>
             <Form.Label>Seats</Form.Label>
-            <Form.Control onChange={e => rowChanges.Seats = e.target.value} placeholder={row.Seats}></Form.Control>
+            <Form.Control onChange={e => rowChanges.availableSeats = e.target.value} placeholder={row.availableSeats}></Form.Control>
             <Form.Label>Capacity</Form.Label>
-            <Form.Control onChange={e => rowChanges.Capacity = e.target.value} placeholder={row.Capacity}></Form.Control>
-            <Button variant='success' onClick={(e) => submitChanges(e)}>Save Changes</Button>{' '}
+            <Form.Control onChange={e => rowChanges.capacity = e.target.value} placeholder={row.capacity}></Form.Control>
             </Col>
+            </Row>
+            <Row>
+            <Button variant='success' onClick={(e) => submitChanges(e)}>Save Changes</Button>{' '}
             </Row>
          </Form.Group>
         </Form>

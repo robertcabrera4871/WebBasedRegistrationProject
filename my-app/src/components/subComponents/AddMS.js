@@ -5,6 +5,7 @@ import Row from 'react-bootstrap/Row'
 import Col from "react-bootstrap/Col";
 import dbUtil from "../../utilities/dbUtil";
 import { useHistory } from 'react-router';
+import { useState } from "react";
 
 
 export default function AddMS(){
@@ -13,21 +14,24 @@ export default function AddMS(){
 
     const newRow = {
         CRN: "",
-        CourseSection: "",
-        CourseID: "",
-        Department: "",
-        Day: "",
-        StartTime: "",
-        EndTime:"",
-        Semester:"",
-        Year:"",
-        RoomNumber:"",
-        ProfLastName:"",
-        ProfFirstName:"",
-        Seats:"",
-        Capacity:""}
+        sectionNum: "",
+        courseID: "",
+        departmentID: "",
+        day: "",
+        startTime: "",
+        endTime:"",
+        semesterYearID:"",
+        roomID:"",
+        lastName:"",
+        firstName:"",
+        availableSeats:"",
+        capacity:"",
+        facultyID: "X",
+        timeSlotID: "Y"
+    }
 
-        function submitChanges(e){
+
+        async function submitChanges(e){
             e.preventDefault();
             for(const property in newRow){
                if(`${newRow[property].trim()}` === ""){
@@ -35,13 +39,42 @@ export default function AddMS(){
                    return("")
                } 
             }
-             dbUtil.addMS(newRow).then(data =>{
-                 if(data.err){
-                     window.alert(data.err.sqlMessage)
-                 }else if(data.affectedRows === 1){
-                     history.push('/home')
-                 }
-             })
+
+            const facResult = await checkFaculty();
+            if(facResult.err){
+                    window.alert(facResult.err.sqlMessage)
+                }else if(facResult.length !== 1){
+                   window.alert("No faculty found with that name")
+                   return("");
+                }else{
+                   newRow.facultyID = facResult[0].userID;
+                }
+            const timeSlotResult = await checkTimeslot();
+            //Add ifs for timeslot
+            console.log(timeSlotResult)
+
+            // const addMSResult = await addMS()
+            //      if(addMSResult.err){
+            //          window.alert(addMSResult.err.sqlMessage)
+            //      }else if(addMSResult.affectedRows === 1){
+            //         history.push('/home')
+            //      }else{
+            //          console.log(addMSResult)
+            //      }
+
+        }
+        
+        async function checkTimeslot(){
+            const result = await dbUtil.getTimeSlotID(newRow.startTime, newRow.endTime)
+            return result
+        }
+        async function addMS(){
+            const result = await dbUtil.addMS(newRow)
+            return result
+        }
+        async function checkFaculty(){
+            const result = await dbUtil.getFacultyID(newRow.firstName, newRow.lastName)
+            return result
         }
 
 
@@ -55,33 +88,31 @@ export default function AddMS(){
                 <Form.Label>CRN</Form.Label>
             <Form.Control onChange={e => newRow.CRN = e.target.value} ></Form.Control>
             <Form.Label>CourseSection</Form.Label>
-            <Form.Control onChange={e => newRow.CourseSection = e.target.value} ></Form.Control>
+            <Form.Control onChange={e => newRow.sectionNum = e.target.value} ></Form.Control>
             <Form.Label>CourseID</Form.Label>
-            <Form.Control onChange={e => newRow.CourseID = e.target.value} ></Form.Control>
+            <Form.Control onChange={e => newRow.courseID = e.target.value} ></Form.Control>
             <Form.Label>Department</Form.Label>
-            <Form.Control onChange={e => newRow.Department = e.target.value}></Form.Control>
+            <Form.Control onChange={e => newRow.departmentID = e.target.value}></Form.Control>
             <Form.Label>Day</Form.Label>
-            <Form.Control onChange={e => newRow.Day = e.target.value} ></Form.Control>
+            <Form.Control onChange={e => newRow.day = e.target.value} ></Form.Control>
             <Form.Label>StartTime</Form.Label>
-            <Form.Control onChange={e => newRow.StartTime = e.target.value}></Form.Control>
+            <Form.Control placeholder="HH:MM(AM/PM)"onChange={e => newRow.startTime = e.target.value}></Form.Control>
             <Form.Label>EndTime</Form.Label>
-            <Form.Control onChange={e => newRow.EndTime = e.target.value} ></Form.Control>
+            <Form.Control placeholder="HH:MM(AM/PM)"onChange={e => newRow.endTime = e.target.value} ></Form.Control>
                 </Col>
                 <Col>
                 <Form.Label>Semester</Form.Label>
-            <Form.Control onChange={e => newRow.Semester = e.target.value} ></Form.Control>
-                <Form.Label>Year</Form.Label>
-            <Form.Control onChange={e => newRow.Year = e.target.value} ></Form.Control>
+            <Form.Control onChange={e => newRow.semesterYearID = e.target.value} ></Form.Control>
             <Form.Label>RoomNumber</Form.Label>
-            <Form.Control onChange={e => newRow.RoomNumber = e.target.value} ></Form.Control>
+            <Form.Control onChange={e => newRow.roomID = e.target.value} ></Form.Control>
             <Form.Label>ProfLastName</Form.Label>
-            <Form.Control onChange={e => newRow.ProfLastName = e.target.value} ></Form.Control>
+            <Form.Control onChange={e => newRow.lastName = e.target.value} ></Form.Control>
             <Form.Label>ProfFirstName</Form.Label>
-            <Form.Control onChange={e => newRow.ProfFirstName = e.target.value} ></Form.Control>
+            <Form.Control onChange={e => newRow.firstName = e.target.value} ></Form.Control>
             <Form.Label>Seats</Form.Label>
-            <Form.Control onChange={e => newRow.Seats = e.target.value} ></Form.Control>
+            <Form.Control onChange={e => newRow.availableSeats = e.target.value} ></Form.Control>
             <Form.Label>Capacity</Form.Label>
-            <Form.Control onChange={e => newRow.Capacity = e.target.value}></Form.Control>
+            <Form.Control onChange={e => newRow.capacity = e.target.value}></Form.Control>
                 </Col>
             </Row>
             

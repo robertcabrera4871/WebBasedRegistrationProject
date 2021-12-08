@@ -26,6 +26,8 @@ import AllUsers from '../AllUsers';
 import EditMS from './EditMS';
 import AddMS from './AddMS';
 import AddMajor from './AddMajor';
+import AddCourse from './AddCourse';
+import EditCourse from './EditCourse';
 
 
 function ComponentSwitch() {
@@ -43,7 +45,16 @@ function ComponentSwitch() {
             <Route exact path="/gradCatalog" component={GradCatalog}></Route>
             <Route exact path="/undergradCatalog" component={UndergradCatalog}></Route>
             <Route exact path="/masterSchedule" component={MasterSchedule}></Route>
-
+              {
+                (privs.isAdmin) ?
+                <ProtectedRoute exact path ="/EditCourse" component={EditCourse} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/EditCourse" component={EditCourse} allowed={false}></ProtectedRoute> 
+            }
+            {
+                (privs.isAdmin) ?
+                <ProtectedRoute exact path ="/AddCourse" component={AddCourse} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/AddCourse" component={AddCourse} allowed={false}></ProtectedRoute> 
+            }
             {
                 (privs.isAdmin) ?
                 <ProtectedRoute exact path ="/AddMajor" component={AddMajor} allowed={true}></ProtectedRoute> : 

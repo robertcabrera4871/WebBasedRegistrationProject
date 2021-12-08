@@ -3,12 +3,14 @@ import { useTable } from "react-table";
 import dbUtil from "../../utilities/dbUtil";
 import Table from 'react-bootstrap/Table'
 import checkPrivs from "../../utilities/checkPrivs";
+import { useHistory } from "react-router";
 
 
 export default function CourseTable() {
     const [courses, setCourses] = useState([]);
 
     const privs = checkPrivs();
+    let history = useHistory();
 
     useEffect(() => {
         getCourses();
@@ -23,8 +25,21 @@ export default function CourseTable() {
     }
 
     
-    function clicked(row){
-      console.log(row)
+    function editCourse(row){
+      history.push({
+        pathname: '/EditCourse',
+        state: row
+      })
+    }
+
+    function deleteCourse(row){
+      dbUtil.deleteCourse(row).then(data =>{
+        if(data.err){
+           window.alert(data.err.sqlMessage)
+       }else{
+        window.location.reload(false);
+       }
+     })
     }
 
     const columns = React.useMemo( () =>[
@@ -33,9 +48,14 @@ export default function CourseTable() {
         width: 10,
         Cell: ({cell}) => (
           <div>
-          <button onClick={() => clicked(cell.row.original)}>✏️</button>
+          <button onClick={() => editCourse(cell.row.original)}>✏️</button>
           <div className='bigDivider'/>
-          <button onClick={() => clicked(cell.row.original)}>❌</button>
+          <button onClick={() => {
+           if (window.confirm('Are you sure you wish to delete this item?')) 
+           {
+              deleteCourse(cell.row.original)
+           }}
+            }>❌</button>
           </div>
         )
       },
