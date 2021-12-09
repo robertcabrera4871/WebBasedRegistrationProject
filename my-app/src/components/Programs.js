@@ -1,7 +1,10 @@
 import React from "react";
 import ListGroup from "react-bootstrap/ListGroup"
+import checkPrivs from "../utilities/checkPrivs";
 
 function Programs(){
+
+  let privs = checkPrivs();
 
     return(
       <ListGroup id="align-center">
@@ -11,6 +14,9 @@ function Programs(){
      <ListGroup.Item action href="/gradCatalog" >
         Graduate Catalog 
      </ListGroup.Item>
+     {privs.isAdmin && <ListGroup.Item action href="/departments" >
+        Departments
+     </ListGroup.Item> }
      </ListGroup>
     );
 }

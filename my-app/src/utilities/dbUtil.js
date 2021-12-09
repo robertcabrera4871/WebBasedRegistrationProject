@@ -19,6 +19,57 @@ import Axios from 'axios';
         return response.data
       }
 
+      static async AddDepartment(dep){
+        const response = await Axios.post("http://localhost:8000/AddDepartment",{
+          params:{
+            departmentID: dep.departmentID,
+            roomID: dep.roomID,
+            dEmail: dep.dEmail,
+            dPhone: dep.dPhone,
+            dChair: dep.dChair,
+            dManager: dep.dManager
+          }
+        })
+        return response;
+      }
+
+      static async deleteDepartment(depoID){
+        const response = await Axios.put("http://localhost:8000/deleteDepartment",{
+          params: {
+            departmentID: depoID
+          }
+        })
+        return response;
+      }
+      static async editDepartment(newDepo, oldID){
+        const response = await Axios.put("http://localhost:8000/editDepartment", {
+          params: {
+            departmentID: newDepo.departmentID,
+            roomID: newDepo.roomID,
+            dEmail: newDepo.dEmail,
+            dPhone: newDepo.dPhone,
+            dChair: newDepo.dChair,
+            dManager: newDepo.dManager,
+            oldID: oldID
+          }
+        })
+        return response.data
+      }
+
+      static async getDepartments(){
+        const response = await Axios.get("http://localhost:8000/getDepartments")
+        return response.data
+      }
+
+      static async deleteRoom(row){
+        const response = await Axios.put("http://localhost:8000/deleteRoom",{
+          params:{
+            roomID: row.roomID
+          }
+        })
+        return response.data
+      }
+
       static async editMS(row, oldCRN){
     
         const editResponse = await Axios.put("http://localhost:8000/editMS", {
@@ -128,6 +179,15 @@ import Axios from 'axios';
     return response.data
     }
 
+    static async deleteBuilding(row){
+      const response = await Axios.put("http://localhost:8000/deleteBuilding",{
+        params: {
+          buildingID: row.buildingID
+        }
+      })
+      return response.data
+    }
+
     
      
     static async addMajor(newMajor){
@@ -158,7 +218,7 @@ import Axios from 'axios';
   }
 
     static async addCourse(newCourse){
-      const addResponse = await Axios.put("http://localhost:8000/addClass", {
+      const addResponse = await Axios.put("http://localhost:8000/addCourse", {
         params: {
           courseID: newCourse.courseName,
           departmentID: newCourse.departmentID,

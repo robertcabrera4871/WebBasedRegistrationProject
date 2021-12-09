@@ -27,6 +27,23 @@ function getDate(){
     return today
     }
 
+app.post('/AddDepartment', (req,res) =>{
+    const params = req.body.params
+    db.query(
+        `INSERT INTO Department VALUES(?,?,?,?,?,?)`,
+        [params.departmentID, params.roomID, params.dEmail, params.dPhone, params.dChair,
+            params.dManager],
+            (err, result) => {
+                if(err){
+                    res.send({err: err})
+                } 
+                else{
+                    res.send(result)
+                }
+            }
+            
+    )
+})
 app.post('/login', (req, res) =>{
     const email = req.body.email;
     const password = req.body.password;
@@ -65,6 +82,21 @@ app.get('/getRooms', (req, res) => {
         
     })})
 
+app.put('/deleteBuilding', (req,res) => {
+    const buildingID = req.body.params.buildingID
+    db.query(
+        `DELETE FROM Building WHERE buildingID = ?`,
+        [buildingID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            } else{
+                res.send(result)
+            }
+        }
+    )
+})
+
 
 app.get('/allUsers', (req, res) =>{
     db.query(
@@ -85,6 +117,36 @@ app.put('/addRoom', (req, res) => {
     const params = req.body.params;
     db.query(`INSERT INTO Room VALUES(?,?,?)` ,
     [params.roomID, params.buildingID, params.roomType],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        } else{
+            res.send(result)
+        }
+        
+    }
+    )
+})
+
+app.put('/deleteRoom' , (req,res) => {
+    const roomID = req.body.params.roomID
+
+    db.query(`DELETE FROM Room WHERE roomID = ?`,
+    [roomID],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        } else{
+            res.send(result)
+        }
+        
+    }
+    )
+})
+
+app.get('/getDepartments', (req,res) => {
+    db.query(`SELECT * FROM Department`,
+    [],
     (err, result) =>{
         if(err){
             res.send({err: err})
@@ -600,6 +662,40 @@ app.put('/dropMyMajor', (req, res) =>{
         `DELETE FROM StudentMajor
         WHERE studentID = ? AND majorID = ?`,
         [userID, majorID],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.put('/deleteDepartment' , (req, res) => {
+    const departmentID = req.body.params.departmentID;
+    db.query(
+        `DELETE FROM Department WHERE departmentID = ?`,
+        [departmentID],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.put('/editDepartment' , (req, res) => {
+    const params = req.body.params;
+    db.query(
+        `UPDATE Department SET departmentID =? , roomID=? , dEmail=? , dPhone=? , dChair=? ,
+         dManager=?  WHERE departmentID = ?`,
+        [params.departmentID, params.roomID, params.dEmail, params.dPhone,params.dChair,
+        params.dManager, params.oldID],
         (err, result) => {
             if(err){
                 res.send({err: err})

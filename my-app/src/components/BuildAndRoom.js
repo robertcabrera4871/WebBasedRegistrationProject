@@ -17,7 +17,6 @@ export default function BuildAndRoom(){
 
     async function getRooms(){
         const response = await dbUtil.getRooms();
-        console.log(response)
         setRooms(response)
       
     }

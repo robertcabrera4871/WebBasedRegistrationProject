@@ -1,61 +1,72 @@
-import {useTable} from 'react-table'
-import Table from 'react-bootstrap/Table'
-import React from "react";
+import React from "react"
 import checkPrivs from "../../utilities/checkPrivs";
-import dbUtil from '../../utilities/dbUtil';
 import { useHistory } from 'react-router';
+import Table from 'react-bootstrap/Table'
+import {useTable} from 'react-table'
+import dbUtil from "../../utilities/dbUtil";
 
 
-export default function RoomTable({rooms}){
 
+export default function DepartmentTable({departments}){
+
+    let privs = checkPrivs();
     let history = useHistory();
 
-    function clicked(){
-
+    function editDepartment(row){
+        history.push({
+          pathname: '/editDP',
+          state: row
+        })
     }
-    async function deleteRoom(row){
+    async function deleteDepartment(row){
       if(window.confirm('Are you sure you wish to delete?')){
-         const response = await dbUtil.deleteRoom(row);
-         console.log(response)
+         const response = await dbUtil.deleteDepartment(row);
          if(!response.err){
            window.location.reload(false);
          }
       }
    }
-    
-    const privs = checkPrivs();
-    
 
-    const columns = React.useMemo( () => [
+    function addDepartment(){
+      history.push('/addDepartment')
+    }
+    const columns = React.useMemo(() => [
         {
             accessor: 'Actions',
             width: 100,
             Cell: ({cell}) => (
               <div>
-              <button onClick={() => clicked(cell.row.original)}>✏️</button>
+              <button onClick={() => editDepartment(cell.row.original)}>✏️</button>
               <div className='bigDivider'/>
-              <button onClick={() => deleteRoom(cell.row.original)}>❌</button>
+              <button onClick={() => deleteDepartment(cell.row.original)}>❌</button>
               </div>
             )
           },
-        {
-            Header: 'Room Name',
-            accessor: 'roomID'
-        }, 
-        {
-            Header: 'Building Name',
-            accessor: 'buildingID'
+          {
+              Header: 'Department',
+              accessor: 'departmentID'
+          },
+          {
+              Header: 'RoomID',
+              accessor: 'roomID'
+          },
+          {
+              Header: 'Department Email',
+              accessor: 'dEmail'
+          },
+          {
+              Header: 'Department Phone',
+              accessor: 'dPhone'
+          },
+          {
+            Header: 'Department Chair',
+            accessor: 'dChair'
         },
         {
-            Header: 'Room Type',
-            accessor: 'roomType'
+            Header: 'Department Manager',
+            accessor: 'dManager'
         }
-    ] , [])
-
-
-     function addRoom(){
-        history.push('/addRoom')
-    }
+    ], [])
 
     var initialState = ""
     if(!privs.isAdmin){
@@ -68,11 +79,13 @@ export default function RoomTable({rooms}){
         headerGroups,
         rows,
         prepareRow,
-    } = useTable({columns, data: rooms, initialState})
+    } = useTable({columns, data: departments, initialState})
+
+
 
     return(
         <div className='table-center'>
-         <button onClick={() => {addRoom()}}>➕ Add Room</button>
+            <button onClick={() => {addDepartment()}}>➕ Add Deparment</button>
         <Table size="sm" striped bordered hover {...getTableProps()}>
      <thead>
        { headerGroups.map(headerGroup => (
@@ -105,6 +118,5 @@ export default function RoomTable({rooms}){
        })}
      </tbody>
    </Table>
-   </div>
-    )
+   </div>)
 }

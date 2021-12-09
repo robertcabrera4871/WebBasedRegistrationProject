@@ -2,11 +2,20 @@ import {useTable} from 'react-table'
 import Table from 'react-bootstrap/Table'
 import React from "react";
 import checkPrivs from "../../utilities/checkPrivs";
-import dbUtil from '../../utilities/dbUtil';
 import { useHistory } from 'react-router';
+import dbUtil from '../../utilities/dbUtil';
 
 export default function BuildingsTable({buildings}){
     let history = useHistory();
+
+    async function deleteBuilding(row){
+       if(window.confirm('Are you sure you wish to delete?')){
+          const response = await dbUtil.deleteBuilding(row);
+          if(!response.err){
+            window.location.reload(false);
+          }
+       }
+    }
 
     function clicked(){
 
@@ -27,7 +36,7 @@ export default function BuildingsTable({buildings}){
               <div>
               <button onClick={() => clicked(cell.row.original)}>✏️</button>
               <div className='bigDivider'/>
-              <button onClick={() => clicked(cell.row.original)}>❌</button>
+              <button onClick={() => deleteBuilding(cell.row.original)}>❌</button>
               </div>
             )
           },
@@ -36,8 +45,9 @@ export default function BuildingsTable({buildings}){
             accessor: 'buildingID'
         },
         {
+          //misspelled
             Header: 'Building Use',
-            accessor: 'buildingUse'
+            accessor: 'buidingUse'
         }
     ] , [])
 

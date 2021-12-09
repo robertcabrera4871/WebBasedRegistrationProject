@@ -32,6 +32,10 @@ import AddUser from './AddUser';
 import BuildAndRoom from '../BuildAndRoom';
 import addBuilding from './AddBuilding';
 import AddRoom from './AddRoom';
+import Departments from '../Departments';
+import AddMRequirement from './AddMRequirement';
+import AddDepartment from './AddDepartment';
+import EditDepartment from './EditDepartment';
 
 
 function ComponentSwitch() {
@@ -50,7 +54,26 @@ function ComponentSwitch() {
             <Route exact path="/undergradCatalog" component={UndergradCatalog}></Route>
             <Route exact path="/masterSchedule" component={MasterSchedule}></Route>
            
-           
+            {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/editDP" component={EditDepartment} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/editDP" component={EditDepartment} allowed={false}></ProtectedRoute> 
+            }
+            {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/AddMRequire" component={AddMRequirement} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/AddMRequire" component={AddMRequirement} allowed={false}></ProtectedRoute> 
+            }
+            {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/addDepartment" component={AddDepartment} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/addDepartment" component={AddDepartment} allowed={false}></ProtectedRoute> 
+            }
+             {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/departments" component={Departments} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/departments" component={Departments} allowed={false}></ProtectedRoute> 
+            }
             {
                 (privs.isAdmin) ? 
                 <ProtectedRoute exact path ="/AddBuilding" component={addBuilding} allowed={true}></ProtectedRoute> : 

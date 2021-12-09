@@ -29,9 +29,8 @@ function HeaderBar({setToken}){
               {privs.isFaculty && <Nav.Link href="/facHistory">Faculty History</Nav.Link>}
               {privs.isAdmin && <Nav.Link href="/timeWindow">Time Window</Nav.Link> }
               {(privs.isResearch)  && <Nav.Link href="/statData">Statistical Data</Nav.Link>}
-              <Nav.Link></Nav.Link>
               {privs.isAdmin && <Nav.Link href='/buildAndRoom'>Rooms and Buildings</Nav.Link>}
-              <Nav className='justify-content-end'style={{ width: "30%" }} >
+              <Nav className='justify-content-end'style={{ width: "10%" }} >
               <div>
                 {privs.isGuest ? <Button variant="outline-success"  onClick={() =>{
                 setToken("")

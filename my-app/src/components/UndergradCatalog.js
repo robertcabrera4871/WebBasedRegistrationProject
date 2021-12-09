@@ -69,7 +69,11 @@ export default function UndergradCatalog() {
     let majorsTables = majors.map((major, index) =>{
         return (
             <span>
-            {privs.isAdmin && <button>➕ Add Requirement</button>}
+            {privs.isAdmin && <button onClick={() => {history.push({
+                pathname: '/AddMRequire',
+                state: major
+            })}}
+            >➕ Add Requirement</button>}
             <div key={index}>
             {privs.isAdmin && <button>❌ Delete Major</button>}
             <h4>{major.majorID}:</h4>

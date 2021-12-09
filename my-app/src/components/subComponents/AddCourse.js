@@ -23,6 +23,7 @@ export default function AddCourse(){
             } 
          }
          dbUtil.addCourse(newCourse).then(data =>{
+             console.log(data)
             if(data.err){
                 window.alert(data.err.sqlMessage)
             }else if(data.affectedRows === 1){

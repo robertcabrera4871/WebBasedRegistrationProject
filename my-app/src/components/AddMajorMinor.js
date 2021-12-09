@@ -61,6 +61,7 @@ export default function AddMajorMinor(){
         } else{
         dbUtil.declareMyMajor(majorID, user.userID).then(
             data =>{
+                console.log(data)
                 if(data?.err?.code)
                 {
                     if(data.err.code === "ER_DUP_ENTRY")
