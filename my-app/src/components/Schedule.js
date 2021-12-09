@@ -36,9 +36,8 @@ export default function Schedule({title, semesterPicker}){
     semesterPicker = true;
    }
 
-    function getUserSched(){
-        dbUtil.getUserSched(user.userID).then(
-            data =>{
+    async function getUserSched(){
+        var data = await dbUtil.getUserSched(user.userID)
                 if(title === 'Transcript'){
                     data = data.filter(item => ( item.grade !== 'IP'))
                 }
@@ -52,9 +51,6 @@ export default function Schedule({title, semesterPicker}){
                     data = data.filter(item => (item.Semester === "Fall" && item.Year === "2021"))
                  }
                  setSchedule(data)
-            }
-        )
-        
     }
 
     const columns = React.useMemo( () => [

@@ -3,24 +3,20 @@ import Axios from 'axios';
     export default class dbUtil {
         
      static async login(email, password) {
-        const existResponse = await Axios.get("http://localhost:8000/emailExist", {
-          params: {
-            email: email
-          }
-        })
-        
-        const existResponseData = existResponse.data[0]
-        const doesExist = (existResponseData["EXISTS (SELECT 1 FROM LoginInfo WHERE email = '" + email + "')"])
-      
-        if (!doesExist) {
-          return doesExist;
-        } else {
           const loginResponse = await Axios.post("http://localhost:8000/login", {
             email: email,
             password: password
           })
           return loginResponse.data
-        }
+      }
+      
+      static async userExists(email){
+        const response = await Axios.post("http://localhost:8000/emailExist",{
+          params: {
+            email: email
+          }
+        })
+        return response.data
       }
 
       static async editMS(row, oldCRN){
@@ -95,10 +91,41 @@ import Axios from 'axios';
         params : {
           timeSlotID: row.timeSlotID,
           roomID: row.roomID
-
         }
       })
       return response.data
+    }
+
+    static async addRoom(room){
+      const response = await Axios.put("http://localhost:8000/addRoom",{
+        params: {
+          roomID: room.roomID,
+          buildingID: room.buildingID,
+          roomType: room.roomType
+        }
+      })
+      return response.data
+    }
+
+    static async addRoomOfType(room){
+      const response = await Axios.put("http://localhost:8000/addRoomOfType",{
+        params: {
+          roomID: room.roomID,
+          capacity: room.capacity,
+          roomType: room.roomType
+        }
+      })
+      return response.data
+    }
+
+    static async addBuilding(building){
+      const response = await Axios.put("http://localhost:8000/addBuilding", {
+      params: {
+        buildingID: building.buildingID,
+        buildingUse: building.buildingUse
+      }
+    })
+    return response.data
     }
 
     
@@ -113,6 +140,22 @@ import Axios from 'axios';
       })
       return addResponse.data
     }
+
+    static async getRooms(){
+      const response = await Axios.get("http://localhost:8000/getRooms")
+      return response.data
+    }
+
+    static async getBuildings(){
+      const response = await Axios.get("http://localhost:8000/getBuildings")
+      return response.data
+    }
+
+    
+    static async getMasterSchedule(){
+      const mSchedResponse = await Axios.get("http://localhost:8000/masterSchedule")
+      return mSchedResponse.data
+  }
 
     static async addCourse(newCourse){
       const addResponse = await Axios.put("http://localhost:8000/addClass", {
@@ -132,6 +175,15 @@ import Axios from 'axios';
           }
         })
         return deleteResponse.data
+      } 
+
+      static async deleteUser(userID){
+        const response = await Axios.post("http://localhost:8000/deleteUser" , {
+          params: {
+            userID: userID
+          }
+        })
+        return response.data
       }
 
       static async deleteCourse(row){
@@ -208,10 +260,6 @@ import Axios from 'axios';
         return myMinorsResponse.data
       }
 
-      static async getMasterSchedule(){
-          const mSchedResponse = await Axios.get("http://localhost:8000/masterSchedule")
-          return mSchedResponse.data
-      }
 
       static async getAllUsers(){
         const userResponse = await Axios.get("http://localhost:8000/allUsers")

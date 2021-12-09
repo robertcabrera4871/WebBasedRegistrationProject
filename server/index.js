@@ -4,7 +4,6 @@ const mysql = require('mysql')
 const app = express();
 const port = 8000;
 const cors = require("cors");
-const e = require('express');
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -38,16 +37,92 @@ app.post('/login', (req, res) =>{
             if(err){
                 res.send({err: err})
             } 
-            if(result.length > 0) {
+            else{
                 res.send(result)
-             } 
-             else{
-                res.send({message: "Wrong combination"});
-                }
             }
-    );
-});
+        })});
 
+app.get('/getBuildings', (req, res) => {
+    db.query(`SELECT * FROM Building`,
+    [],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        } else{
+            res.send(result)
+        }
+    })})
+    
+app.get('/getRooms', (req, res) => {
+    db.query(`SELECT * FROM Room`,
+    [],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        } else{
+            res.send(result)
+        }
+        
+    })})
+
+
+app.get('/allUsers', (req, res) =>{
+    db.query(
+        'SELECT * FROM User',
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.put('/addRoom', (req, res) => {
+    const params = req.body.params;
+    db.query(`INSERT INTO Room VALUES(?,?,?)` ,
+    [params.roomID, params.buildingID, params.roomType],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        } else{
+            res.send(result)
+        }
+        
+    }
+    )
+})
+
+app.put('/addRoomOfType' , (req, res) =>{
+    const params = req.body.params;
+    db.query(`INSERT INTO ${params.roomType} VALUES(?, ?)`,
+    [params.roomID, params.capacity],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        } else{
+            res.send(result)
+        }
+    }
+    )
+})
+app.put('/addBuilding', (req, res) => {
+    const params = req.body.params;
+    db.query(`INSERT INTO Building VALUES(?,?)`,
+    [params.buildingID, params.buildingUse],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        } else{
+            res.send(result)
+        }
+        
+    }
+    )
+})
 app.put('/editMS', (req, res) =>{
     const params = req.body.params
     db.query(
@@ -60,12 +135,26 @@ app.put('/editMS', (req, res) =>{
         (err, result) =>{
             if(err){
                 res.send({err: err})
+            } else{
+                res.send(result)
             }
-            else{
+            
+        }
+    )
+ })
+ app.post('/deleteUser', (req, res) => {
+     const userID = req.body.params.userID;
+     db.query(
+         `DELETE FROM User WHERE userID = userID`, 
+         [userID],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } else{
                 res.send(result)
             }
         }
-    )
+     )
  })
 
  app.put('/addMS' , (req, res) =>{
@@ -123,9 +212,12 @@ app.put('/editMS', (req, res) =>{
      const timeSlotID = req.body.params.timeSlotID
      const roomID = req.body.params.roomID;
      db.query(
-         `SELECT * FROM Timeslot t
+         `SELECT * FROM CourseSection c
+         JOIN Timeslot t
+         ON c.timeSlotID = t.timeSlotID
          JOIN Room r
-         ON t.timeSlotID = ? AND r.roomID = ?`,
+         ON c.roomID = r.roomID
+         WHERE c.timeSlotID = ? AND r.roomID = ?`,
          [timeSlotID, roomID],
          (err, result) =>{
             if(err){
@@ -226,7 +318,8 @@ app.put('/editMS', (req, res) =>{
        `SELECT t.timeslotID
        FROM Timeslot t
        JOIN Period p
-       WHERE p.startTime = ? AND p.endTime= ? AND t.day= ?`,
+       ON t.period = p.periodID
+       WHERE p.startTime =? AND p.endTime=? AND t.day = ?`,
         [params.startTime, params.endTime, params.day],
         (err, result) =>{
            if(err){
@@ -254,10 +347,10 @@ app.put('/editMS', (req, res) =>{
     )
 })
 
-app.get('/emailExist', (req, res) =>{
-    const email = req.query.email;
+app.post('/emailExist', (req, res) =>{
+    const email = req.body.params.email;
     db.query(
-        "SELECT EXISTS (SELECT 1 FROM LoginInfo WHERE email = ?)",
+        `SELECT 1 FROM LoginInfo WHERE email = ?`,
         [email],
         (err, result) =>{
             if(err){
@@ -316,20 +409,7 @@ app.get('/masterSchedule', (req, res) =>{
     )
 })
 
-app.get('/allUsers', (req, res) =>{
-    db.query(
-        'SELECT * FROM User',
-        [],
-        (err, result) =>{
-            if(err){
-                res.send({err: err})
-            }
-            else{
-                res.send(result)
-            }
-        }
-    )
-})
+
 
 app.get('/majors',  (req, res) =>{
     db.query(

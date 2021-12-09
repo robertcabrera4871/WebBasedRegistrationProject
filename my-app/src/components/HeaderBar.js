@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button'
 import checkPrivs from '../utilities/checkPrivs'
 
 
-
+//Add custom per ser
 function HeaderBar({setToken}){
 
     const privs = checkPrivs();  
@@ -28,9 +28,10 @@ function HeaderBar({setToken}){
               {(privs.isAdmin || privs.isFaculty) &&  <Nav.Link href="/users">Users</Nav.Link>}
               {privs.isFaculty && <Nav.Link href="/facHistory">Faculty History</Nav.Link>}
               {privs.isAdmin && <Nav.Link href="/timeWindow">Time Window</Nav.Link> }
-              {(privs.isAdmin || privs.isResearch)  && <Nav.Link href="/statData">Statistical Data</Nav.Link>}
+              {(privs.isResearch)  && <Nav.Link href="/statData">Statistical Data</Nav.Link>}
               <Nav.Link></Nav.Link>
-              <Nav className='justify-content-end'style={{ width: "40%" }} >
+              {privs.isAdmin && <Nav.Link href='/buildAndRoom'>Rooms and Buildings</Nav.Link>}
+              <Nav className='justify-content-end'style={{ width: "30%" }} >
               <div>
                 {privs.isGuest ? <Button variant="outline-success"  onClick={() =>{
                 setToken("")

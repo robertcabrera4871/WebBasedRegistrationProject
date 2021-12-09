@@ -9,7 +9,6 @@ import { useHistory } from 'react-router';
 
 export default function AddMS(){
     
-       //Needs time availability check
 
     let history = useHistory()
 
@@ -115,9 +114,9 @@ export default function AddMS(){
             <Form.Label>Day</Form.Label>
             <Form.Control onChange={e => newRow.day = e.target.value} ></Form.Control>
             <Form.Label>StartTime</Form.Label>
-            <Form.Control placeholder="HH:MM(AM/PM)"onChange={e => newRow.startTime = e.target.value}></Form.Control>
+            <Form.Control placeholder="HH:MM (AM/PM)"onChange={e => newRow.startTime = e.target.value}></Form.Control>
             <Form.Label>EndTime</Form.Label>
-            <Form.Control placeholder="HH:MM(AM/PM)"onChange={e => newRow.endTime = e.target.value} ></Form.Control>
+            <Form.Control placeholder="HH:MM (AM/PM)"onChange={e => newRow.endTime = e.target.value} ></Form.Control>
                 </Col>
                 <Col>
                 <Form.Label>Semester</Form.Label>

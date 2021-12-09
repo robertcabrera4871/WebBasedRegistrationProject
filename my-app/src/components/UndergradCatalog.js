@@ -73,8 +73,7 @@ export default function UndergradCatalog() {
             <div key={index}>
             {privs.isAdmin && <button>❌ Delete Major</button>}
             <h4>{major.majorID}:</h4>
-            </div>
-            
+            </div>  
             <ReqTable major={major.majorID} requirements={majorRequire}/>
             </span>
         )});

@@ -2,10 +2,14 @@ import React, { useState, useEffect} from "react";
 import { useTable,usePagination } from "react-table";
 import dbUtil from '../utilities/dbUtil'
 import Table from 'react-bootstrap/Table'
+import { useHistory } from 'react-router';
+
 
 export default function AllUsers(){
 
     const [users, setUsers] = useState([]);
+    let history = useHistory();
+
     
     useEffect(() =>{
         getUsers();
@@ -23,6 +27,16 @@ export default function AllUsers(){
      function clicked(row){
       console.log(row)
     }
+    function forwardAdd(){
+      history.push({
+        pathname: '/addUser'
+      })
+    }
+    function deleteUser(row){
+      if(window.confirm("Are you sure you want to delete this user?")){
+        dbUtil.deleteUser(row.userID)
+      }
+    }
 
      const data = users;
 
@@ -34,7 +48,7 @@ export default function AllUsers(){
           <div>
           <button onClick={() => clicked(cell.row.original)}>✏️</button>
           <div className='bigDivider'/>
-          <button onClick={() => clicked(cell.row.original)}>❌</button>
+          <button onClick={() => deleteUser(cell.row.original)}>❌</button>
           </div>
         )
       },
@@ -99,7 +113,7 @@ export default function AllUsers(){
     return(
       <div className='table-center'>
         <h1 className='text-align'>All Users</h1>
-        <button>➕ Add User</button>
+        <button onClick={() =>forwardAdd()}>➕ Add User</button>
         <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         {// Loop over the header rows

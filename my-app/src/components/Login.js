@@ -88,11 +88,19 @@ export default function Login({ setUser, setToken }) {
     }
   }
 
-  const handleSubmit = e => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    dbUtil.login(email, password).then(data => {
-      privSwitch(data);
-    }).catch(err => console.log(err))
+    const response = await dbUtil.userExists(email)
+    var loginResponse = ""
+    if(response.length === 0){
+      window.alert("User not found");
+    } else{
+      loginResponse = await dbUtil.login(email, password)
+      if(loginResponse.err){
+        window.alert(loginResponse.err.sqlMessage)
+      }
+      privSwitch(loginResponse)
+    }
   }
 
   const guestLogin = (e) => {

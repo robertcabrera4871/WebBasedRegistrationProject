@@ -28,6 +28,10 @@ import AddMS from './AddMS';
 import AddMajor from './AddMajor';
 import AddCourse from './AddCourse';
 import EditCourse from './EditCourse';
+import AddUser from './AddUser';
+import BuildAndRoom from '../BuildAndRoom';
+import addBuilding from './AddBuilding';
+import AddRoom from './AddRoom';
 
 
 function ComponentSwitch() {
@@ -45,6 +49,34 @@ function ComponentSwitch() {
             <Route exact path="/gradCatalog" component={GradCatalog}></Route>
             <Route exact path="/undergradCatalog" component={UndergradCatalog}></Route>
             <Route exact path="/masterSchedule" component={MasterSchedule}></Route>
+           
+           
+            {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/AddBuilding" component={addBuilding} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/AddBuilding" component={addBuilding} allowed={false}></ProtectedRoute> 
+            }
+            {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/AddRoom" component={AddRoom} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/AddRoom" component={AddRoom} allowed={false}></ProtectedRoute> 
+            }
+             {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/buildAndRoom" component={BuildAndRoom} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/buildAndRoom" component={BuildAndRoom} allowed={false}></ProtectedRoute> 
+            }
+            {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/buildAndRoom" component={BuildAndRoom} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/buildAndRoom" component={BuildAndRoom} allowed={false}></ProtectedRoute> 
+            }
+            {
+                (privs.isAdmin) ?
+                <ProtectedRoute exact path ="/AddUser" component={AddUser} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/AddUser" component={AddUser} allowed={false}></ProtectedRoute> 
+            }
+             
               {
                 (privs.isAdmin) ?
                 <ProtectedRoute exact path ="/EditCourse" component={EditCourse} allowed={true}></ProtectedRoute> : 

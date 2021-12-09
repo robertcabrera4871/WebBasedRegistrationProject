@@ -21,7 +21,23 @@ export default function EditMS(rowData){
         e.preventDefault();
         if (await checkFaculty() === ""){return("")}
         if (await checkTimeSlotID() === ""){return("")}
+        if(rowChanges.startTime !== row.startTime && rowChanges.endTime !== row.endTime){
+            if (await checkAvailability() === ""){return("")}
+        }
         await editMS();
+    }
+
+    async function checkAvailability(){
+        const response = await dbUtil.checkAvailability(rowChanges)
+        if(response.err){
+            window.alert(response.err.sqlMessage)
+            return("")
+        }
+        if(response.length > 0){
+            window.alert("That time slot / room combination is filled")
+            return("")
+        }
+        return response
     }
 
     async function editMS(){
