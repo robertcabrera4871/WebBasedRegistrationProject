@@ -71,7 +71,7 @@ export default function UndergradCatalog() {
             <span>
             {privs.isAdmin && <button>➕ Add Requirement</button>}
             <div key={index}>
-            <button>❌ Delete Major</button>
+            {privs.isAdmin && <button>❌ Delete Major</button>}
             <h4>{major.majorID}:</h4>
             </div>
             

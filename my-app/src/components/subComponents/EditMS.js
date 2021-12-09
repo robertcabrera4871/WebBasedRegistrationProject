@@ -17,15 +17,46 @@ export default function EditMS(rowData){
 
     let history = useHistory();
     
-    function submitChanges(e){
+    async function submitChanges(e){
         e.preventDefault();
-        dbUtil.editMS(rowChanges, row.CRN).then(data =>{
-        if(data.err){
-            window.alert(data.err.sqlMessage)
+        if (await checkFaculty() === ""){return("")}
+        if (await checkTimeSlotID() === ""){return("")}
+        await editMS();
+    }
+
+    async function editMS(){
+        const editResponse = await dbUtil.editMS(rowChanges, row.CRN)
+        console.log(editResponse)
+        if(editResponse.err){
+            window.alert(editResponse.err.sqlMessage)
         }else{
          history.push('/home')
         }
-        })
+    }
+    async function checkFaculty(){
+        const facResult = await dbUtil.getFacultyID(rowChanges.firstName, rowChanges.lastName);
+        if(facResult.err){
+                window.alert(facResult.err.sqlMessage)
+            }else if(facResult.length !== 1){
+               window.alert("No faculty found with that name")
+               return("");
+            }else{
+                rowChanges.facultyID = facResult[0].userID;
+            }
+            return facResult
+    }
+
+    async function checkTimeSlotID(){
+        const timeSlotResult = await dbUtil.getTimeSlotID(rowChanges.startTime, rowChanges.endTime, rowChanges.day);
+        if(timeSlotResult.err){
+            window.alert(timeSlotResult.err.sqlMessage)
+        } else if(timeSlotResult.length !==1){
+            window.alert("No timeslot found with that start/end time or day")
+            return("");
+        } else{
+            rowChanges.timeSlotID = timeSlotResult[0].timeslotID.toString();
+        }
+        return timeSlotResult
     }
 
 
@@ -50,8 +81,6 @@ export default function EditMS(rowData){
             <Form.Control onChange={e => rowChanges.sectionNum = e.target.value} placeholder={row.sectionNum}></Form.Control>
             <Form.Label>CourseID</Form.Label>
             <Form.Control onChange={e => rowChanges.courseID = e.target.value} placeholder={row.courseID}></Form.Control>
-            <Form.Label>Department</Form.Label>
-            <Form.Control onChange={e => rowChanges.departmentID = e.target.value} placeholder={row.departmentID}></Form.Control>
             <Form.Label>Day</Form.Label>
             <Form.Control onChange={e => rowChanges.day = e.target.value} placeholder={row.day}></Form.Control>
             <Form.Label>StartTime</Form.Label>

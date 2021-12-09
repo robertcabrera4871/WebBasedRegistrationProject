@@ -6,7 +6,7 @@ import React from 'react';
 import Table from 'react-bootstrap/Table'
 import decryptUser from '../utilities/decryptUser';
 
-function Schedule({title, semesterPicker}){
+export default function Schedule({title, semesterPicker}){
 
     const [semesterSelect, setSemester]= useState("Spring 2021")
     const [schedule, setSchedule] = useState([]);
@@ -22,8 +22,13 @@ function Schedule({title, semesterPicker}){
 
     var user = decryptUser();
 
-   function dropClass(row){
-    
+   async function dropClass(row){
+      const response = await dbUtil.dropMyClass(row.CRN, user.userID)
+      if(response.err){
+        window.alert(response.err.sqlMessage)
+      } else {
+        window.location.reload(false);
+      }
    }
 
    if(!title){
@@ -34,7 +39,6 @@ function Schedule({title, semesterPicker}){
     function getUserSched(){
         dbUtil.getUserSched(user.userID).then(
             data =>{
-                console.log(data)
                 if(title === 'Transcript'){
                     data = data.filter(item => ( item.grade !== 'IP'))
                 }
@@ -160,5 +164,3 @@ function Schedule({title, semesterPicker}){
         </div>
     );
 }
-
-export default Schedule

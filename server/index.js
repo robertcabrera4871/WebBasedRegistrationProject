@@ -51,13 +51,12 @@ app.post('/login', (req, res) =>{
 app.put('/editMS', (req, res) =>{
     const params = req.body.params
     db.query(
-        "UPDATE MasterSchedule SET CRN = ? , CourseSection = ?,"+
-         "CourseID = ?, Department = ?, Day = ?, StartTime = ?,"+
-         "EndTime = ?, Semester = ?, Year = ?,RoomNumber= ?, ProfLastName= ?,"+
-         "ProfFirstName= ?, Seats= ?, Capacity=? WHERE CRN=? " ,
-        [params.CRN, params.CourseSection, params.CourseID, params.Department,
-        params.Day, params.StartTime, params.EndTime, params.Semester, params.Year, params.RoomNumber,
-        params.ProfLastName,params.ProfFirstName, params.Seats, params.Capacity, params.OldCRN],
+        `UPDATE CourseSection SET CRN = ? , timeslotID = ?, facultyID = ?,
+        roomID = ?, semesterYearID = ?, courseID = ?, availableSeats = ?, capacity = ?, sectionNum = ?
+        WHERE CRN = ?` ,
+        [params.CRN, params.timeSlotID, params.facultyID, params.roomID,
+        params.semesterYearID, params.courseID, params.availableSeats, params.capacity, params.sectionNum, 
+        params.OldCRN],
         (err, result) =>{
             if(err){
                 res.send({err: err})
@@ -68,6 +67,24 @@ app.put('/editMS', (req, res) =>{
         }
     )
  })
+
+ app.put('/addMS' , (req, res) =>{
+    const params = req.body.params
+    db.query(
+       `INSERT INTO CourseSection VALUES(?,?,?,?,?,?,?,?,?)`,
+       [params.CRN, params.timeSlotID, params.facultyID, params.roomID,
+       params.semesterYearID, params.courseID, params.availableSeats, 
+       params.capacity, params.sectionNum],
+       (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+       }
+    )
+})
 
  app.put('/editCourse', (req, res) =>{
      const params = req.body.params
@@ -89,7 +106,7 @@ app.put('/editMS', (req, res) =>{
  app.put('/deleteMS', (req, res) =>{
      const CRN = req.body.params.CRN
      db.query(
-         "DELETE FROM MasterSchedule WHERE CRN = ? ", 
+         "DELETE FROM CourseSection WHERE CRN = ? ", 
          [CRN],
          (err, result) =>{
             if(err){
@@ -101,6 +118,41 @@ app.put('/editMS', (req, res) =>{
         }
      )
  }) 
+
+ app.post('/checkAvailability', (req, res) =>{
+     const timeSlotID = req.body.params.timeSlotID
+     const roomID = req.body.params.roomID;
+     db.query(
+         `SELECT * FROM Timeslot t
+         JOIN Room r
+         ON t.timeSlotID = ? AND r.roomID = ?`,
+         [timeSlotID, roomID],
+         (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+     )
+ })
+
+ app.put('/unenrollAll' , (req, res) => {
+     const CRN = req.body.params.CRN
+     db.query(
+         "DELETE FROM Enrollment WHERE CRN = ?",
+         [CRN],
+         (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+     )
+ })
 
  app.put('/deleteCourse', (req, res) => {
      const courseID = req.body.params.courseID
@@ -121,9 +173,9 @@ app.put('/editMS', (req, res) =>{
  app.put('/addMS' , (req, res) =>{
      const params = req.body.params
      db.query(
-        `INSERT INTO CourseSection Values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+        `INSERT INTO CourseSection VALUES(?,?,?,?,?,?,?,?,?)`,
         [params.CRN, params.timeSlotID, params.facultyID, params.roomID,
-        params.semesterYearID, params.courseID, params.availablesSeats, 
+        params.semesterYearID, params.courseID, params.availableSeats, 
         params.capacity, params.sectionNum],
         (err, result) =>{
             if(err){
@@ -174,8 +226,8 @@ app.put('/editMS', (req, res) =>{
        `SELECT t.timeslotID
        FROM Timeslot t
        JOIN Period p
-       WHERE p.startTime = ? AND p.endTime= ?`,
-        [params.startTime, params.endTime],
+       WHERE p.startTime = ? AND p.endTime= ? AND t.day= ?`,
+        [params.startTime, params.endTime, params.day],
         (err, result) =>{
            if(err){
                res.send({err: err})
@@ -239,7 +291,7 @@ app.put('/resetPassword', (req, res) =>{
 
 app.get('/masterSchedule', (req, res) =>{
     db.query(
-        `SELECT cs.CRN, cs.sectionNum, cs.courseID, c.departmentID, 
+        `SELECT cs.CRN, cs.sectionNum, cs.courseID, 
         t.day, p.startTime, p.endTime, cs.semesterYearID,
          cs.roomID, u.firstName, u.lastName,
         cs.availableSeats, cs.capacity
@@ -394,6 +446,24 @@ app.post('/getUserSched', (req, res) =>{
     )
 })
 
+app.post('/addMyClass', (req, res) => {
+    const CRN = req.body.params.CRN;
+    const userID = req.body.params.userID;
+    const currentDate = getDate();
+
+    db.query(
+        `INSERT INTO Enrollment VALUES(?,?, 'IP', ?)`,
+        [CRN, userID, currentDate],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }else{
+                res.send(result)
+            }
+        }
+    )
+})
+
 app.get('/getGradCourses', (req,res) =>{
 
     db.query(
@@ -459,6 +529,25 @@ app.put('/dropMyMajor', (req, res) =>{
             }
         }
     )
+})
+
+app.post('/dropMyClass', (req, res) =>{
+    const CRN = req.body.params.CRN;
+    const userID = req.body.params.userID;
+
+    db.query(
+        `DELETE FROM Enrollment WHERE CRN = ? AND studentID = ?`,
+        [CRN, userID],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+
 })
 app.put('/dropMyMinor', (req, res) =>{
     const minorID = req.body.params.minorID;

@@ -29,23 +29,55 @@ import Axios from 'axios';
           params: {
         OldCRN: oldCRN,
         CRN: row.CRN,
-        sectionNum: row.sectionNum,
-        courseID: row.courseID,
-        departmentID: row.departmentID,
-        day: row.day,
-        startTime: row.startTime,
-        endTime: row.endTime,
-        semesterYearID: row.semesterYearID,
+        timeSlotID: row.timeSlotID,
+        facultyID: row.facultyID,
         roomID: row.roomID,
-        lastName: row.lastName,
-        firstName: row.firstName,
+        semesterYearID: row.semesterYearID,
+        courseID: row.courseID,
+        availableSeats: row.availableSeats,
+        capacity: row.capacity,
+        sectionNum: row.sectionNum,
         availableSeats: row.availableSeats,
         capacity: row.capacity
           }
         })
         return editResponse.data
       }
-
+      static async addMS(row){
+        const addResponse = await Axios.put("http://localhost:8000/addMS", {
+          params:{
+         CRN: row.CRN,
+         timeSlotID: row.timeSlotID,
+         facultyID: row.facultyID,
+         roomID: row.roomID,
+         semesterYearID: row.semesterYearID,
+         courseID: row.courseID,
+         availableSeats: row.availableSeats,
+         capacity: row.capacity,
+         sectionNum: row.sectionNum,
+         availableSeats: row.availableSeats,
+         capacity: row.capacity
+          }
+        })
+        return addResponse.data
+      }
+    static async unenrollAll(row){
+      const response = await Axios.put("http://localhost:8000/unenrollAll", {
+        params: {
+          CRN: row.CRN
+        }
+      })
+      return response.data
+    }
+    static async updateEnroll(row, oldCRN){
+      const response = await Axios.put("http://localhost:8000/updateEnroll", {
+        params: {
+          OldCRN : oldCRN,
+          CRN: row.CRN
+        }
+      })
+      return response.data
+    }
     static async editCourse(row, oldCourseID){
       const editResponse = await Axios.put("http://localhost:8000/editCourse", {
         params:{
@@ -58,25 +90,18 @@ import Axios from 'axios';
       return editResponse.data
     }
 
-     static async addMS(row){
-       const addResponse = await Axios.put("http://localhost:8000/addMS", {
-         params:{
-        CRN: row.CRN,
-        sectionNum: row.sectionNum,
-        courseID: row.courseID,
-        departmentID: row.departmentID,
-        day: row.day,
-        startTime: row.startTime,
-        endTime: row.endTime,
-        semesterYearID: row.semesterYearID,
-        roomID: row.roomID,
-        facultyID: row.facultyID,
-        availableSeats: row.availableSeats,
-        capacity: row.capacity
-         }
-       })
-       return addResponse.data
-     }
+    static async checkAvailability(row){
+      const response = await Axios.post("http://localhost:8000/checkAvailability", {
+        params : {
+          timeSlotID: row.timeSlotID,
+          roomID: row.roomID
+
+        }
+      })
+      return response.data
+    }
+
+    
      
     static async addMajor(newMajor){
       const addResponse = await Axios.put("http://localhost:8000/addMajor",{
@@ -154,6 +179,16 @@ import Axios from 'axios';
           }
         })
         return userSchedResponse.data
+      }
+
+      static async addMyClass(CRN, userID){
+        const response = await Axios.post("http://localhost:8000/addMyClass", {
+          params: {
+            CRN: CRN,
+            userID: userID
+          }
+        })
+        return response.data;
       }
 
       static async getMyMajors(userID){
@@ -237,6 +272,16 @@ import Axios from 'axios';
       return dropResponse.data
     }
 
+    static async dropMyClass(CRN, userID){
+      const response = await Axios.post("http://localhost:8000/dropMyClass",{
+        params: {
+          CRN: CRN,
+          userID: userID
+        }
+      })
+      return response.data
+    }
+
 
 
     static async declareMyMajor(majorID, userID){
@@ -267,11 +312,12 @@ import Axios from 'axios';
       return getResponse.data
     }
 
-    static async getTimeSlotID(startTime, endTime){
+    static async getTimeSlotID(startTime, endTime, day){
       const getResponse = await Axios.post("http://localhost:8000/getTimeSlotID",{
         params: {
           startTime: startTime,
-          endTime: endTime
+          endTime: endTime,
+          day: day
         }
       })
       return getResponse.data

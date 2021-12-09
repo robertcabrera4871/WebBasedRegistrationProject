@@ -5,18 +5,18 @@ import Row from 'react-bootstrap/Row'
 import Col from "react-bootstrap/Col";
 import dbUtil from "../../utilities/dbUtil";
 import { useHistory } from 'react-router';
-import { useState } from "react";
 
 
 export default function AddMS(){
     
+       //Needs time availability check
+
     let history = useHistory()
 
     const newRow = {
         CRN: "",
         sectionNum: "",
         courseID: "",
-        departmentID: "",
         day: "",
         startTime: "",
         endTime:"",
@@ -26,21 +26,43 @@ export default function AddMS(){
         firstName:"",
         availableSeats:"",
         capacity:"",
-        facultyID: "X",
-        timeSlotID: "Y"
+        facultyID: "default",
+        timeSlotID: "default"
     }
 
 
         async function submitChanges(e){
             e.preventDefault();
-            for(const property in newRow){
-               if(`${newRow[property].trim()}` === ""){
-                   window.alert("Please ensure no fields are left empty");
-                   return("")
-               } 
-            }
+            if (await checkBlanks() === "" ){return("")}
+            if (await checkFaculty() === ""){return("")}
+            if (await checkTimeSlotID() === ""){return("")}
+            if (await checkAvailability() === ""){return("")}
+            await addMS();
+        }
 
-            const facResult = await checkFaculty();
+        async function checkAvailability(){
+            const response = await dbUtil.checkAvailability(newRow)
+            if(response.err){
+                window.alert(response.err.sqlMessage)
+                return("")
+            }
+            if(response.length > 0){
+                window.alert("That time slot / room combination is filled")
+                return("")
+            }
+            return response
+        }
+        async function checkBlanks(){
+            for(const property in newRow){
+                if(`${newRow[property].trim()}` === ""){
+                    window.alert("Please ensure no fields are left empty");
+                    return("")
+                } 
+             }
+        }
+
+        async function checkFaculty(){
+            const facResult = await dbUtil.getFacultyID(newRow.firstName, newRow.lastName);
             if(facResult.err){
                     window.alert(facResult.err.sqlMessage)
                 }else if(facResult.length !== 1){
@@ -49,34 +71,33 @@ export default function AddMS(){
                 }else{
                    newRow.facultyID = facResult[0].userID;
                 }
-            const timeSlotResult = await checkTimeslot();
-            //Add ifs for timeslot
-            console.log(timeSlotResult)
+                return facResult
+        }
 
-            // const addMSResult = await addMS()
-            //      if(addMSResult.err){
-            //          window.alert(addMSResult.err.sqlMessage)
-            //      }else if(addMSResult.affectedRows === 1){
-            //         history.push('/home')
-            //      }else{
-            //          console.log(addMSResult)
-            //      }
+        async function checkTimeSlotID(){
+            const timeSlotResult = await dbUtil.getTimeSlotID(newRow.startTime, newRow.endTime, newRow.day);
+            if(timeSlotResult.err){
+                window.alert(timeSlotResult.err.sqlMessage)
+            } else if(timeSlotResult.length !==1){
+                window.alert("No timeslot found with that start/end time or day")
+                return("");
+            } else{
+                newRow.timeSlotID = timeSlotResult[0].timeslotID.toString();
+            }
+            return timeSlotResult
+        }
 
+        async function addMS(){
+            const addMSResult = await dbUtil.addMS(newRow);
+                 if(addMSResult.err){
+                     window.alert(addMSResult.err.sqlMessage)
+                 }else if(addMSResult.affectedRows === 1){
+                    history.push('/home')
+                 }else{
+                     console.log(addMSResult)
+                 }
         }
         
-        async function checkTimeslot(){
-            const result = await dbUtil.getTimeSlotID(newRow.startTime, newRow.endTime)
-            return result
-        }
-        async function addMS(){
-            const result = await dbUtil.addMS(newRow)
-            return result
-        }
-        async function checkFaculty(){
-            const result = await dbUtil.getFacultyID(newRow.firstName, newRow.lastName)
-            return result
-        }
-
 
 
     return(
@@ -91,8 +112,6 @@ export default function AddMS(){
             <Form.Control onChange={e => newRow.sectionNum = e.target.value} ></Form.Control>
             <Form.Label>CourseID</Form.Label>
             <Form.Control onChange={e => newRow.courseID = e.target.value} ></Form.Control>
-            <Form.Label>Department</Form.Label>
-            <Form.Control onChange={e => newRow.departmentID = e.target.value}></Form.Control>
             <Form.Label>Day</Form.Label>
             <Form.Control onChange={e => newRow.day = e.target.value} ></Form.Control>
             <Form.Label>StartTime</Form.Label>

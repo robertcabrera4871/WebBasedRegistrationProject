@@ -1,15 +1,16 @@
 import React, { useState, useEffect} from "react";
 import { useTable, useFilters, useSortBy, usePagination } from "react-table";
-import dbUtil from '../utilities/dbUtil'
-import Table from 'react-bootstrap/Table'
+import dbUtil from '../utilities/dbUtil';
+import Table from 'react-bootstrap/Table';
 import ColumnFilter from "./tableComponents/ColumnFilter";
 import { useHistory } from 'react-router';
-import checkPrivs from '../utilities/checkPrivs'
+import checkPrivs from '../utilities/checkPrivs';
 import ChoseSemester from "./subComponents/ChoseSemester";
+import decryptUser from "../utilities/decryptUser";
 
 
 
-export default function MasterSchedule({isAddClass}){
+export default function MasterSchedule({isAddClassStudent}){
 
    //Needs more sorting options
 
@@ -17,6 +18,7 @@ export default function MasterSchedule({isAddClass}){
     const [semesterSelect, setSemester]= useState("Spring 2021")
     let history = useHistory();
     const privs = checkPrivs();
+    const user = decryptUser();
 
      useEffect(() =>{
          getSchedule();
@@ -29,12 +31,17 @@ export default function MasterSchedule({isAddClass}){
          getSchedule()
      }
 
-     function addClass(row){
-        console.log(row)
+     async function addClassStudent(row){
+        const response = await dbUtil.addMyClass(row.CRN, user.userID); 
+        if(response.err){
+           window.alert("You are already enrolled in this class")
+        } else{
+           window.alert("You have been enrolled")
+        }
      }
  
  
-     function getSchedule(){
+      function getSchedule(){
         dbUtil.getMasterSchedule().then(
            //CHANGE!!I
             data =>{
@@ -50,6 +57,10 @@ export default function MasterSchedule({isAddClass}){
         )
      } 
 
+     async function lol(){
+
+     }
+
      function newRow(){
         history.push('/addMS')
      }
@@ -61,14 +72,21 @@ export default function MasterSchedule({isAddClass}){
    }
    
 
-     function deleteRow(row){
-         dbUtil.deleteMS(row).then(data =>{
-            if(data.err){
-               window.alert(data.err.sqlMessage)
-           }else{
-            window.location.reload(false);
-           }
-         })
+     async function deleteCS(row){
+         const deleteResponse = await dbUtil.deleteMS(row);
+         var unenrollDeleteRes = ""
+         var finalDeleteRes = ""
+         if(deleteResponse.err){
+            if(window.confirm("There are students enrolled in this course. Delete Anyways?")){
+               unenrollDeleteRes = await dbUtil.unenrollAll(row);
+               finalDeleteRes = await dbUtil.deleteMS(row)
+               window.location.reload(false);
+            }
+        }else{
+         window.location.reload(false);
+        }
+
+
      }
       
      
@@ -87,11 +105,6 @@ export default function MasterSchedule({isAddClass}){
          {
             Header: "CourseID",
             accessor: "courseID",
-            Filter: ColumnFilter
-         },
-         {
-            Header: "Department",
-            accessor: "departmentID",
             Filter: ColumnFilter
          },
          {
@@ -170,9 +183,9 @@ export default function MasterSchedule({isAddClass}){
                         <button className='editButton' onClick={() => editRow(row.original)}>✏️</button>
                         <div className='buttonDivider'/>
                         <button className='delete-button' onClick={(e) => { 
-                           if (window.confirm('Are you sure you wish to delete this item?')) 
+                           if (window.confirm('Are you sure you wish to delete?')) 
                            {
-                              deleteRow(row.original)
+                              deleteCS(row.original)
                            } }}>❌</button>
                         </div>
                      ) 
@@ -180,14 +193,14 @@ export default function MasterSchedule({isAddClass}){
                   ...columns
                   ]
             })}
-            else if(isAddClass){
+            else if(isAddClassStudent){
                hooks.visibleColumns.push((columns) =>{
                   return[
                       { 
-                        id: "addClass",
+                        id: "addClassStudent",
                         Cell: ({cell}) => (
                            <div>
-                              <button title="Add to Schedule" onClick={() =>addClass(cell.row.original)}>➕</button>
+                              <button title="Add to Schedule" onClick={() =>addClassStudent(cell.row.original)}>➕</button>
                            </div>
                         )
                      },
