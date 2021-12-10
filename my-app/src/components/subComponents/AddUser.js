@@ -72,7 +72,7 @@ export default function AddUser(chosenType){
 
         const userRes = await dbUtil.createUser(newRow);
         console.log(userRes)
-        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID")}
+        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID"); return("")}
         if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
         const loginRes = await dbUtil.createLogin(newRow);
         if(loginRes.err){window.alert("Failed to Insert: LoginInfo"); return(reverseChanges())}
@@ -102,16 +102,17 @@ export default function AddUser(chosenType){
         if(checkTime === ""){return("")}
         const userRes = await dbUtil.createUser(newRow);
         console.log(userRes)
-        if(userRes.err.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID")}
+        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID"); return("")}
         if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
         const loginRes = await dbUtil.createLogin(newRow);
         console.log(loginRes)
-        if(loginRes.err){window.alert("Failed to Insert: LoginInfo"); return(reverseChanges())}
+        if(loginRes.err){window.alert("Failed to Insert: LoginInfo Email Password combo taken"); return(reverseChanges())}
         const stuRes = await dbUtil.createStudent(newRow);
         if(stuRes.err){window.alert("Failed to Insert: Student (Check number fields and dates)"); return(reverseChanges())}
         const gradRes = await dbUtil.createGrad(newRow);
-        if(gradRes.err){window.alert("Failed to Insert: Undergraduate"); return(reverseChanges())}
-
+        console.log(gradRes)
+        if(gradRes.err){window.alert("Failed to Insert: Graduate"); return(reverseChanges())}
+      
 
         if(checkTime === "full")
         {
@@ -127,6 +128,8 @@ export default function AddUser(chosenType){
 
     async function reverseChanges(){
         const response = await dbUtil.deleteUser(newRow)
+        console.log(response)
+        console.log("User deleted")
         return("")
     }
 
