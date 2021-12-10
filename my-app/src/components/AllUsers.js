@@ -3,6 +3,8 @@ import { useTable,usePagination } from "react-table";
 import dbUtil from '../utilities/dbUtil'
 import Table from 'react-bootstrap/Table'
 import { useHistory } from 'react-router';
+import DropdownButton from "react-bootstrap/esm/DropdownButton";
+import DropdownItem from "react-bootstrap/DropdownItem";
 
 
 export default function AllUsers(){
@@ -27,14 +29,18 @@ export default function AllUsers(){
      function clicked(row){
       console.log(row)
     }
-    function forwardAdd(){
+    function forwardAdd(chosenType){
       history.push({
-        pathname: '/addUser'
+        pathname: '/addUser',
+        state: chosenType
       })
     }
-    function deleteUser(row){
+    async function deleteUser(row){
       if(window.confirm("Are you sure you want to delete this user?")){
-        dbUtil.deleteUser(row.userID)
+        const response = await dbUtil.deleteUser(row.userID)
+        if(!response.err){
+          window.location.reload(false);
+        }
       }
     }
 
@@ -113,7 +119,13 @@ export default function AllUsers(){
     return(
       <div className='table-center'>
         <h1 className='text-align'>All Users</h1>
-        <button onClick={() =>forwardAdd()}>➕ Add User</button>
+        <DropdownButton id='dropdown' title={'AddUser'}>
+            <DropdownItem onClick={(e) => {forwardAdd('Undergrad Student')}}>Undergrad Student</DropdownItem>
+            <DropdownItem onClick={(e) => {forwardAdd('Grad Student')}}>Grad Student</DropdownItem>
+            <DropdownItem onClick={(e) => {forwardAdd('Admin')}}>Admin</DropdownItem>
+            <DropdownItem onClick={(e) => {forwardAdd('Faculty')}}>Faculty</DropdownItem>
+            <DropdownItem onClick={(e) => {forwardAdd('ResearchStaff')}}>ResearchStaff</DropdownItem>
+        </DropdownButton>
         <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         {// Loop over the header rows

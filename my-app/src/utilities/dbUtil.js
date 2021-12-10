@@ -387,18 +387,98 @@ import Axios from 'axios';
         return holdResponse.data
     }
 
-    // static async createGrad(user){
-    //   const response = await Axios.put("http://localhost:8000/createGrad",{
-    //     params: {
-    //       studentID: user.userID
-    //       program:
-    //       //spelled incorrectly in db
-    //       staus
-    //       examPassed
-    //       thesisTitle
-    //     }
-    //   })
-    // }
+    static async createFullUndergrad(student){
+      const response = await Axios.put("http://localhost:8000/createFullUndergrad",{
+        params: {
+          studentID: student.userID,
+          minCredit: student.minCredit,
+          maxCredit: student.maxCredit
+        }        
+      })
+      return response.data
+    }
+
+    static async createPartUndergrad(student){
+      const response = await Axios.put("http://localhost:8000/createPartUndergrad",{
+        params: {
+          studentID: student.userID,
+          minCredit: student.minCredit,
+          maxCredit: student.maxCredit
+        }        
+      })
+      return response.data
+    }
+    static async createPartGrad(student){
+      const response = await Axios.put("http://localhost:8000/createPartGrad",{
+        params: {
+          studentID: student.userID,
+          minCredit: student.minCredit,
+          maxCredit: student.maxCredit
+        }        
+      })
+      return response.data
+    }
+    static async createFullGrad(student){
+      const response = await Axios.put("http://localhost:8000/createFullGrad",{
+        params: {
+          studentID: student.userID,
+          minCredit: student.minCredit,
+          maxCredit: student.maxCredit
+        }        
+      })
+      return response.data
+    }
+
+
+    static async createGrad(user){
+      const response = await Axios.put("http://localhost:8000/createGrad",{
+        params: {
+          studentID: user.userID,
+          program: user.program,
+          yearIn: user.yearIn,
+          qualifyingExam: user.qualifyingExam,
+          thesisTitle: user.thesisTitle
+        }
+      })
+      return response.data
+    }
+
+    static async createUndergrad(user){
+      const response = await Axios.put("http://localhost:8000/createUndergrad",{
+        params: {
+          studentID: user.userID,
+          yearLevel: user.yearLevel
+        }
+      })
+      return response.data
+    }
+
+    static async createStudent(user){
+      const response = await Axios.put("http://localhost:8000/createStudent", {
+        params: {
+          studentID: user.userID,
+          creditsEarned: user.creditsEarned,
+          yearLevel: user.yearLevel,
+          studentType: user.studentType,
+          yearOfEntrance: user.yearOfEntrance,
+        }
+      })
+      return response.data
+    }
+
+
+    static async createLogin(user){
+      const response = await Axios.put("http://localhost:8000/createLogin", {
+        params: {
+          userID: user.userID,
+          email: user.email,
+          password: user.password,
+          userType: user.userType,
+          status: user.status
+        }
+      })
+      return response.data
+    }
     
     static async createUser(user){
       const response = await Axios.put("http://localhost:8000/createUser", {
@@ -411,7 +491,7 @@ import Axios from 'axios';
           state: user.state,
           zipCode: user.zipCode,
           address: user.address,
-          userType: user.userType
+          userType: user.studentType
         }
       })
       return response.data

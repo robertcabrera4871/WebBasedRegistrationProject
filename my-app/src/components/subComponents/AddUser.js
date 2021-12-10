@@ -8,8 +8,9 @@ import DropdownButton from 'react-bootstrap/DropdownButton'
 import DropdownItem from 'react-bootstrap/DropdownItem'
 import React, { useState, useEffect } from "react";
 
-export default function AddUser(){
 
+export default function AddUser(chosenType){
+    const userChosen = chosenType.location.state
     let history = useHistory()
 
     
@@ -24,7 +25,7 @@ export default function AddUser(){
       address: "",
       email: "",
       password: "",
-      status: "", 
+      status: "active", 
       //Student
       creditsEarned: "",
       yearLevel: "",
@@ -38,16 +39,12 @@ export default function AddUser(){
       qualifyingExam: "",
       thesisTitle: "",
       //Faculty
-      rank: ""
+      rank: "",
+      //For LoginInfo only
+      userType: ""
     }
 
-    const[userChosen, setUserChose] = useState("");
-
-    useEffect(() => {
-        if(userChosen){
-            newRow.studentType=userChosen
-        }
-    }, [userChosen])
+    newRow.studentType = userChosen
 
     async function submitChanges(e){
         e.preventDefault();
@@ -68,52 +65,77 @@ export default function AddUser(){
 
     async function handleUndergrad(){
         var fullRes = ""
-
+        newRow.userType="student";
         if(await checkBlanksUndergrad()){return("")}
         const checkTime = await checkFullOrPart();
         if(checkTime === ""){return("")}
 
+        const userRes = await dbUtil.createUser(newRow);
+        console.log(userRes)
+        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID")}
+        if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
+        const loginRes = await dbUtil.createLogin(newRow);
+        if(loginRes.err){window.alert("Failed to Insert: LoginInfo"); return(reverseChanges())}
+        const stuRes = await dbUtil.createStudent(newRow);
+        if(stuRes.err){window.alert("Failed to Insert: Student (Check number fields and dates) "); return(reverseChanges())}
+        const gradRes = await dbUtil.createUndergrad(newRow);
+        if(gradRes.err){window.alert("Failed to Insert: Undergraduate"); return(reverseChanges())}
+
         if(checkTime === "full")
         {
            fullRes = await dbUtil.createFullUndergrad(newRow)
+           if(fullRes.err){window.alert("Failed to Insert: Full Undergraduate"); return(reverseChanges())}
         } else if(checkTime === "part"){
            fullRes = await dbUtil.createPartUndergrad(newRow)
+           if(fullRes.err){window.alert("Failed to Insert: Part Undergraduate"); return(reverseChanges())}
         } else {return("")}
       
-        const userRes = await dbUtil.createUser(newRow);
-        const loginRes = await dbUtil.createLogin(newRow);
-        const stuRes = await dbUtil.createStudent(newRow);
-        const gradRes = await dbUtil.createUndergrad(newRow);
+   
 
     }
 
     async function handleGrad(){
         var fullRes = ""
-
+        newRow.userType="student";
         if(await checkBlanksGrad()){return("")}
         const checkTime = await checkFullOrPart();
         if(checkTime === ""){return("")}
-
         const userRes = await dbUtil.createUser(newRow);
+        console.log(userRes)
+        if(userRes.err.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID")}
+        if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
         const loginRes = await dbUtil.createLogin(newRow);
+        console.log(loginRes)
+        if(loginRes.err){window.alert("Failed to Insert: LoginInfo"); return(reverseChanges())}
         const stuRes = await dbUtil.createStudent(newRow);
+        if(stuRes.err){window.alert("Failed to Insert: Student (Check number fields and dates)"); return(reverseChanges())}
         const gradRes = await dbUtil.createGrad(newRow);
+        if(gradRes.err){window.alert("Failed to Insert: Undergraduate"); return(reverseChanges())}
+
 
         if(checkTime === "full")
         {
            fullRes = await dbUtil.createFullGrad(newRow)
+           if(fullRes.err){window.alert("Failed to Insert: Full Undergraduate"); return(reverseChanges())}
+
         } else if(checkTime === "part"){
            fullRes = await dbUtil.createPartGrad(newRow)
+           if(fullRes.err){window.alert("Failed to Insert: Full Undergraduate"); return(reverseChanges())}
         } 
 
     }
 
+    async function reverseChanges(){
+        const response = await dbUtil.deleteUser(newRow)
+        return("")
+    }
+
     async function checkFullOrPart(){
         if(newRow.minCredit === "0" && newRow.maxCredit === "12"){
-            return "full"
+            return "part"
         }
         if(newRow.minCredit === "12" && newRow.maxCredit === "18"){
-            return "part"
+            return "full"
         }
       window.alert("Valid Min: 0/12 Valid Max: 12/18")
       return("")
@@ -162,14 +184,6 @@ export default function AddUser(){
 
     return(
         <div id='align-center'>
-        <DropdownButton id='dropdown' title={'User Type'}>
-            <DropdownItem onClick={(e) => {setUserChose('Undergrad Student')}}>Undergrad Student</DropdownItem>
-            <DropdownItem onClick={(e) => {setUserChose('Grad Student')}}>Grad Student</DropdownItem>
-            <DropdownItem onClick={(e) => {setUserChose('Admin')}}>Admin</DropdownItem>
-            <DropdownItem onClick={(e) => {setUserChose('Faculty')}}>Faculty</DropdownItem>
-            <DropdownItem onClick={(e) => {setUserChose('ResearchStaff')}}>ResearchStaff</DropdownItem>
-        </DropdownButton>
-        <div>If you submit or type and get an error, reload before changing userType</div>
         { userChosen !== "" &&
         <Form id="user-form">
         <h1 className="text-align">New {userChosen}</h1>
@@ -183,7 +197,7 @@ export default function AddUser(){
         <Form.Label>Last Name</Form.Label>
         <Form.Control onChange={e => newRow.lastName = e.target.value} ></Form.Control>
         <Form.Label>DOB</Form.Label>
-        <Form.Control onChange={e => newRow.DOB = e.target.value} ></Form.Control>
+        <Form.Control placeholder={"YYYY-MM-DD"}onChange={e => newRow.DOB = e.target.value} ></Form.Control>
         <Form.Label>City</Form.Label>
         <Form.Control onChange={e => newRow.city = e.target.value} ></Form.Control>
         </Col>

@@ -44,6 +44,157 @@ app.post('/AddDepartment', (req,res) =>{
             
     )
 })
+app.put('/createFullUndergrad', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO UndergradFulltime VALUES(?,?,?)`,
+        [params.studentID, params.minCredit, params.maxCredit],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
+
+app.put('/createPartUndergrad', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO UndergradPartTime VALUES(?,?,?)`,
+        [params.studentID, params.minCredit, params.maxCredit],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
+app.put('/createPartGrad', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO GradPartTime VALUES(?,?,?)`,
+        [params.studentID, params.minCredit, params.maxCredit],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
+
+
+app.put('/createStudent', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO Student VALUES(?,?,?,?,?)`,
+        [params.studentID, params.creditsEarned, params.yearLevel, params.studentType, params.yearOfEntrance],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
+
+app.put('/createLogin', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO LoginInfo VALUES(?,?,?,?,?)`,
+        [params.userID, params.email, params.password, params.userType, params.status],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
+
+app.put('/createUser', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO User VALUES(?,?,?,?,?,?,?,?,?)`,
+        [params.userID, params.firstName, params.lastName, params.DOB, params.city, params.state, params.zipCode,
+        params.address, params.userType],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
+
+app.put('/createGrad', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO Graduate VALUES(?,?,?,?,?)`,
+        [params.studentID, params.program, params.yearIn, params.qualifyingExam, params.thesisTitle],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
+app.put('/createUndergrad', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO Undergraduate VALUES(?,?)`,
+        [params.studentID, params.yearLevel],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
+app.put('/createFullGrad', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO GradFullTime VALUES(?,?,?)`,
+        [params.studentID, params.minCredit, params.maxCredit],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
 app.post('/login', (req, res) =>{
     const email = req.body.email;
     const password = req.body.password;
@@ -207,7 +358,7 @@ app.put('/editMS', (req, res) =>{
  app.post('/deleteUser', (req, res) => {
      const userID = req.body.params.userID;
      db.query(
-         `DELETE FROM User WHERE userID = userID`, 
+         `DELETE FROM User WHERE userID = ?`, 
          [userID],
         (err, result) => {
             if(err){
