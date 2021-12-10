@@ -10,8 +10,11 @@ export default function RoomTable({rooms}){
 
     let history = useHistory();
 
-    function clicked(){
-
+    function editRoom(row){
+      history.push({
+        pathname: '/editRoom',
+        state: row
+      })
     }
     async function deleteRoom(row){
       if(window.confirm('Are you sure you wish to delete?')){
@@ -32,7 +35,7 @@ export default function RoomTable({rooms}){
             width: 100,
             Cell: ({cell}) => (
               <div>
-              <button onClick={() => clicked(cell.row.original)}>✏️</button>
+              <button onClick={() => editRoom(cell.row.original)}>✏️</button>
               <div className='bigDivider'/>
               <button onClick={() => deleteRoom(cell.row.original)}>❌</button>
               </div>

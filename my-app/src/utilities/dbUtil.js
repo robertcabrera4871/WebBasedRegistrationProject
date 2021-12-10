@@ -30,7 +30,19 @@ import Axios from 'axios';
             dManager: dep.dManager
           }
         })
-        return response;
+        return response.data;
+      }
+
+      static async editRoom(room, oldid){
+        const response = await Axios.post('http://localhost:8000/editRoom', {
+          params:{
+            roomID: room.roomID,
+            buildingID: room.buildingID,
+            roomType: room.roomType,
+            oldid: oldid
+          }
+        })
+        return response.data
       }
 
       static async deleteDepartment(depoID){
@@ -51,6 +63,17 @@ import Axios from 'axios';
             dChair: newDepo.dChair,
             dManager: newDepo.dManager,
             oldID: oldID
+          }
+        })
+        return response.data
+      }
+
+      static async editBuilding(newbuild, oldid){
+        const response = await Axios.put("http://localhost:8000/editBuilding", {
+          params: {
+            buildingID: newbuild.buildingID,
+            buildingUse: newbuild.buidingUse,
+            oldid: oldid
           }
         })
         return response.data
@@ -156,6 +179,15 @@ import Axios from 'axios';
         }
       })
       return response.data
+    }
+
+    static async checkRoomOfType(roomType){
+      const response = await Axios.post("http://localhost:8000/checkRoomOfType", {
+        params: {
+          roomType: roomType
+        }
+      })
+      return response.data;
     }
 
     static async addRoomOfType(room){
@@ -353,6 +385,46 @@ import Axios from 'axios';
         }
       })
         return holdResponse.data
+    }
+
+    // static async createGrad(user){
+    //   const response = await Axios.put("http://localhost:8000/createGrad",{
+    //     params: {
+    //       studentID: user.userID
+    //       program:
+    //       //spelled incorrectly in db
+    //       staus
+    //       examPassed
+    //       thesisTitle
+    //     }
+    //   })
+    // }
+    
+    static async createUser(user){
+      const response = await Axios.put("http://localhost:8000/createUser", {
+        params: {
+          userID: user.userID,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          DOB: user.DOB,
+          city: user.city,
+          state: user.state,
+          zipCode: user.zipCode,
+          address: user.address,
+          userType: user.userType
+        }
+      })
+      return response.data
+    }
+
+    static async addUserOfType(user){
+      const response = await Axios.put("http://localhost:8000/addUserOfType",{
+      params: {
+        userType: user.userType,
+        userID: user.userID,
+
+      }
+      })
     }
 
     static async getGradCourses(){

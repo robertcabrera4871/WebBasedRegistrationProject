@@ -39,7 +39,7 @@ export default function EditDepartment(rowData){
 
  return(
     <Form id='align-center'>
-    <h1 className="text-align">New Department</h1>
+    <h1 className="text-align">Editing {row.departmentID}</h1>
 <Form.Group>
     <Form.Label>Department Name</Form.Label>
     <Form.Control placeholder={row.departmentID}onChange={e => rowChanges.departmentID = e.target.value} ></Form.Control>

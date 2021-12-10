@@ -707,6 +707,54 @@ app.put('/editDepartment' , (req, res) => {
     )
 })
 
+app.post('/editRoom', (req,res) =>{
+    const params = req.body.params;
+    db.query(
+        `UPDATE Room SET roomID=?, buildingID =? , roomType=? WHERE roomID = ?`,
+        [params.roomID, params.buildingID, params.roomType, params.oldid],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.post('/checkRoomOfType' , (req,res) => {
+    const roomType = req.body.params.roomType
+    db.query(
+        `SELECT * FROM ${roomType}`,
+        [],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.put('/editBuilding', (req,res) =>{
+    const params = req.body.params;
+    db.query(
+        `UPDATE Building SET buildingID = ?, buidingUse=? WHERE buildingID= ? `,
+        [params.buildingID, params.buildingUse, params.oldid],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
 app.post('/dropMyClass', (req, res) =>{
     const CRN = req.body.params.CRN;
     const userID = req.body.params.userID;

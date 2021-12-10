@@ -17,8 +17,11 @@ export default function BuildingsTable({buildings}){
        }
     }
 
-    function clicked(){
-
+    function editBuilding(row){
+      history.push({
+        pathname: '/editBuilding',
+        state: row
+      })
     }
 
 
@@ -34,7 +37,7 @@ export default function BuildingsTable({buildings}){
             width: 100,
             Cell: ({cell}) => (
               <div>
-              <button onClick={() => clicked(cell.row.original)}>✏️</button>
+              <button onClick={() => editBuilding(cell.row.original)}>✏️</button>
               <div className='bigDivider'/>
               <button onClick={() => deleteBuilding(cell.row.original)}>❌</button>
               </div>
@@ -45,7 +48,7 @@ export default function BuildingsTable({buildings}){
             accessor: 'buildingID'
         },
         {
-          //misspelled
+          //spelledIncorrectly in DB
             Header: 'Building Use',
             accessor: 'buidingUse'
         }
