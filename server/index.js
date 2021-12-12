@@ -48,7 +48,89 @@ app.put('/createFullUndergrad', (req, res) =>{
     const params = req.body.params;
     db.query(
         `INSERT INTO UndergradFulltime VALUES(?,?,?)`,
-        [params.studentID, params.minCredit, params.maxCredit],
+        [params.studentID, params.minCourse, params.maxCredit],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
+
+app.put('/createPartUndergrad', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO UndergradPartTime VALUES(?,?,?)`,
+        [params.studentID, params.minCredit, params.maxCourse],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
+app.put('/createFullPartFac', (req, res) => {
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO ${params.fullPart}timeFac VALUES(?, ?, ?)`,
+        [params.facultyID, params.minCourse, params.maxCourse],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+    )
+
+})
+app.put('/createFaculty', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO Faculty VALUES(?,?)`,
+        [params.userID, params.rank],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
+
+app.put('/createAdmin', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO Admin VALUES(?,?)`,
+        [params.userID, params.status],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+
+    )
+})
+app.put('/createResearch', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `INSERT INTO ResearchStaff VALUES(?,?)`,
+        [params.userID, params.status],
         (err, result) => {
             if(err){
                 res.send({err: err})
@@ -77,6 +159,7 @@ app.put('/createPartUndergrad', (req, res) =>{
 
     )
 })
+
 app.put('/createPartGrad', (req, res) =>{
     const params = req.body.params;
     db.query(
@@ -146,6 +229,8 @@ app.put('/createUser', (req, res) =>{
 
     )
 })
+
+
 
 app.put('/createGrad', (req, res) =>{
     const params = req.body.params;

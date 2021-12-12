@@ -4,8 +4,6 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row'
 import Col from "react-bootstrap/Col";
-import DropdownButton from 'react-bootstrap/DropdownButton'
-import DropdownItem from 'react-bootstrap/DropdownItem'
 import React, { useState, useEffect } from "react";
 
 
@@ -40,15 +38,14 @@ export default function AddUser(chosenType){
       thesisTitle: "",
       //Faculty
       rank: "",
+      minCourse :"",
+      maxCourse : "",
       //For LoginInfo only
       userType: ""
     }
 
-    newRow.studentType = userChosen
-
     async function submitChanges(e){
         e.preventDefault();
-        console.log(newRow)
         await trimWhiteSpace();
 
         switch(userChosen){
@@ -58,9 +55,41 @@ export default function AddUser(chosenType){
             await handleGrad(); break;
             case "Faculty":
             await handleFaculty(); break;
-            
+            case "Admin": 
+            await handleAdmin(); break;
+            case "ResearchStaff": 
+            await handleResearch(); break;
         }
 
+    }
+
+    async function handleResearch(){
+        newRow.userType="research";
+        if(await checkBlanksDefault()){return("")}
+        const userRes = await dbUtil.createUser(newRow);
+        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID"); return("")}
+        if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
+        const loginRes = await dbUtil.createLogin(newRow);
+        if(loginRes.err){window.alert("Failed to Insert: LoginInfo  Email taken"); return(reverseChanges())}
+        const rsResponse = await dbUtil.createResearch(newRow)
+        if(rsResponse.err){window.alert("Failed to Insert: ResearchStaff"); return(reverseChanges())}
+        history.push('/users')
+
+      
+    }
+    async function handleAdmin(){
+        newRow.userType="admin";
+        if(await checkBlanksDefault()){return("")}
+        const userRes = await dbUtil.createUser(newRow);
+        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID"); return("")}
+        if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
+        const loginRes = await dbUtil.createLogin(newRow);
+        if(loginRes.err){window.alert("Failed to Insert: LoginInfo  Email taken"); return(reverseChanges())}
+        const adResponse = await dbUtil.createAdmin(newRow)
+        if(adResponse.err){window.alert("Failed to Insert: Admin"); return(reverseChanges())}
+        history.push('/users')
+
+      
     }
 
     async function handleUndergrad(){
@@ -69,13 +98,11 @@ export default function AddUser(chosenType){
         if(await checkBlanksUndergrad()){return("")}
         const checkTime = await checkFullOrPart();
         if(checkTime === ""){return("")}
-
         const userRes = await dbUtil.createUser(newRow);
-        console.log(userRes)
         if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID"); return("")}
         if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
         const loginRes = await dbUtil.createLogin(newRow);
-        if(loginRes.err){window.alert("Failed to Insert: LoginInfo"); return(reverseChanges())}
+        if(loginRes.err){window.alert("Failed to Insert: LoginInfo  Email taken"); return(reverseChanges())}
         const stuRes = await dbUtil.createStudent(newRow);
         if(stuRes.err){window.alert("Failed to Insert: Student (Check number fields and dates) "); return(reverseChanges())}
         const gradRes = await dbUtil.createUndergrad(newRow);
@@ -89,7 +116,7 @@ export default function AddUser(chosenType){
            fullRes = await dbUtil.createPartUndergrad(newRow)
            if(fullRes.err){window.alert("Failed to Insert: Part Undergraduate"); return(reverseChanges())}
         } else {return("")}
-      
+        history.push('/users')
    
 
     }
@@ -101,16 +128,13 @@ export default function AddUser(chosenType){
         const checkTime = await checkFullOrPart();
         if(checkTime === ""){return("")}
         const userRes = await dbUtil.createUser(newRow);
-        console.log(userRes)
         if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID"); return("")}
         if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
         const loginRes = await dbUtil.createLogin(newRow);
-        console.log(loginRes)
-        if(loginRes.err){window.alert("Failed to Insert: LoginInfo Email Password combo taken"); return(reverseChanges())}
+        if(loginRes.err){window.alert("Failed to Insert: LoginInfo Email taken"); return(reverseChanges())}
         const stuRes = await dbUtil.createStudent(newRow);
         if(stuRes.err){window.alert("Failed to Insert: Student (Check number fields and dates)"); return(reverseChanges())}
         const gradRes = await dbUtil.createGrad(newRow);
-        console.log(gradRes)
         if(gradRes.err){window.alert("Failed to Insert: Graduate"); return(reverseChanges())}
       
 
@@ -123,16 +147,51 @@ export default function AddUser(chosenType){
            fullRes = await dbUtil.createPartGrad(newRow)
            if(fullRes.err){window.alert("Failed to Insert: Full Undergraduate"); return(reverseChanges())}
         } 
+        history.push('/users')
+
 
     }
 
+    async function handleFaculty(){
+        newRow.userType="faculty";
+        if(await checkBlanksFac()){return("")}
+        const checkTime = await checkFullOrPartFac();
+        
+        const userRes = await dbUtil.createUser(newRow);
+        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID"); return("")}
+        if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
+
+        const loginRes = await dbUtil.createLogin(newRow);
+        if(loginRes.err){window.alert("Failed to Insert: LoginInfo Email Password combo taken"); return(reverseChanges())}
+      
+        const facResponse = await dbUtil.createFaculty(newRow)
+        if(facResponse.err){window.alert(`Failed to Insert: Faculty, (Check number fields and dates)`); return(reverseChanges())}
+
+        const fullRes = await dbUtil.createFullPartFac(newRow, checkTime)
+        if(fullRes.err){window.alert(`Failed to Insert: ${checkTime}time Faculty, (Check number fields and dates)`); return(reverseChanges())}
+        history.push('/users')
+
+    }
+
+
+    
+
     async function reverseChanges(){
-        const response = await dbUtil.deleteUser(newRow)
-        console.log(response)
+        const response = await dbUtil.deleteUser(newRow.userID)
         console.log("User deleted")
         return("")
     }
+    async function checkFullOrPartFac(){
+        if(newRow.rank === "part"){
+            return "part"
+        }
+        if(newRow.rank === "full"){
+            return "full"
+        }
+      window.alert("Valid Ranks: full / part")
+      return("")
 
+    }
     async function checkFullOrPart(){
         if(newRow.minCredit === "0" && newRow.maxCredit === "12"){
             return "part"
@@ -145,14 +204,28 @@ export default function AddUser(chosenType){
 
     }
 
-    async function handleFaculty(){
-        // response = await dbUtil.createFaculty(newRow)
-        //     console.log(response)
-        //     response = await dbUtil.createFullPartFac(newRow); 
-        //     console.log(response); 
+   
 
+    async function checkBlanksDefault(){
+        if(newRow.userID === '' || newRow.firstName  === '' || newRow.lastName === '' ||
+        newRow.DOB === '' || newRow.city  === '' || newRow.state  === '' || 
+        newRow.zipCode === '' || newRow.address  === '' || newRow.email  === '' ||
+       newRow.password  === ''){
+           window.alert('Please ensure no blank spaces')
+           return true
+       } 
+       return false
     }
-
+    async function checkBlanksFac(){
+        if(newRow.userID === '' || newRow.firstName  === '' || newRow.lastName === '' ||
+        newRow.DOB === '' || newRow.city  === '' || newRow.state  === '' || 
+        newRow.zipCode === '' || newRow.address  === '' || newRow.email  === '' ||
+       newRow.password  === '' || newRow.rank === ''){
+           window.alert('Please ensure no blank spaces')
+           return true
+       } 
+       return false
+    }
     async function checkBlanksUndergrad(){
         if(newRow.userID === '' || newRow.firstName  === '' || newRow.lastName === '' ||
          newRow.DOB === '' || newRow.city  === '' || newRow.state  === '' || 
@@ -219,7 +292,12 @@ export default function AddUser(chosenType){
         <Col>
         {userChosen === 'Faculty' && <div>
         <Form.Label>Rank</Form.Label>
-        <Form.Control onChange={e => newRow.rank = e.target.value} ></Form.Control></div>
+        <Form.Control onChange={e => newRow.rank = e.target.value} ></Form.Control>
+        <Form.Label>Min Courses</Form.Label>
+        <Form.Control onChange={e => newRow.minCourse = e.target.value} ></Form.Control>
+        <Form.Label>Max Courses</Form.Label>
+        <Form.Control onChange={e => newRow.maxCourse= e.target.value} ></Form.Control>
+        </div>
         }
         {(userChosen === 'Undergrad Student' || userChosen === 'Grad Student' )&& <div>
         <Form.Label>Credits Earned</Form.Label>

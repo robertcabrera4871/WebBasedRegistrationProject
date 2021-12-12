@@ -398,6 +398,16 @@ import Axios from 'axios';
       return response.data
     }
 
+    static async createFaculty(fac){
+      const response = await Axios.put("http://localhost:8000/createFaculty",{
+        params: {
+          userID: fac.userID,
+          rank: fac.rank
+        }        
+      })
+      return response.data
+    }
+
     static async createPartUndergrad(student){
       const response = await Axios.put("http://localhost:8000/createPartUndergrad",{
         params: {
@@ -428,6 +438,18 @@ import Axios from 'axios';
       })
       return response.data
     }
+    static async createFullPartFac(fac, fullPart){
+      const response = await Axios.put("http://localhost:8000/createFullPartFac",{
+        params: {
+          facultyID: fac.userID,
+          minCourse: fac.minCourse,
+          maxCourse: fac.maxCourse,
+          fullPart: fullPart
+        }        
+      })
+      return response.data
+    }
+
 
 
     static async createGrad(user){
@@ -479,6 +501,26 @@ import Axios from 'axios';
       })
       return response.data
     }
+
+    static async createAdmin(user){
+      const response = await Axios.put("http://localhost:8000/createAdmin" , {
+        params: {
+          userID: user.userID,
+          status: user.status
+        }
+      })
+      return response.data
+    }
+    static async createResearch(user){
+      const response = await Axios.put("http://localhost:8000/createResearch" , {
+        params: {
+          userID: user.userID,
+          status: user.status
+        }
+      })
+      return response.data
+    }
+    
     
     static async createUser(user){
       const response = await Axios.put("http://localhost:8000/createUser", {
