@@ -186,10 +186,12 @@ export default function AddUser(chosenType){
         return("")
     }
     async function checkFullOrPartFac(){
-        if(newRow.rank === "part" && newRow.minCourse <= newRow.maxCourse && newRow.maxCourse <= 2 ){
+        if(newRow.rank === "part" && newRow.minCourse <= newRow.maxCourse && newRow.maxCourse <= 2 && 
+        newRow.mincCourse >= 0){
             return "part"
         }
-        if(newRow.rank === "full" && newRow.minCourse <= newRow.maxCourse && newRow.maxCourse <= 4){
+        if(newRow.rank === "full" && newRow.minCourse <= newRow.maxCourse && 
+        newRow.maxCourse <= 4 && newRow.maxCourse > 2 && newRow.minCourse >= 0){
             return "full"
         }
       window.alert("Valid Ranks: full / part Max Course for Part: 2 Max Course for Full: 4")

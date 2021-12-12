@@ -368,6 +368,23 @@ import Axios from 'axios';
         return userResponse.data
       }
 
+      static async updateUser(newRow){
+        const userResponse = await Axios.post("http://localhost:8000/updateUser", {
+          params: {
+            newRow: newRow
+          }
+        })
+        return userResponse.data
+      }
+      static async updateLogin(newRow){
+        const userResponse = await Axios.post("http://localhost:8000/updateLogin", {
+          params: {
+            newRow: newRow
+          }
+        })
+        return userResponse.data
+      }
+
       static async getStudent(userID){
         const userResponse = await Axios.post("http://localhost:8000/getStudent", {
           params: {
@@ -405,6 +422,50 @@ import Axios from 'axios';
         })
         return userResponse.data
       }
+
+      static async updateResearch(newRow){
+        const userResponse = await Axios.post("http://localhost:8000/updateResearch", {
+          params: {
+           newRow: newRow
+          }
+        })
+        return userResponse.data
+      }
+
+      static async updateStudent(newRow){
+        const userResponse = await Axios.post("http://localhost:8000/updateStudent", {
+          params: {
+           newRow: newRow
+          }
+        })
+        return userResponse.data
+      }
+      static async updateUndergrad(newRow){
+        const userResponse = await Axios.post("http://localhost:8000/updateUndergrad", {
+          params: {
+           newRow: newRow
+          }
+        })
+        return userResponse.data
+      }
+      static async updateGrad(newRow){
+        const userResponse = await Axios.post("http://localhost:8000/updateGrad", {
+          params: {
+           newRow: newRow
+          }
+        })
+        return userResponse.data
+      }
+      static async getMinMaxFac(newRow, facRank){
+        const userResponse = await Axios.post("http://localhost:8000/getMinMax", {
+          params: {
+            userID: newRow.userID,
+            fullpart: facRank
+          }
+        })
+        return userResponse.data
+      }
+      
       static async getLoginInfo(userID){
         const userResponse = await Axios.post("http://localhost:8000/getLoginInfo", {
           params: {

@@ -126,7 +126,7 @@ export default function AllUsers(){
     return(
       <div className='table-center'>
         <h1 className='text-align'>All Users</h1>
-        <DropdownButton id='dropdown' title={'AddUser'}>
+        <DropdownButton id='dropdown' title={'Add User'}>
             <DropdownItem onClick={(e) => {forwardAdd('Undergrad Student')}}>Undergrad Student</DropdownItem>
             <DropdownItem onClick={(e) => {forwardAdd('Grad Student')}}>Grad Student</DropdownItem>
             <DropdownItem onClick={(e) => {forwardAdd('Admin')}}>Admin</DropdownItem>

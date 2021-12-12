@@ -93,10 +93,10 @@ app.put('/createFullPartFac', (req, res) => {
     )
 
 })
-app.put('/updateFullPartFac', (req, res) => {
+app.post('/updateFullPartFac', (req, res) => {
     const params = req.body.params;
     db.query(
-        `UPDATE ${params.fullPart}timeFac SET minCourse = ? maxCourse
+        `UPDATE ${params.fullpart}timeFac SET minCourse = ?, maxCourse = ?
         WHERE facultyID = ?`,
         [params.minCourse, params.maxCourse, params.userID],
         (err, result) => {
@@ -382,6 +382,106 @@ app.post('/getUser', (req, res) =>{
         }
     )
 })
+
+app.post('/updateUser', (req, res) =>{
+    const newRow = req.body.params.newRow
+    db.query(
+        `UPDATE User SET firstName = ?, lastName = ?, DOB = ?,
+         city = ?, state = ?, zipCode = ?, address = ?, userType = ? WHERE userID = ?`,
+        [newRow.firstName, newRow.lastName, newRow.DOB, newRow.city, newRow.state, newRow.zipCode,
+        newRow.address,newRow.userType,newRow.userID ],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.post('/updateResearch', (req, res) =>{
+    const newRow = req.body.params.newRow
+    db.query(
+        `UPDATE ResearchStaff SET status = ? WHERE researchID = ?`,
+        [newRow.status,newRow.userID ],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+
+app.post('/updateStudent', (req, res) =>{
+    const newRow = req.body.params.newRow
+    db.query(
+        `UPDATE Student SET yearLevel = ?, yearOfEntrance = ? WHERE studentID = ?`,
+        [newRow.yearLevel,newRow.yearOfEntrance, newRow.userID ],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+
+app.post('/updateUndergrad', (req, res) =>{
+    const newRow = req.body.params.newRow
+    db.query(
+        `UPDATE Undergraduate SET yearLevel = ? WHERE studentID = ?`,
+        [newRow.yearLevel,newRow.yearOfEntrance, newRow.userID ],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.post('/updateGrad', (req, res) =>{
+    const newRow = req.body.params.newRow
+    db.query(
+        `UPDATE Graduate SET program = ?, yearIn = ?, qualifyingExam = ?, thesisTitle = ? WHERE studentID = ?`,
+        [newRow.program,newRow.yearIn, newRow.qualifyingExam, newRow.thesisTitle, newRow.userID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.post('/updateLogin', (req, res) =>{
+    const newRow = req.body.params.newRow
+    db.query(
+        `UPDATE LoginInfo SET email = ?, password = ?, status = ?  WHERE userID = ?`,
+        [newRow.email, newRow.password, newRow.status, newRow.userID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
 app.post('/getStudent', (req, res) =>{
     const userID = req.body.params.userID
     db.query(
@@ -681,6 +781,22 @@ app.put('/editMS', (req, res) =>{
     const params = req.body.params;
    db.query(
        `SELECT rank FROM Faculty WHERE facultyID = ?`,
+        [params.userID],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+        }
+   )
+})
+
+app.post('/getMinMax', (req, res) => {
+    const params = req.body.params;
+   db.query(
+       `SELECT minCourse, maxCourse FROM ${params.fullpart}timefac WHERE facultyID = ?`,
         [params.userID],
         (err, result) =>{
            if(err){

@@ -26,7 +26,7 @@ export default function EditUser(rowData){
         address: "",
         email: "",
         password: "",
-        status: "active", 
+        status: "", 
         //Student
         creditsEarned: "",
         yearLevel: "",
@@ -54,6 +54,7 @@ export default function EditUser(rowData){
     const [studentInfo, setStudentInfo] = useState([])
     const [gradInfo, setGradInfo] = useState([])
     const [facRank, setFacRank] = useState([])
+    const [minMax, setMinMax] = useState([])
 
 
 
@@ -67,18 +68,18 @@ export default function EditUser(rowData){
             console.log(newRow)
             await trimWhiteSpace();
     
-            // switch(row.userType){
-            //     case "Undergrad Student": 
-            //     await handleUndergrad(); break;
-            //     case "Grad Student": 
-            //     await handleGrad(); break;
-            //     case "Faculty":
-            //     await handleFaculty(); break;
-            //     case "Admin": 
-            //     await handleAdmin(); break;
-            //     case "ResearchStaff": 
-            //     await handleResearch(); break;
-            // }
+            switch(row.userType){
+                case "Undergrad Student": 
+                await handleUndergrad(); break;
+                case "Grad Student": 
+                await handleGrad(); break;
+                case "Faculty":
+                await handleFaculty(); break;
+                case "Admin": 
+                await handleAdmin(); break;
+                case "ResearchStaff": 
+                await handleResearch(); break;
+            }
     
     }
     async function getUserData(){
@@ -89,8 +90,11 @@ export default function EditUser(rowData){
             setStudentInfo(await dbUtil.getStudent(row.userID))
 
         } else if(row.userType === 'Faculty')
-        {
-            setFacRank(await dbUtil.getFacRank(row.userID))
+        {   
+            const tempRank = await dbUtil.getFacRank(row.userID)
+            setFacRank(tempRank)
+            setMinMax(await dbUtil.getMinMaxFac(row, tempRank[0]?.rank))
+            
 
         }
             setLoginInfo(await dbUtil.getLoginInfo(row.userID))
@@ -105,29 +109,33 @@ export default function EditUser(rowData){
     }
 
     async function handleResearch(){
-        if(newRow.status !== "locked" || newRow.staus !== "active"){window.alert("status must be locked or active"); return("")}
-        if(await dbUtil.updateUser(newRow)){window.alert("Failed to Update user"); return("")};
+        if(!(newRow.status !== "locked" || newRow.status !== "active")){window.alert("status must be locked or active"); return("")}
+        const useRes = await dbUtil.updateUser(newRow)
+        if(useRes.err){window.alert("Failed to Update user"); return("")};
         const loginRes = await dbUtil.updateLogin(newRow);
         if(loginRes.err){window.alert("Failed to Update: LoginInfo Email taken"); return("")}
         const rsResponse = await dbUtil.updateResearch(newRow)
+        console.log(rsResponse)
         if(rsResponse.err){window.alert("Failed to Update: ResearchStaff"); return("")}
         history.push('/users')
     }
 
-    async function handleFac(){
-        if(newRow.status !== "locked" || newRow.staus !== "active"){window.alert("status must be locked or active"); return("")}
+    async function handleFaculty(){
+        if(!(newRow.status !== "locked" || newRow.status !== "active")){window.alert("status must be locked or active"); return("")}
         if(await checkFacCourse()){return("")}
-        if(await dbUtil.updateUser(newRow)){window.alert("Failed to Update user"); return("")};
+        const useRes = await dbUtil.updateUser(newRow)
+        if(useRes.err){window.alert("Failed to Update user"); return("")};
         const loginRes = await dbUtil.updateLogin(newRow);
         if(loginRes.err){window.alert("Failed to Update: LoginInfo Email taken"); return("")}
-        const facRes = await dbUtil.updateFaculty(newRow);
-        if(facRes.err){window.alert("Failed to Update: Faculty"); return("")}
+        const fullPart = await dbUtil.updateFullPartFac(newRow);
+        console.log(fullPart.err)
+        if(fullPart.err){window.alert(`Failed to Update: ${newRow.rank}time Faculty`); return("")}
         history.push('/users')
     }
      
 
     async function handleAdmin(){
-        if(newRow.status !== "locked" || newRow.staus !== "active"){window.alert("status must be locked or active"); return("")}
+        if(!(newRow.status !== "locked" || newRow.status !== "active")){window.alert("status must be locked or active"); return("")}
         if(await dbUtil.updateUser(newRow)){window.alert("Failed to Update user"); return("")};
         const loginRes = await dbUtil.updateLogin(newRow);
         if(loginRes.err){window.alert("Failed to Update: LoginInfo Email taken"); return("")}
@@ -137,11 +145,13 @@ export default function EditUser(rowData){
     }
 
     async function handleUndergrad(){
-        if(newRow.status !== "locked" || newRow.staus !== "active"){window.alert("status must be locked or active"); return("")}
-        if(await dbUtil.updateUser(newRow)){window.alert("Failed to Update user"); return("")};
+        if(!(newRow.status !== "locked" || newRow.status !== "active")){window.alert("status must be locked or active"); return("")}
+        const useRes = await dbUtil.updateUser(newRow)
+        if(useRes.err){window.alert("Failed to Update user"); return("")};
         const loginRes = await dbUtil.updateLogin(newRow);
         if(loginRes.err){window.alert("Failed to Update: LoginInfo Email taken"); return("")}
         const stuRes = await dbUtil.updateStudent(newRow);
+        console.log(stuRes)
         if(stuRes.err){window.alert("Failed to Update: Student (Check number fields and dates) "); return("")}
         const gradRes = await dbUtil.updateUndergrad(newRow);
         if(gradRes.err){window.alert("Failed to Update: Undergraduate"); return("")}
@@ -149,30 +159,32 @@ export default function EditUser(rowData){
     }
 
     async function handleGrad(){
-        if(newRow.status !== "locked" || newRow.staus !== "active"){window.alert("status must be locked or active"); return("")}
-        if(await dbUtil.updateUser(newRow)){window.alert("Failed to Update user"); return("")};
+        if(!(newRow.status !== "locked" || newRow.status !== "active")){window.alert("status must be locked or active"); return("")}
+        const useRes = await dbUtil.updateUser(newRow)
+        if(useRes.err){window.alert("Failed to Update user"); return("")};
         const loginRes = await dbUtil.updateLogin(newRow);
         if(loginRes.err){window.alert("Failed to Update: LoginInfo Email taken"); return("")}
         const stuRes = await dbUtil.updateStudent(newRow);
         if(stuRes.err){window.alert("Failed to Update: Student (Check number fields and dates) "); return("")}
         const gradRes = await dbUtil.updateGrad(newRow);
+        console.log(gradRes)
         if(gradRes.err){window.alert("Failed to Update: Graduate"); return("")}
         history.push('/users')
     }
 
 
     async function checkFacCourse(){
-        if(newRow.rank === "part" && newRow.minCourse <= newRow.maxCourse && newRow.maxCourse <= 2 ){
+        if(newRow.rank === "part" && newRow.minCourse <= newRow.maxCourse && newRow.maxCourse <= 2 && 
+        newRow.minCourse >= 0){
             return false
         }
-        if(newRow.rank === "full" && newRow.minCourse <= newRow.maxCourse && newRow.maxCourse <= 4){
+        if(newRow.rank === "full" && newRow.minCourse <= newRow.maxCourse && 
+        newRow.maxCourse <= 4 && newRow.maxCourse > 2 && newRow.minCourse >= 0){
             return false
         }
-        window.alert("Max Course for Parttime: 2 Max Course for Fulltime: 4")
-        return(true)
+        window.alert("Max Course for Parttime: 2 Max Course for Fulltime: 4 Min Course: 0")
+        return true
     }
-
-
 
 
 
@@ -181,13 +193,15 @@ export default function EditUser(rowData){
             ...gradInfo[0],
             ...studentInfo[0],
             ...facRank[0],
+            ...loginInfo[0],
             ...userInfo[0],
-            ...loginInfo[0]
+            ...minMax[0]
         }
         newRow = {
             ...userData
         }
         for(const i in userData){
+            newRow.DOB = newRow.DOB.substring(0, 10)
             userData.DOB = userData.DOB.substring(0, 10)
           }
     }
