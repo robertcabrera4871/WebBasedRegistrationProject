@@ -44,8 +44,12 @@ export default function AddUser(chosenType){
       userType: ""
     }
 
+    newRow.studentType = userChosen;
+
+
     async function submitChanges(e){
         e.preventDefault();
+        console.log(newRow)
         await trimWhiteSpace();
 
         switch(userChosen){
@@ -67,28 +71,25 @@ export default function AddUser(chosenType){
         newRow.userType="research";
         if(await checkBlanksDefault()){return("")}
         const userRes = await dbUtil.createUser(newRow);
-        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID"); return("")}
+        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID OR First/Last name"); return("")}
         if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
         const loginRes = await dbUtil.createLogin(newRow);
         if(loginRes.err){window.alert("Failed to Insert: LoginInfo  Email taken"); return(reverseChanges())}
         const rsResponse = await dbUtil.createResearch(newRow)
         if(rsResponse.err){window.alert("Failed to Insert: ResearchStaff"); return(reverseChanges())}
         history.push('/users')
-
-      
     }
     async function handleAdmin(){
         newRow.userType="admin";
         if(await checkBlanksDefault()){return("")}
         const userRes = await dbUtil.createUser(newRow);
-        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID"); return("")}
+        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID OR First/Last name"); return("")}
         if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
         const loginRes = await dbUtil.createLogin(newRow);
         if(loginRes.err){window.alert("Failed to Insert: LoginInfo  Email taken"); return(reverseChanges())}
         const adResponse = await dbUtil.createAdmin(newRow)
         if(adResponse.err){window.alert("Failed to Insert: Admin"); return(reverseChanges())}
         history.push('/users')
-
       
     }
 
@@ -99,7 +100,7 @@ export default function AddUser(chosenType){
         const checkTime = await checkFullOrPart();
         if(checkTime === ""){return("")}
         const userRes = await dbUtil.createUser(newRow);
-        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID"); return("")}
+        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID OR First/Last name"); return("")}
         if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
         const loginRes = await dbUtil.createLogin(newRow);
         if(loginRes.err){window.alert("Failed to Insert: LoginInfo  Email taken"); return(reverseChanges())}
@@ -114,6 +115,7 @@ export default function AddUser(chosenType){
            if(fullRes.err){window.alert("Failed to Insert: Full Undergraduate"); return(reverseChanges())}
         } else if(checkTime === "part"){
            fullRes = await dbUtil.createPartUndergrad(newRow)
+           console.log(fullRes)
            if(fullRes.err){window.alert("Failed to Insert: Part Undergraduate"); return(reverseChanges())}
         } else {return("")}
         history.push('/users')
@@ -128,14 +130,16 @@ export default function AddUser(chosenType){
         const checkTime = await checkFullOrPart();
         if(checkTime === ""){return("")}
         const userRes = await dbUtil.createUser(newRow);
-        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID"); return("")}
+        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID OR First/Last name"); return("")}
         if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
         const loginRes = await dbUtil.createLogin(newRow);
         if(loginRes.err){window.alert("Failed to Insert: LoginInfo Email taken"); return(reverseChanges())}
         const stuRes = await dbUtil.createStudent(newRow);
+        console.log(stuRes)
         if(stuRes.err){window.alert("Failed to Insert: Student (Check number fields and dates)"); return(reverseChanges())}
         const gradRes = await dbUtil.createGrad(newRow);
-        if(gradRes.err){window.alert("Failed to Insert: Graduate"); return(reverseChanges())}
+        console.log(gradRes)
+        if(gradRes.err){window.alert("Failed to Insert: Graduate (Check number fields)"); return(reverseChanges())}
       
 
         if(checkTime === "full")
@@ -158,7 +162,7 @@ export default function AddUser(chosenType){
         const checkTime = await checkFullOrPartFac();
         
         const userRes = await dbUtil.createUser(newRow);
-        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID"); return("")}
+        if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID OR First/Last name"); return("")}
         if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
 
         const loginRes = await dbUtil.createLogin(newRow);
@@ -182,13 +186,13 @@ export default function AddUser(chosenType){
         return("")
     }
     async function checkFullOrPartFac(){
-        if(newRow.rank === "part"){
+        if(newRow.rank === "part" && newRow.minCourse <= newRow.maxCourse && newRow.maxCourse <= 2 ){
             return "part"
         }
-        if(newRow.rank === "full"){
+        if(newRow.rank === "full" && newRow.minCourse <= newRow.maxCourse && newRow.maxCourse <= 4){
             return "full"
         }
-      window.alert("Valid Ranks: full / part")
+      window.alert("Valid Ranks: full / part Max Course for Part: 2 Max Course for Full: 4")
       return("")
 
     }
@@ -227,6 +231,7 @@ export default function AddUser(chosenType){
        return false
     }
     async function checkBlanksUndergrad(){
+
         if(newRow.userID === '' || newRow.firstName  === '' || newRow.lastName === '' ||
          newRow.DOB === '' || newRow.city  === '' || newRow.state  === '' || 
          newRow.zipCode === '' || newRow.address  === '' || newRow.email  === '' ||
@@ -243,13 +248,13 @@ export default function AddUser(chosenType){
          newRow.zipCode === '' || newRow.address  === '' || newRow.email  === '' ||
         newRow.password  === '' ||newRow.creditsEarned  === '' ||newRow.yearLevel  === '' ||
         newRow.studentType  === '' || newRow.yearOfEntrance === '' || newRow.program === '' || 
-        newRow.yearIn === '' ||  newRow.qualifyingExam === '' || newRow.thesisTitle=== '' ){
+        newRow.yearIn === '' ||  newRow.qualifyingExam === '' || newRow.thesisTitle === '' ){
             window.alert('Please ensure no blank spaces')
             return true
         } 
         return false
     }
-    async function trimWhiteSpace(){
+    async function trimWhiteSpace(newRow){
         for(const property in newRow){
             newRow[property] = newRow[property].trim()
          }
@@ -322,7 +327,7 @@ export default function AddUser(chosenType){
          <Form.Label>Year In</Form.Label>
          <Form.Control onChange={e => newRow.yearIn = e.target.value} ></Form.Control>
          <Form.Label>Qualifying Exam</Form.Label>
-         <Form.Control onChange={e => newRow.qualifyingExam = e.target.value} ></Form.Control>
+         <Form.Control placeholder ={'1:Yes 0:No'}onChange={e => newRow.qualifyingExam = e.target.value} ></Form.Control>
          <Form.Label>Thesis Title</Form.Label>
          <Form.Control onChange={e => newRow.thesisTitle = e.target.value} ></Form.Control>
          </div>

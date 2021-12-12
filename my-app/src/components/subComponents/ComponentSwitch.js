@@ -38,6 +38,7 @@ import AddDepartment from './AddDepartment';
 import EditDepartment from './EditDepartment';
 import EditBuilding from './EditBuilding';
 import EditRoom from './EditRoom';
+import EditUser from './EditUser';
 
 
 function ComponentSwitch() {
@@ -56,6 +57,11 @@ function ComponentSwitch() {
             <Route exact path="/undergradCatalog" component={UndergradCatalog}></Route>
             <Route exact path="/masterSchedule" component={MasterSchedule}></Route>
 
+            {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/editUser" component={EditUser} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/editUser" component={EditUser} allowed={false}></ProtectedRoute> 
+            }
             {
                 (privs.isAdmin) ? 
                 <ProtectedRoute exact path ="/editRoom" component={EditRoom} allowed={true}></ProtectedRoute> : 

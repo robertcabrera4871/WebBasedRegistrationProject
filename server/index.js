@@ -93,6 +93,24 @@ app.put('/createFullPartFac', (req, res) => {
     )
 
 })
+app.put('/updateFullPartFac', (req, res) => {
+    const params = req.body.params;
+    db.query(
+        `UPDATE ${params.fullPart}timeFac SET minCourse = ? maxCourse
+        WHERE facultyID = ?`,
+        [params.minCourse, params.maxCourse, params.userID],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        }
+    )
+
+})
+
 app.put('/createFaculty', (req, res) =>{
     const params = req.body.params;
     db.query(
@@ -349,6 +367,55 @@ app.get('/allUsers', (req, res) =>{
     )
 })
 
+app.post('/getUser', (req, res) =>{
+    const userID = req.body.params.userID
+    db.query(
+        'SELECT * FROM User WHERE userID = ?',
+        [userID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.post('/getStudent', (req, res) =>{
+    const userID = req.body.params.userID
+    db.query(
+        'SELECT * FROM Student WHERE studentID = ?',
+        [userID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.post('/getGrad', (req, res) =>{
+    const userID = req.body.params.userID
+    db.query(
+        'SELECT * FROM Graduate WHERE studentID = ?',
+        [userID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+
+
 app.put('/addRoom', (req, res) => {
     const params = req.body.params;
     db.query(`INSERT INTO Room VALUES(?,?,?)` ,
@@ -597,7 +664,7 @@ app.put('/editMS', (req, res) =>{
      const params = req.body.params;
     db.query(
         `SELECT u.userID FROM User u WHERE
-        u.firstName = ? AND u.lastName = ? AND u.userType = 'faculty'`,
+        u.firstName = ? AND u.lastName = ? AND u.userType = 'Faculty'`,
          [params.firstName, params.lastName],
          (err, result) =>{
             if(err){
@@ -609,6 +676,38 @@ app.put('/editMS', (req, res) =>{
          }
     )
  })
+
+ app.post('/getFacRank', (req, res) => {
+    const params = req.body.params;
+   db.query(
+       `SELECT rank FROM Faculty WHERE facultyID = ?`,
+        [params.userID],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+        }
+   )
+})
+
+app.post('/getLoginInfo', (req, res) => {
+    const params = req.body.params;
+   db.query(
+       `SELECT * FROM LoginInfo WHERE userID = ?`,
+        [params.userID],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+        }
+   )
+})
 
  app.post('/getTimeSlotID', (req, res) => {
     const params = req.body.params;

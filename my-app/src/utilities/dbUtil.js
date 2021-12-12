@@ -148,6 +148,8 @@ import Axios from 'axios';
       })
       return response.data
     }
+
+    
     static async editCourse(row, oldCourseID){
       const editResponse = await Axios.put("http://localhost:8000/editCourse", {
         params:{
@@ -357,6 +359,63 @@ import Axios from 'axios';
         const userResponse = await Axios.get("http://localhost:8000/allUsers")
         return userResponse.data
       }
+      static async getUser(userID){
+        const userResponse = await Axios.post("http://localhost:8000/getUser", {
+          params: {
+            userID: userID
+          }
+        })
+        return userResponse.data
+      }
+
+      static async getStudent(userID){
+        const userResponse = await Axios.post("http://localhost:8000/getStudent", {
+          params: {
+            userID: userID
+          }
+        })
+        return userResponse.data
+      }
+
+      static async getGrad(userID){
+        const userResponse = await Axios.post("http://localhost:8000/getGrad", {
+          params: {
+            userID: userID
+          }
+        })
+        return userResponse.data
+      }
+
+      static async getFacRank(userID){
+        const userResponse = await Axios.post("http://localhost:8000/getFacRank", {
+          params: {
+            userID: userID
+          }
+        })
+        return userResponse.data
+      }
+      static async updateFullPartFac(newRow){
+        const userResponse = await Axios.post("http://localhost:8000/updateFullPartFac", {
+          params: {
+            userID: newRow.userID,
+            fullpart: newRow.rank,
+            minCourse: newRow.minCourse,
+            maxCourse: newRow.maxCourse
+          }
+        })
+        return userResponse.data
+      }
+      static async getLoginInfo(userID){
+        const userResponse = await Axios.post("http://localhost:8000/getLoginInfo", {
+          params: {
+            userID: userID
+          }
+        })
+        return userResponse.data
+      }
+      
+
+
 
       static async getMajors(){
         const majorsResponse = await Axios.get("http://localhost:8000/majors")
@@ -409,6 +468,7 @@ import Axios from 'axios';
     }
 
     static async createPartUndergrad(student){
+      console.log(student)
       const response = await Axios.put("http://localhost:8000/createPartUndergrad",{
         params: {
           studentID: student.userID,
@@ -609,6 +669,14 @@ import Axios from 'axios';
         params: {
           firstName: firstName,
           lastName: lastName
+        }
+      })
+      return getResponse.data
+    }
+    static async getFacRank(userID){
+      const getResponse = await Axios.post("http://localhost:8000/getFacRank",{
+        params: {
+          userID: userID
         }
       })
       return getResponse.data

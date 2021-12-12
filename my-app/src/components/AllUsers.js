@@ -26,13 +26,18 @@ export default function AllUsers(){
         )
      } 
 
-     function clicked(row){
-      console.log(row)
-    }
+  
     function forwardAdd(chosenType){
       history.push({
         pathname: '/addUser',
         state: chosenType
+      })
+    }
+
+    function forwardEdit(user){
+      history.push({
+        pathname: '/editUser',
+        state: user
       })
     }
     async function deleteUser(row){
@@ -52,7 +57,7 @@ export default function AllUsers(){
         width: 100,
         Cell: ({cell}) => (
           <div>
-          <button onClick={() => clicked(cell.row.original)}>✏️</button>
+          <button onClick={() => forwardEdit(cell.row.original)}>✏️</button>
           <div className='bigDivider'/>
           <button onClick={() => deleteUser(cell.row.original)}>❌</button>
           </div>
@@ -97,7 +102,9 @@ export default function AllUsers(){
 
      ], []);
 
-     
+     for(const i in data){
+      data[i].DOB = data[i].DOB.substring(0, 10)
+    }
 
      const {
        getTableProps,
@@ -115,7 +122,7 @@ export default function AllUsers(){
       
 
      const {pageIndex} = state
-
+     
     return(
       <div className='table-center'>
         <h1 className='text-align'>All Users</h1>

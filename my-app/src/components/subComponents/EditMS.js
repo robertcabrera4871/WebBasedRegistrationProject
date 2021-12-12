@@ -19,12 +19,19 @@ export default function EditMS(rowData){
     
     async function submitChanges(e){
         e.preventDefault();
+        await trimWhiteSpace()
         if (await checkFaculty() === ""){return("")}
         if (await checkTimeSlotID() === ""){return("")}
         if(rowChanges.startTime !== row.startTime && rowChanges.endTime !== row.endTime){
             if (await checkAvailability() === ""){return("")}
         }
         await editMS();
+    }
+
+    async function trimWhiteSpace(rowChanges){
+        for(const property in rowChanges){
+            rowChanges[property] = rowChanges[property].trim()
+         }
     }
 
     async function checkAvailability(){

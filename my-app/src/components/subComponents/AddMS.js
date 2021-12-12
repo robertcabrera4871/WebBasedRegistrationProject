@@ -78,7 +78,7 @@ export default function AddMS(){
             if(timeSlotResult.err){
                 window.alert(timeSlotResult.err.sqlMessage)
             } else if(timeSlotResult.length !==1){
-                window.alert("No timeslot found with that start/end time or day")
+                window.alert("No timeslot found with that start/end time or day, (Check if space between time and PM/AM)")
                 return("");
             } else{
                 newRow.timeSlotID = timeSlotResult[0].timeslotID.toString();
