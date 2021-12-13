@@ -39,6 +39,9 @@ import EditDepartment from './EditDepartment';
 import EditBuilding from './EditBuilding';
 import EditRoom from './EditRoom';
 import EditUser from './EditUser';
+import AddMinor from './AddMinor';
+import AddMinorRequirement from './AddMinorRequirement';
+import AddAdvising from './AddAdvising';
 
 
 function ComponentSwitch() {
@@ -59,6 +62,11 @@ function ComponentSwitch() {
 
             {
                 (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/addAdvising" component={AddAdvising} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/addAdvising" component={AddAdvising} allowed={false}></ProtectedRoute> 
+            }
+            {
+                (privs.isAdmin) ? 
                 <ProtectedRoute exact path ="/editUser" component={EditUser} allowed={true}></ProtectedRoute> : 
                 <ProtectedRoute exact path ="/editUser" component={EditUser} allowed={false}></ProtectedRoute> 
             }
@@ -76,6 +84,11 @@ function ComponentSwitch() {
                 (privs.isAdmin) ? 
                 <ProtectedRoute exact path ="/editDP" component={EditDepartment} allowed={true}></ProtectedRoute> : 
                 <ProtectedRoute exact path ="/editDP" component={EditDepartment} allowed={false}></ProtectedRoute> 
+            }
+            {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/AddMinorRequire" component={AddMinorRequirement} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/AddMinorRequire" component={AddMinorRequirement} allowed={false}></ProtectedRoute> 
             }
             {
                 (privs.isAdmin) ? 
@@ -127,6 +140,12 @@ function ComponentSwitch() {
                 (privs.isAdmin) ?
                 <ProtectedRoute exact path ="/AddCourse" component={AddCourse} allowed={true}></ProtectedRoute> : 
                 <ProtectedRoute exact path ="/AddCourse" component={AddCourse} allowed={false}></ProtectedRoute> 
+            }
+             {
+                (privs.isAdmin) ?
+                <ProtectedRoute exact path ="/AddMinor" component={AddMinor} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/AddMinor" component={AddMinor} allowed={false}></ProtectedRoute> 
+                
             }
             {
                 (privs.isAdmin) ?

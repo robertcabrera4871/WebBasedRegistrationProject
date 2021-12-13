@@ -760,6 +760,53 @@ app.put('/editMS', (req, res) =>{
          }
      )
  })
+
+ app.put('/addMinor', (req, res) => {
+    const params = req.body.params;
+    db.query(
+        "INSERT INTO Minor VALUES(?,?,?)",
+        [params.minorID, params.departmentID, params.creditsRequired],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+        }
+    )
+})
+
+app.put('/addMajReq', (req, res) => {
+    const params = req.body.params;
+    db.query(
+        "INSERT INTO MajorRequirement VALUES(?,?,?)",
+        [params.newReq.courseID, params.majorID, params.newReq.minCourseGrade],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+        }
+    )
+})
+app.put('/addMinReq', (req, res) => {
+    const params = req.body.params;
+    db.query(
+        "INSERT INTO MinorRequirement VALUES(?,?,?)",
+        [params.newReq.courseID, params.minorID, params.newReq.minCourseGrade],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+        }
+    )
+})
  app.post('/getFacultyID', (req, res) => {
      const params = req.body.params;
     db.query(
@@ -940,8 +987,71 @@ app.get('/majors',  (req, res) =>{
 })
 app.get('/majorRequirements',  (req, res) =>{
     db.query(
-        'SELECT * FROM MajorRequirements',
+        'SELECT * FROM MajorRequirement',
         [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.post('/deleteMajorReq',  (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        'DELETE FROM MajorRequirement WHERE courseID = ? AND majorID = ?',
+        [params.courseID, params.majorID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.post('/deleteMinorReq',  (req, res) =>{
+    const params = req.body.params;
+
+    db.query(
+        'DELETE FROM MinorRequirement WHERE courseID = ? AND minorID = ?',
+        [params.courseID, params.minorID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.post('/deleteMajor',  (req, res) =>{
+    const params = req.body.params;
+
+    db.query(
+        'DELETE FROM Major WHERE majorID = ?',
+        [params.majorID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.post('/deleteMinor',  (req, res) =>{
+    const params = req.body.params;
+
+    db.query(
+        'DELETE FROM Minor WHERE minorID = ?',
+        [params.minorID],
         (err, result) =>{
             if(err){
                 res.send({err: err})
@@ -968,7 +1078,7 @@ app.get('/minors' , (req, res) =>{
 })
 app.get('/minorRequirements',  (req, res) =>{
     db.query(
-        'SELECT * FROM MinorRequirements',
+        'SELECT * FROM MinorRequirement',
         [],
         (err, result) =>{
             if(err){
@@ -1001,7 +1111,12 @@ app.put('/updateAndUnlock', (req, res) =>{
 app.post('/myAdvisors', (req, res) =>{
     const studentID = req.body.params.userID;
     db.query(
-        `SELECT f.FirstName, f.lastName, a.dateOfAppointment FROM FacultyAdvising a JOIN User f ON studentID= ? WHERE a.facultyID = f.userID`,
+        `SELECT f.FirstName, f.lastName, f.userID, a.dateOfAppointment
+        FROM FacultyAdvising a
+        JOIN User f
+        ON studentID=?
+        WHERE a.facultyID = f.userID;
+       `,
     [studentID],
     (err, result) =>{
         if(err){
@@ -1013,6 +1128,65 @@ app.post('/myAdvisors', (req, res) =>{
     }
     )
 })
+
+app.post('/myAdvisees', (req, res) =>{
+    const facultyID = req.body.params.userID;
+    db.query(
+        ` SELECT s.FirstName, s.lastName, s.userID, a.dateOfAppointment
+        FROM FacultyAdvising a
+        JOIN User s
+        ON facultyID= ?
+        WHERE a.studentID = s.userID;`,
+    [facultyID],
+    (err, result) =>{
+        if(err){
+            res.send({err:err})
+        }
+        else{
+            res.send(result)
+        }
+    }
+    )
+})
+
+app.put('/addAdvising', (req, res) =>{
+    const newRow = req.body.params.newRow;
+    const date = getDate();
+    db.query(
+        `INSERT INTO FacultyAdvising VALUES(?, ?, ?)`,
+    [newRow.facultyID, newRow.studentID, date],
+    (err, result) =>{
+        if(err){
+            res.send({err:err})
+        }
+        else{
+            res.send(result)
+        }
+    }
+    )
+})
+
+app.post('/deleteAdvising', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `DELETE From FacultyAdvising WHERE
+        (facultyID = ? AND studentID = ?) OR
+        (facultyID = ?  AND studentID = ?)
+        `,
+    [params.facultyID, params.studentID, params.studentID, params.facultyID],
+    (err, result) =>{
+        if(err){
+            res.send({err:err})
+        }
+        else{
+            res.send(result)
+        }
+    }
+    )
+})
+
+
+
 
 app.post('/getUserSched', (req, res) =>{
     const userID = req.body.params.userID;
@@ -1297,12 +1471,46 @@ app.post('/myMinors',  (req, res) =>{
 app.post('/getHolds', (req, res) =>{
     const studentID = req.body.params.userID;
     db.query(
-        `SELECT DISTINCT s.dateOfHold, h.holdType
+        `SELECT h.holdID, h.holdType, s.dateOfHold
         FROM Hold h
         JOIN StudentHold s
-        ON s.studentID = ?;
+        ON h.holdID = s.holdID
+        WHERE s.studentID = ?;
          `,
     [studentID],
+    (err, result) => {
+        if(err){
+            res.send({err: err})
+        }
+        else{
+            res.send(result)
+        }
+    }
+    )
+})
+
+app.post('/dropHold', (req, res) =>{
+    const params = req.body.params
+    db.query(
+        `DELETE FROM StudentHold WHERE holdID = ? AND studentID = ?`,
+    [params.holdID, params.userID],
+    (err, result) => {
+        if(err){
+            res.send({err: err})
+        }
+        else{
+            res.send(result)
+        }
+    }
+    )
+})
+app.post('/assignHold', (req, res) =>{
+    const studentID = req.body.params.userID;
+    const holdID = req.body.params.holdID;
+    const currentDate = getDate()
+    db.query(
+        `INSERT INTO StudentHold VALUES(?,?,?)`,
+    [studentID, holdID, currentDate],
     (err, result) => {
         if(err){
             res.send({err: err})

@@ -59,6 +59,27 @@ export default function UndergradCatalog() {
            pathname: '/AddMajor'
         })
      }
+    
+     async function deleteMajor(major){
+        const response = await dbUtil.deleteMajor(major.majorID);
+        if(response.err){
+            console.log(response)
+            window.alert(response.err.sqlMessage)
+        }else{
+            window.location.reload(false)
+        }
+     }
+
+     async function deleteMinor(minor){
+        const response = await dbUtil.deleteMinor(minor.minorID);
+        if(response.err){
+            window.alert(response.err.sqlMessage)
+        }else{
+            window.location.reload(false)
+        }
+     }
+
+     
 
      function addCourse(){
         history.push({
@@ -75,7 +96,11 @@ export default function UndergradCatalog() {
             })}}
             >➕ Add Requirement</button>}
             <div key={index}>
-            {privs.isAdmin && <button>❌ Delete Major</button>}
+            {privs.isAdmin && <button onClick={() => {
+           if (window.confirm('Are you sure you wish to delete this item?')) 
+           {
+              deleteMajor(major)
+           }}}>❌ Delete Major</button>}
             <h4>{major.majorID}:</h4>
             </div>  
             <ReqTable major={major.majorID} requirements={majorRequire}/>
@@ -85,8 +110,18 @@ export default function UndergradCatalog() {
      let minorsTables = minors.map((minor, index) =>{
         return (
             <span>
-            {privs.isAdmin && <button>➕ Add Requirement</button>}
+            {privs.isAdmin && <button onClick={() => {history.push({
+                pathname: '/AddMinorRequire',
+                state: minor
+            })}}>➕ Add Requirement</button>}
+            <div key={index}>
+            {privs.isAdmin && <button onClick={() => {
+           if (window.confirm('Are you sure you wish to delete this item?')) 
+           {
+              deleteMinor(minor)
+           }} }>❌ Delete Minor</button>}
             <h4 key={index}>{minor.minorID}:</h4>
+            </div>
             <ReqTable minor={minor.minorID} requirements={minorRequire}/>
             </span>
         )});
@@ -100,7 +135,7 @@ export default function UndergradCatalog() {
             >📘 Add Major</button>}
             <h1 className="text-align">Major Requirements</h1>
             {majorsTables}
-            {privs.isAdmin && <button>📙 Add Minor</button>}
+            {privs.isAdmin && <button onClick={() => {history.push('/AddMinor')}}>📙 Add Minor</button>}
             <h1 className="text-align">Minor Requirements</h1>
             {minorsTables}
         </div>

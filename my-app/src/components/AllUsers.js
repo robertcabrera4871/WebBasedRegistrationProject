@@ -5,6 +5,8 @@ import Table from 'react-bootstrap/Table'
 import { useHistory } from 'react-router';
 import DropdownButton from "react-bootstrap/esm/DropdownButton";
 import DropdownItem from "react-bootstrap/DropdownItem";
+import DropdownToggle from "react-bootstrap/esm/DropdownToggle";
+import Dropdown from 'react-bootstrap/Dropdown'
 
 
 export default function AllUsers(){
@@ -34,6 +36,8 @@ export default function AllUsers(){
       })
     }
 
+    
+
     function forwardEdit(user){
       history.push({
         pathname: '/editUser',
@@ -48,6 +52,39 @@ export default function AllUsers(){
         }
       }
     }
+    async function assignHold(holdID, userID){
+       var response = ""
+      if(window.confirm("Are you sure you want to add hold?")){
+        response = await dbUtil.assignHold(holdID, userID)
+      }
+      if(!response.err){
+        window.alert("Hold Added Succesfully")
+      }
+      if(response.err){
+        window.alert("Hold already exists")
+        console.log(response)
+      }
+    }
+
+     function viewStudentHolds(userID){
+      history.push({
+        pathname: '/viewHolds',
+        state: userID
+      })
+    }
+
+    function viewStudentAdvisor(userID){
+      history.push({
+        pathname: '/advisors',
+        state: userID
+      })
+    }
+    function viewFacAdvisees(userID){
+      history.push({
+        pathname: '/advisees',
+        state: userID
+      })
+    }
 
      const data = users;
 
@@ -57,10 +94,29 @@ export default function AllUsers(){
         width: 100,
         Cell: ({cell}) => (
           <div>
-          <button onClick={() => forwardEdit(cell.row.original)}>✏️</button>
-          <div className='bigDivider'/>
-          <button onClick={() => deleteUser(cell.row.original)}>❌</button>
-          </div>
+          {cell.row.original.userType !== "guest" && 
+          <Dropdown >
+          <DropdownToggle as={"button"} title={"Assign Hold"}>🛠️ Actions</DropdownToggle>
+          <Dropdown.Menu>
+          <Dropdown.Item onClick={() => forwardEdit(cell.row.original)}> ✏️ Edit </Dropdown.Item>
+          <Dropdown.Item  onClick={() => deleteUser(cell.row.original)}> ❌ Delete </Dropdown.Item>
+          {(cell.row.original.userType === "Faculty") && 
+           <Dropdown.Item onClick={() =>{viewFacAdvisees(cell.row.original.userID)}}>👨‍🎓 View Advisees</Dropdown.Item>
+           }
+          {(cell.row.original.userType).includes("Student") &&
+          <Dropdown>
+          <DropdownToggle as={"Dropdown.Item"} title={"Assign Hold"}>&nbsp;&nbsp;&nbsp;&nbsp;🎫 Add Hold</DropdownToggle>
+          <Dropdown.Menu>
+          <Dropdown.Item onClick={(e) => {assignHold('LH001', cell.row.original.userID)}}>Library Hold</Dropdown.Item>
+          <Dropdown.Item onClick={(e) => {assignHold('FH002', cell.row.original.userID)}}>Financial aid Hold</Dropdown.Item>
+          <Dropdown.Item onClick={(e) => {assignHold('HH003', cell.row.original.userID)}}>Health Hold</Dropdown.Item>
+          <Dropdown.Item onClick={(e) => {assignHold('RH004', cell.row.original.userID)}}>Registration Hold</Dropdown.Item>
+        </Dropdown.Menu>
+        <Dropdown.Item onClick={() =>{viewStudentHolds(cell.row.original.userID)}}>🎟️ View Holds</Dropdown.Item>
+        <Dropdown.Item onClick={() =>{viewStudentAdvisor(cell.row.original.userID)}}>🤝🏻 View Advisors</Dropdown.Item>
+          </Dropdown> }
+          </Dropdown.Menu>
+          </Dropdown>} </div>
         )
       },
         {
@@ -185,6 +241,6 @@ export default function AllUsers(){
        <button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</button>
        <button onClick={() => nextPage()} disabled={!canNextPage}>Next</button>
     </span>
-    </div>
+        </div>
     );
 }

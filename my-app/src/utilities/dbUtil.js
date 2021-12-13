@@ -235,6 +235,40 @@ import Axios from 'axios';
       return addResponse.data
     }
 
+    static async addMinor(newMinor){
+      const addResponse = await Axios.put("http://localhost:8000/addMinor",{
+        params :{
+          minorID: newMinor.minorID,
+          departmentID: newMinor.departmentID,
+          creditsRequired: newMinor.creditsRequired
+        }
+      })
+      return addResponse.data
+    }
+
+    static async addMajReq(newReq, majorID){
+      const addResponse = await Axios.put("http://localhost:8000/addMajReq",{
+        params :{
+          newReq: newReq,
+          majorID: majorID
+        }
+      })
+      return addResponse.data
+    }
+
+    
+    static async addMinReq(newReq, minorID){
+      const addResponse = await Axios.put("http://localhost:8000/addMinReq",{
+        params :{
+          newReq: newReq,
+          minorID: minorID
+        }
+      })
+      return addResponse.data
+    }
+
+
+
     static async getRooms(){
       const response = await Axios.get("http://localhost:8000/getRooms")
       return response.data
@@ -311,6 +345,34 @@ import Axios from 'axios';
       }
       static async getMyAdvisors(userID){
         const myAdvisorsResponse = await Axios.post("http://localhost:8000/myAdvisors", {
+          params: {
+            userID: userID
+          }
+        })
+        return myAdvisorsResponse.data
+      }
+
+      static async addAdvising(newRow){
+        const myAdvisorsResponse = await Axios.put("http://localhost:8000/addAdvising", {
+          params: {
+            newRow: newRow
+          }
+        })
+        return myAdvisorsResponse.data
+      }
+
+      static async deleteAdvising(facultyID, studentID){
+        const myAdvisorsResponse = await Axios.post("http://localhost:8000/deleteAdvising", {
+          params: {
+            facultyID: facultyID,
+            studentID: studentID
+          }
+        })
+        return myAdvisorsResponse.data
+      }
+
+      static async getMyAdvisees(userID){
+        const myAdvisorsResponse = await Axios.post("http://localhost:8000/myAdvisees", {
           params: {
             userID: userID
           }
@@ -486,6 +548,42 @@ import Axios from 'axios';
         const majorRequireResponse = await Axios.get("http://localhost:8000/majorRequirements")
         return majorRequireResponse.data      
       }
+
+      static async deleteMajorReq(majorID, courseID){
+        const majorRequireResponse = await Axios.post("http://localhost:8000/deleteMajorReq",
+        {
+          params:{
+            majorID: majorID,
+            courseID: courseID
+          }
+        })
+        return majorRequireResponse.data      
+      }
+      static async deleteMinorReq(minorID, courseID){
+        const majorRequireResponse = await Axios.post("http://localhost:8000/deleteMinorReq",{
+          params:{
+            minorID: minorID,
+            courseID: courseID
+          }
+        })
+        return majorRequireResponse.data      
+      }
+      static async deleteMajor(majorID){
+        const majorRequireResponse = await Axios.post("http://localhost:8000/deleteMajor",{
+          params:{
+            majorID: majorID,
+          }
+        })
+        return majorRequireResponse.data      
+      }
+      static async deleteMinor(minorID){
+        const majorRequireResponse = await Axios.post("http://localhost:8000/deleteMinor",{
+          params:{
+            minorID: minorID,
+          }
+        })
+        return majorRequireResponse.data      
+      }
       static async getMinors(){
         const minorsResponse = await Axios.get("http://localhost:8000/minors")
         return minorsResponse.data
@@ -506,6 +604,24 @@ import Axios from 'axios';
       })
         return holdResponse.data
     }
+    static async dropHold(holdID, userID){
+      const holdResponse = await Axios.post("http://localhost:8000/dropHold", {
+      params: {
+        holdID: holdID,
+        userID: userID
+      }
+    })
+      return holdResponse.data
+  }
+    static async assignHold(holdID, userID){
+      const holdResponse = await Axios.post("http://localhost:8000/assignHold", {
+      params: {
+        userID: userID,
+        holdID: holdID
+      }
+    })
+      return holdResponse.data
+  }
 
     static async createFullUndergrad(student){
       const response = await Axios.put("http://localhost:8000/createFullUndergrad",{

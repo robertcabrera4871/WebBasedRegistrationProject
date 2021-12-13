@@ -4,10 +4,12 @@ import decryptUser from "../utilities/decryptUser";
 import React from "react";
 import {useTable} from 'react-table'
 import Table from 'react-bootstrap/Table'
+import checkPrivs from "../utilities/checkPrivs";
 
-export default function ViewHolds(){
+export default function ViewHolds(adminAccess){
 
     const [userHolds, setHolds] = useState([])
+    let privs = checkPrivs();
     
     useEffect(() =>{
         getHolds();
@@ -17,15 +19,39 @@ export default function ViewHolds(){
     var user = decryptUser();
 
     function getHolds(){
+        if(privs.isAdmin){user.userID = adminAccess.location.state}
         dbUtil.getHolds(user.userID).then(
             data =>{
-                console.log(data)
                 setHolds(data)
             }
         )
         }
+
+    async function dropHold(row){
+         const response = await dbUtil.dropHold(row.holdID, adminAccess.location.state)
+         if(response.err){
+           console.log(response)
+           window.alert(response.err.sqlMessage)
+         }
+         else{
+           window.location.reload(false);
+         }
+      }
     
     const columns = React.useMemo( () =>[
+      {
+        accessor: 'Actions',
+        Cell: ({cell}) => (
+          <div>
+          <button onClick={() => {
+           if (window.confirm('Are you sure you wish to remove hold')) 
+           {
+              dropHold(cell.row.original);
+           }}
+            }>❌</button>
+          </div>
+        )
+      },
         {
             Header:"Date Of Hold",
             accessor:"dateOfHold"
@@ -33,8 +59,18 @@ export default function ViewHolds(){
         {
             Header:"Hold Type",
             accessor:"holdType"
+        },
+        {
+          Header:"Hold ID",
+          accessor:"holdID"
         }
     ], [])
+
+    var initialState = ""
+    if(!privs.isAdmin){
+      initialState = {hiddenColumns: ['Actions']}
+    }
+
 
 
     const {

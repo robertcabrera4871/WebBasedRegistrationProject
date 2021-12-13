@@ -41,7 +41,7 @@ export default function EditCourse(rowData){
         <Form.Group>
         <Form.Label>Course Name</Form.Label>
                 <Form.Control placeholder={row.courseID}
-                onChange={e => rowChanges.courseID = e.target.value}></Form.Control>
+                disabled = {true}></Form.Control>
                 <Form.Label>DepartmentID</Form.Label>
                 <Form.Control  placeholder={row.departmentID}
                 onChange={e => rowChanges.departmentID = e.target.value}></Form.Control>

@@ -1,29 +1,30 @@
 import { useEffect, useState } from "react";
 import dbUtil from "../utilities/dbUtil";
-import {AES, enc} from 'crypto-js'
 import React from "react";
 import { useTable } from "react-table";
 import Table  from "react-bootstrap/Table";
+import decryptUser from "../utilities/decryptUser";
+import checkPrivs from "../utilities/checkPrivs";
+import { useHistory } from "react-router-dom";
 
-export default function Advisors(){
+
+export default function Advisors(adminAccess){
 
     const[myAdvisors, setMyAdvisors] = useState([]);
-    
+    let privs = checkPrivs();
+    let history = useHistory();
+
 
     useEffect(() => {
         getAdvisors();
     }, [])
 
-
-    var user = ""
-     if(sessionStorage.getItem('user')){
-    const decrypted = AES.decrypt(sessionStorage.getItem('user'), 'secret-key1')
-     user = decrypted.toString(enc.Utf8);
-     user = JSON.parse(user)
-    }
+    
+    var user = decryptUser();
 
 
     function getAdvisors(){
+      if(privs.isAdmin){user.userID = adminAccess.location.state}
         dbUtil.getMyAdvisors(user.userID).then(
             data =>{
                 setMyAdvisors(data)
@@ -31,7 +32,29 @@ export default function Advisors(){
         )
     }
 
+    function addAdvisee(){
+      history.push("/addAdvising");
+    }
+    async function deleteAdvising(row){
+      const response = await dbUtil.deleteAdvising(myAdvisors.userID);
+      console.log(response)
+    }
+
     const columns = React.useMemo(() =>[
+      {
+        accessor: 'Actions',
+        width: 10,
+        Cell: ({cell}) => (
+          <div>
+          <button onClick={() => {
+           if (window.confirm('Are you sure you wish to delete this item?')) 
+           {
+              deleteAdvising(cell.row.original)
+           }}
+            }>❌</button>
+          </div>
+        )
+      },
         {
             Header: "First Name",
             accessor: "FirstName"
@@ -43,9 +66,14 @@ export default function Advisors(){
         {
             Header: "Date Assigned",
             accessor: "dateOfAppointment"
-        }
+        },
+
     ], []);
 
+    
+    for(const i in myAdvisors){
+      myAdvisors[i].dateOfAppointment = myAdvisors[i].dateOfAppointment.substring(0, 10)
+    }
     const {
         getTableProps,
         getTableBodyProps,
@@ -54,10 +82,10 @@ export default function Advisors(){
         prepareRow,
       } = useTable({columns, data: myAdvisors})
 
-        console.log(myAdvisors)
         return(
             <div className="table-center">
               <h1 className="text-align">Advisors</h1>
+              <button onClick={() => {addAdvisee()}}>Add Advising ➕</button>
             <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         { headerGroups.map(headerGroup => (

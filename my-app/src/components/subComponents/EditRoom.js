@@ -43,7 +43,7 @@ export default function EditRoom(rowData){
         <Form.Label>Room Name</Form.Label>
         <Form.Control placeholder={row.roomID}onChange={e => rowChanges.roomID = e.target.value} ></Form.Control>
         <Form.Label>Building Name</Form.Label>
-        <Form.Control placeholder={row.buildingID} onChange={e => rowChanges.buildingID = e.target.value}></Form.Control>
+        <Form.Control placeholder={row.buildingID} disabled={true}></Form.Control>
         <Form.Label>Room Type</Form.Label>
         <Form.Control placeholder={row.roomType} disabled={true}></Form.Control>
         <Button variant='success' onClick={(e) => submitChanges(e)}>Save Changes</Button>{' '}

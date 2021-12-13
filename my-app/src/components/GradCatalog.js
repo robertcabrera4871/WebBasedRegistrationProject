@@ -4,11 +4,15 @@ import React from 'react';
 import Table from 'react-bootstrap/Table'
 import { useState, useEffect} from 'react';
 import checkPrivs from '../utilities/checkPrivs';
+import { useHistory } from "react-router";
+
 
 export default function GradCatalog(){
 
     const [gradCourses, setGradCourse] = useState([]);
     const privs = checkPrivs();
+    let history = useHistory();
+
 
     useEffect(() =>{
         getGradCatalog();
@@ -19,8 +23,28 @@ export default function GradCatalog(){
             setGradCourse(data)
         })
     }
-    function clicked(){
+    function editCourse(row){
+      history.push({
+        pathname: '/EditCourse',
+        state: row
+      })
+    }
 
+    function addCourse(){
+      history.push({
+          pathname: '/AddCourse'
+       })
+   }
+
+
+    function deleteCourse(row){
+      dbUtil.deleteCourse(row).then(data =>{
+        if(data.err){
+           window.alert(data.err.sqlMessage)
+       }else{
+        window.location.reload(false);
+       }
+     })
     }
 
 
@@ -31,9 +55,14 @@ export default function GradCatalog(){
             width: 100,
             Cell: ({cell}) => (
               <div>
-              <button onClick={() => clicked(cell.row.original)}>✏️</button>
+              <button onClick={() => editCourse(cell.row.original)}>✏️</button>
               <div className='bigDivider'/>
-              <button onClick={() => clicked(cell.row.original)}>❌</button>
+              <button onClick={() => {
+               if (window.confirm('Are you sure you wish to delete this item?')) 
+               {
+                  deleteCourse(cell.row.original)
+               }}
+                }>❌</button>
               </div>
             )
           },
@@ -67,7 +96,7 @@ export default function GradCatalog(){
     return(
     <div className="table-center"> 
      <h1 className="text-align"> Graduate Courses</h1>
-     {privs.isAdmin && <button>➕ Add Course</button>}
+     {privs.isAdmin && <button onClick={() =>{addCourse()}}>➕ Add Course</button>}
          <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         { headerGroups.map(headerGroup => (

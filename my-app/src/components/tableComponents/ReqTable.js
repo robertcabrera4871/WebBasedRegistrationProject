@@ -2,6 +2,7 @@ import React from "react";
 import { useTable } from "react-table";
 import Table from 'react-bootstrap/Table';
 import checkPrivs from "../../utilities/checkPrivs";
+import dbUtil from "../../utilities/dbUtil";
 
 export default function ReqTable({major, minor, requirements}) {
 
@@ -11,6 +12,24 @@ export default function ReqTable({major, minor, requirements}) {
 
     const privs = checkPrivs();
 
+    async function deleteMajorReq(row){
+      const response = await dbUtil.deleteMajorReq(major, row.courseID)
+      if(response.err){
+        console.log(response.err)
+      }else{
+        window.location.reload(false);
+      }
+    }
+    async function deleteMinorReq(row){
+      const response = await dbUtil.deleteMinorReq(minor, row.courseID)
+      if(response.err){
+        console.log(response.err)
+      }else{
+        window.location.reload(false);
+      }
+
+    }
+
     const columns = React.useMemo( () =>[
       {
         accessor: 'Actions',
@@ -19,7 +38,13 @@ export default function ReqTable({major, minor, requirements}) {
           <div>
           <button onClick={() => clicked(cell.row.original)}>✏️</button>
           <div className='bigDivider'/>
-          <button onClick={() => clicked(cell.row.original)}>❌</button>
+          <button onClick={() => {
+           if (window.confirm('Are you sure you wish to delete this item?')) 
+           {
+             if(major){deleteMajorReq(cell.row.original)}
+             else if(minor){deleteMinorReq(cell.row.original)}
+           }}
+            }>❌</button>
           </div>
         )
       },
@@ -41,6 +66,7 @@ export default function ReqTable({major, minor, requirements}) {
     if(!privs.isAdmin){
       initialState = {hiddenColumns: ['Actions']}
     }
+
     const {
         getTableProps,
         getTableBodyProps,

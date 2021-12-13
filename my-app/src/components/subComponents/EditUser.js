@@ -9,7 +9,7 @@ import Row from 'react-bootstrap/Row'
 import Col from "react-bootstrap/Col";
 
 
-
+//NEEDS TO ABILITY TO SWITCH BETWEEN PART AND FULL
 export default function EditUser(rowData){
     const row = rowData.location.state
     // console.log(row)
