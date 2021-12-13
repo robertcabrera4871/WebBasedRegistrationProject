@@ -946,7 +946,7 @@ app.get('/masterSchedule', (req, res) =>{
     db.query(
         `SELECT cs.CRN, cs.sectionNum, cs.courseID, 
         t.day, p.startTime, p.endTime, cs.semesterYearID,
-         cs.roomID, u.firstName, u.lastName,
+         cs.roomID, u.firstName, u.lastName, u.userID,
         cs.availableSeats, cs.capacity
         FROM CourseSection cs
         JOIN Course c

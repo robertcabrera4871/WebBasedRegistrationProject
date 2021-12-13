@@ -35,10 +35,17 @@ export default function Advisors(adminAccess){
     function addAdvisee(){
       history.push("/addAdvising");
     }
+
     async function deleteAdvising(row){
-      const response = await dbUtil.deleteAdvising(myAdvisors.userID);
-      console.log(response)
+      const response = await dbUtil.deleteAdvising(row.userID, user.userID);
+      if(response.err){
+          window.alert(response.err.sqlMessage)
+      } else if(response.affectedRows === 1){
+          window.location.reload(false)
+      }
     }
+
+
 
     const columns = React.useMemo(() =>[
       {
@@ -74,18 +81,23 @@ export default function Advisors(adminAccess){
     for(const i in myAdvisors){
       myAdvisors[i].dateOfAppointment = myAdvisors[i].dateOfAppointment.substring(0, 10)
     }
+    var initialState = ""
+    if(!privs.isAdmin){
+      initialState = {hiddenColumns: ['Actions']}
+    }
+
     const {
         getTableProps,
         getTableBodyProps,
         headerGroups,
         rows,
         prepareRow,
-      } = useTable({columns, data: myAdvisors})
+      } = useTable({columns, data: myAdvisors, initialState})
 
         return(
             <div className="table-center">
               <h1 className="text-align">Advisors</h1>
-              <button onClick={() => {addAdvisee()}}>Add Advising ➕</button>
+              {privs.isAdmin && <button onClick={() => {addAdvisee()}}>Add Advising ➕</button>}
             <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         { headerGroups.map(headerGroup => (

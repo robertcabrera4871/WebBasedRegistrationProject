@@ -85,15 +85,15 @@ export default function Advisees(adminAccess){
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({columns, data: myAdvisees})
+  } = useTable({columns, data: myAdvisees, initialState})
 
 
         return(
 
             <div className="table-center">
             <h1 className="text-align">My Advisees</h1>
-            <button onClick={() => {addAdvisee()}}>Add Advising ➕</button>
-            <Table size="sm" striped bordered hover {...getTableProps()}>
+        {privs.isAdmin && <button onClick={() => {addAdvisee()}}>Add Advising ➕</button>}   
+         <Table size="sm" striped bordered hover {...getTableProps()}>
     <thead>
         { headerGroups.map(headerGroup => (
         <tr {...headerGroup.getHeaderGroupProps()}>

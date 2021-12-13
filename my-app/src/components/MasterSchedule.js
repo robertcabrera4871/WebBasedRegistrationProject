@@ -7,13 +7,13 @@ import { useHistory } from 'react-router';
 import checkPrivs from '../utilities/checkPrivs';
 import ChoseSemester from "./subComponents/ChoseSemester";
 import decryptUser from "../utilities/decryptUser";
+import Dropdown from 'react-bootstrap/Dropdown'
 
 
 
-export default function MasterSchedule({isAddClassStudent}){
+export default function MasterSchedule({isAddClassStudent, isTeach}){
 
    //Needs more sorting options
-
     const [schedule, setSchedule] = useState([]);
     const [semesterSelect, setSemester]= useState("Spring 2021")
     let history = useHistory();
@@ -39,12 +39,24 @@ export default function MasterSchedule({isAddClassStudent}){
            window.alert("You have been enrolled")
         }
      }
+
+     async function addClassTeach(row){
+      const response = await dbUtil.addMyClass(row.CRN, user.userID); 
+      if(response.err){
+         window.alert("You are already enrolled in this class")
+      } else{
+         window.alert("You have been enrolled")
+      }
+   }
  
  
       function getSchedule(){
         dbUtil.getMasterSchedule().then(
            //CHANGE!!I
             data =>{
+               if(isTeach){
+                  data = data.filter(row => row.userID === isTeach)
+               }
                 if(semesterSelect === "Spring 2021"){
                   data = data.filter(item => (item.semesterYearID === "spring21"))
                }
@@ -155,8 +167,12 @@ export default function MasterSchedule({isAddClassStudent}){
          }
 
     ], []);
-
-     
+      
+    
+    var initialState = ""
+    if(isTeach){
+      initialState = {hiddenColumns: ['firstName', 'lastName']}
+    }
       
       const {
         getTableProps,
@@ -170,7 +186,7 @@ export default function MasterSchedule({isAddClassStudent}){
         pageOptions,
         state,
         prepareRow,
-      } = useTable({ columns, data: schedule },
+      } = useTable({ columns, data: schedule, initialState},
           useFilters, useSortBy, usePagination,
           (hooks) => {
             if(privs.isAdmin){
@@ -208,6 +224,22 @@ export default function MasterSchedule({isAddClassStudent}){
                   ]
                })
             }
+            else if(isTeach){
+               hooks.visibleColumns.push((columns) =>{
+                  return[
+                      { 
+                        id: "addClassTeach",
+                        Cell: ({cell}) => (
+                           <div>
+                              <button title="Class List" onClick={() =>console.log(cell.row.original)}>📋</button>
+                           </div>
+                        )
+                     },
+                     ...columns
+                  ]
+               })
+            }
+
           })
  
 
@@ -217,7 +249,7 @@ export default function MasterSchedule({isAddClassStudent}){
      return (
       <div >
       <ChoseSemester onClick={choseSemester} semesterSelect={semesterSelect} />
-      <h1 className='text-align'>Master Schedule</h1>
+      <h1 className='text-align'>{isTeach ? "Teaching Schedule":"Master Schedule"}</h1>
 
       <b>Hover column to search, Click column to sort</b>
          { privs.isAdmin && <div><button onClick={(e) => newRow()}>➕ Add to Master Schedule </button></div>}
