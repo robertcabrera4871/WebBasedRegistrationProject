@@ -10,21 +10,21 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
 
-// const db = mysql.createConnection({
-//     user: "root",
-//     host: "localhost",
-//     password: "password",
-//     database: "test",
-//     multipleStatements: true
-// });
-
 const db = mysql.createConnection({
-    user: "admin",
-    host: "webregistrationdb.cmfdjpexlzt4.us-east-2.rds.amazonaws.com",
+    user: "root",
+    host: "localhost",
     password: "password",
     database: "test",
     multipleStatements: true
 });
+
+// const db = mysql.createConnection({
+//     user: "admin",
+//     host: "webregistrationdb.cmfdjpexlzt4.us-east-2.rds.amazonaws.com",
+//     password: "password",
+//     database: "test",
+//     multipleStatements: true
+// });
 
 
 function getDate(){
@@ -308,10 +308,11 @@ app.put('/createFullGrad', (req, res) =>{
     )
 })
 app.post('/login', (req, res) =>{
-    const email = req.body.email;
+    var email = req.body.email;
+    email = email+'%'
     const password = req.body.password;
     db.query(
-        "SELECT * FROM LoginInfo WHERE email = ? AND password = ?",
+        "SELECT * FROM LoginInfo WHERE email LIKE ? AND password = ?",
         [email, password],
         (err, result) => {
             if(err){
@@ -789,7 +790,7 @@ app.put('/editMS', (req, res) =>{
 app.put('/addMajReq', (req, res) => {
     const params = req.body.params;
     db.query(
-        "INSERT INTO MajorRequirement VALUES(?,?,?)",
+        "INSERT INTO MajorRequirements VALUES(?,?,?)",
         [params.newReq.courseID, params.majorID, params.newReq.minCourseGrade],
         (err, result) =>{
            if(err){
@@ -804,7 +805,7 @@ app.put('/addMajReq', (req, res) => {
 app.put('/addMinReq', (req, res) => {
     const params = req.body.params;
     db.query(
-        "INSERT INTO MinorRequirement VALUES(?,?,?)",
+        "INSERT INTO MinorRequirements VALUES(?,?,?)",
         [params.newReq.courseID, params.minorID, params.newReq.minCourseGrade],
         (err, result) =>{
            if(err){
@@ -917,9 +918,10 @@ app.post('/getLoginInfo', (req, res) => {
 })
 
 app.post('/emailExist', (req, res) =>{
-    const email = req.body.params.email;
+    var email = req.body.params.email;
+    email = email + "%";
     db.query(
-        `SELECT 1 FROM LoginInfo WHERE email = ?`,
+        `SELECT 1 FROM LoginInfo WHERE email LIKE ? `,
         [email],
         (err, result) =>{
             if(err){
@@ -983,7 +985,7 @@ app.post("/getClassList", (req, res)=> {
     db.query(
         `SELECT u.firstName, u.lastName, e.CRN, e.enrollDate, e.grade, e.studentID
          FROM Enrollment e
-         JOIN USER u 
+         JOIN User u 
          ON e.studentID = u.userID
          WHERE CRN = ?`,
         [CRN],
@@ -1002,7 +1004,7 @@ app.post("/getAttendence", (req, res)=> {
     const CRN = req.body.params.CRN
     db.query(
         `SELECT u.userID, u.firstName, u.lastName, a.meetingDate, a.presentOrAbsent 
-        FROM Attendence a
+        FROM Attendance a
         Join User u
         ON a.studentID = u.userID
          WHERE CRN = ?`,
@@ -1017,10 +1019,26 @@ app.post("/getAttendence", (req, res)=> {
         }
     )
 })
+
+app.post("/switchAttendence", (req, res)=> {
+    const params = req.body.params
+    db.query(
+        `UPDATE Attendance SET presentOrAbsent = ? WHERE studentID = ? AND meetingDate = ?`,
+        [params.presence, params.userID,params.meetingDate ],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
 app.post("/createAttendence", (req, res)=> {
     const params = req.body.params
     db.query(
-        `INSERT INTO Attendence VALUES(?,?,?, false)`,
+        `INSERT INTO Attendance VALUES(?,?,?, false)`,
         [params.CRN, params.studentID, params.date],
         (err, result) =>{
             if(err){
@@ -1119,7 +1137,7 @@ app.get('/majors',  (req, res) =>{
 })
 app.get('/majorRequirements',  (req, res) =>{
     db.query(
-        'SELECT * FROM MajorRequirement',
+        'SELECT * FROM MajorRequirements',
         [],
         (err, result) =>{
             if(err){
@@ -1210,7 +1228,7 @@ app.get('/minors' , (req, res) =>{
 })
 app.get('/minorRequirements',  (req, res) =>{
     db.query(
-        'SELECT * FROM MinorRequirement',
+        'SELECT * FROM MinorRequirements',
         [],
         (err, result) =>{
             if(err){

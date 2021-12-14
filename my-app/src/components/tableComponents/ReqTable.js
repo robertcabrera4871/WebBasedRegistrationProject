@@ -58,9 +58,11 @@ export default function ReqTable({major, minor, requirements}) {
      },
     ], []);
     
-
+    console.log(major)
+    
     major ? requirements = requirements.filter(item => (item.majorID === major)):
     requirements = requirements.filter(item => (item.minorID === minor));
+
 
     var initialState = ""
     if(!privs.isAdmin){

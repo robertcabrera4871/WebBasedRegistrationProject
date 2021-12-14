@@ -43,6 +43,7 @@ export default function UndergradCatalog() {
         dbUtil.getMinorRequirements().then(
             data => {
                 setMinorRequire(data)
+
             }
         )
     }
@@ -50,6 +51,7 @@ export default function UndergradCatalog() {
         dbUtil.getMajorRequirements().then(
             data => {
                 setMajorRequire(data)
+
             }
         )
     }

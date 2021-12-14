@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useTable } from "react-table";
+import { useTable, usePagination } from "react-table";
 import dbUtil from "../../utilities/dbUtil";
 import Table from 'react-bootstrap/Table'
 import checkPrivs from "../../utilities/checkPrivs";
@@ -82,13 +82,20 @@ export default function CourseTable() {
         getTableProps,
         getTableBodyProps,
         headerGroups,
-        rows,
+        page,
+        nextPage,
+        previousPage,
+        canNextPage,
+        canPreviousPage,
+        pageOptions,
+        state,
         prepareRow,
-    } =  useTable({columns, data: courses, initialState})
+    } =  useTable({columns, data: courses, initialState}, usePagination)
 
-
+    const {pageIndex} = state
 
     return (
+      <div>
      <Table size="sm" striped bordered hover {...getTableProps()}>
      <thead>
        { headerGroups.map(headerGroup => (
@@ -103,7 +110,7 @@ export default function CourseTable() {
      </thead>
 
      <tbody {...getTableBodyProps()}>
-       {rows.map(row => {
+       {page.map(row => {
          prepareRow(row)
          return (
            <tr {...row.getRowProps()}>
@@ -119,5 +126,13 @@ export default function CourseTable() {
        })}
      </tbody>
    </Table>
+    <span className='align-center'>
+    Page{' '}
+    <strong>
+       {pageIndex + 1} of {pageOptions.length}
+    </strong>
+    <button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</button>
+    <button onClick={() => nextPage()} disabled={!canNextPage}>Next</button>
+ </span></div>
     );
 }

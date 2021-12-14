@@ -5,6 +5,7 @@ import Table from 'react-bootstrap/Table'
 import dbUtil from '../../utilities/dbUtil';
 import checkPrivs from "../../utilities/checkPrivs";
 import { useHistory } from 'react-router-dom';
+import Form from 'react-bootstrap/Form'
 
 
     export default function AttendenceTable({row, classList}){
@@ -71,8 +72,19 @@ import { useHistory } from 'react-router-dom';
        window.location.reload(false)
     }
 
+    async function switchAttendence(id, meetingDate, presence){
+        const res = await dbUtil.switchAttendence(id, meetingDate, !presence)
+        if(!res.err){
+          window.location.reload(false)
+        }
+    }
+
 
     const columns = React.useMemo(() => [
+        {
+          Header: "Student ID",
+          accessor: "userID"
+        },
         {
             Header: "Student First Name",
             accessor: "firstName",
@@ -86,9 +98,20 @@ import { useHistory } from 'react-router-dom';
             accessor: "meetingDate",
          },
          {
-            Header: "Attendence",
-            accessor: "presentOrAbsent",
-         }
+            Header: "Pora",
+            accessor: "presentOrAbsent"
+         },
+         {
+          Header: "Attendence",
+          accessor: 'Actions',
+          width: 100,
+          Cell: ({cell}) => (
+            <Form>
+            <Form.Check checked={cell.row.original.presentOrAbsent} onChange={(e) => {switchAttendence(e.target.id, cell.row.original.meetingDate, cell.row.original.presentOrAbsent)}} 
+            id = {cell.row.original.userID} type ="switch" label="Absent/Present"></Form.Check>
+            </Form>
+          )
+        },
       
     ], [])
 
@@ -102,6 +125,8 @@ import { useHistory } from 'react-router-dom';
                  updateAttendence(classList[i].studentID);
             }
         }
+
+      var initialState = {hiddenColumns: ['presentOrAbsent']}
    
     const {
         getTableProps,
@@ -109,7 +134,7 @@ import { useHistory } from 'react-router-dom';
         headerGroups,
         rows,
         prepareRow,
-      } = useTable({columns, data: attList}, useSortBy)
+      } = useTable({columns, data: attList, initialState}, useSortBy)
 
     
 

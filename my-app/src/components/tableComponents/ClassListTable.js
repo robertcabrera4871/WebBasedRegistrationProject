@@ -25,6 +25,9 @@ import decryptUser from "../../utilities/decryptUser";
 
     async function getClassList(){
         const response = await dbUtil.getClassList(row.location.state.CRN);
+        if(response.err){
+          console.log(response.err)
+        }
         setClassList(response)
     }
 

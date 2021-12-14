@@ -1,9 +1,10 @@
-import {useTable} from 'react-table'
+import {useTable, usePagination, useFilters} from 'react-table'
 import Table from 'react-bootstrap/Table'
 import React from "react";
 import checkPrivs from "../../utilities/checkPrivs";
 import dbUtil from '../../utilities/dbUtil';
 import { useHistory } from 'react-router';
+import ColumnFilter from './ColumnFilter';
 
 
 export default function RoomTable({rooms}){
@@ -32,6 +33,7 @@ export default function RoomTable({rooms}){
     const columns = React.useMemo( () => [
         {
             accessor: 'Actions',
+            Filter: "",
             width: 100,
             Cell: ({cell}) => (
               <div>
@@ -43,15 +45,19 @@ export default function RoomTable({rooms}){
           },
         {
             Header: 'Room Name',
-            accessor: 'roomID'
+            accessor: 'roomID',
+            Filter: ColumnFilter
         }, 
         {
             Header: 'Building Name',
-            accessor: 'buildingID'
+            accessor: 'buildingID',
+            Filter: ColumnFilter
         },
         {
             Header: 'Room Type',
-            accessor: 'roomType'
+            accessor: 'roomType',
+            Filter: ColumnFilter
+
         }
     ] , [])
 
@@ -69,9 +75,17 @@ export default function RoomTable({rooms}){
         getTableProps,
         getTableBodyProps,
         headerGroups,
-        rows,
+        page,
+        nextPage,
+        previousPage,
+        canNextPage,
+        canPreviousPage,
+        pageOptions,
+        state,
         prepareRow,
-    } = useTable({columns, data: rooms, initialState})
+    } = useTable({columns, data: rooms, initialState}, useFilters, usePagination)
+
+    const {pageIndex} = state
 
     return(
         <div className='table-center'>
@@ -81,10 +95,10 @@ export default function RoomTable({rooms}){
        { headerGroups.map(headerGroup => (
          <tr {...headerGroup.getHeaderGroupProps()}>
            {headerGroup.headers.map(column => (
-             <th {...column.getHeaderProps({
-               style: {width: column.width}
-             })}>
-               { column.render('Header')}
+              <th className='column'{...column.getHeaderProps()}>
+              { column.render('Header')}
+              <div className='filter'>{column.canFilter? column.render('Filter') : null }</div>
+              
              </th>
            ))}
          </tr>
@@ -92,7 +106,7 @@ export default function RoomTable({rooms}){
      </thead>
 
      <tbody {...getTableBodyProps()}>
-       {rows.map(row => {
+       {page.map(row => {
          prepareRow(row)
          return (
            <tr {...row.getRowProps()}>
@@ -108,6 +122,14 @@ export default function RoomTable({rooms}){
        })}
      </tbody>
    </Table>
+   <span className='align-center'>
+       Page{' '}
+       <strong>
+          {pageIndex + 1} of {pageOptions.length}
+       </strong>
+       <button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</button>
+       <button onClick={() => nextPage()} disabled={!canNextPage}>Next</button>
+    </span>
    </div>
     )
 }

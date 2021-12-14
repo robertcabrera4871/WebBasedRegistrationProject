@@ -11,7 +11,7 @@ import Axios from 'axios';
       }
       
       static async userExists(email){
-        const response = await Axios.post("/emailExist",{
+        const response = await Axios.post("http://localhost:8000/emailExist",{
           params: {
             email: email
           }
@@ -292,6 +292,16 @@ import Axios from 'axios';
       })
       return response.data
     }
+    static async switchAttendence(userID, meetingDate, presence){
+      const response = await Axios.post("http://localhost:8000/switchAttendence", {
+        params:{
+          userID: userID,
+          meetingDate: meetingDate,
+          presence: presence
+        }
+      })
+      return response.data
+    }
 
     static async createAttendence(CRN, studentID, date){
       const response = await Axios.post("http://localhost:8000/createAttendence", {
@@ -515,6 +525,7 @@ import Axios from 'axios';
             newRow: newRow
           }
         })
+        console.log(userResponse)
         return userResponse.data
       }
 

@@ -47,6 +47,7 @@ export default function AllUsers(){
     async function deleteUser(row){
       if(window.confirm("Are you sure you want to delete this user?")){
         const response = await dbUtil.deleteUser(row.userID)
+        console.log(response)
         if(!response.err){
           window.location.reload(false);
         }

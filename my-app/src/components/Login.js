@@ -92,7 +92,6 @@ export default function Login({ setUser, setToken }) {
     e.preventDefault();
     const response = await dbUtil.userExists(email)
     var loginResponse = ""
-    console.log(response)
     if(response.length === 0){
       window.alert("User not found");
     } else{
@@ -139,8 +138,6 @@ export default function Login({ setUser, setToken }) {
 
   return (
     <Form id='align-center' onSubmit={handleSubmit}>
-      <div>jferandezrk@marketwatch.com</div>
-      <div>xKVBct0iJy</div>
       <h3 className="align-center text-align">User Login</h3>
       {invalidCred && <Alert variant='danger'>{alertMessage} </Alert>}
       <FormGroup className="mb-3" controlId="formUsername">
