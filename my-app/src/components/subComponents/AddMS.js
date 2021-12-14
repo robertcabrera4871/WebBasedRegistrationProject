@@ -36,6 +36,7 @@ export default function AddMS(){
             if (await checkFaculty() === ""){return("")}
             if (await checkTimeSlotID() === ""){return("")}
             if (await checkAvailability() === ""){return("")}
+            if (await checkSemesterYear() === ""){return("")}
             await addMS();
         }
 
@@ -92,6 +93,15 @@ export default function AddMS(){
                      window.alert(addMSResult.err.sqlMessage)
                  }else if(addMSResult.affectedRows === 1){
                     history.push('/home')
+                 }else{
+                     console.log(addMSResult)
+                 }
+        }
+
+        async function checkSemesterYear(){
+            const addMSResult = await dbUtil.checkSemesterYear(newRow);
+                 if(addMSResult.err){
+                     window.alert("No Semester with that ID")
                  }else{
                      console.log(addMSResult)
                  }

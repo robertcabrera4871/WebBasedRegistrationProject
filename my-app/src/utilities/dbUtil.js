@@ -131,6 +131,15 @@ import Axios from 'axios';
         })
         return addResponse.data
       }
+
+      static async checkSemesterYear(row){
+        const response = await Axios.post("http://localhost:8000/checkSemesterYear", {
+          params: {
+            semesterYearID: row.semesterYearID
+          }
+        })
+        return response.data
+      }
     static async unenrollAll(row){
       const response = await Axios.put("http://localhost:8000/unenrollAll", {
         params: {
@@ -274,6 +283,48 @@ import Axios from 'axios';
       return response.data
     }
 
+    static async getAttendence(CRN){
+      const response = await Axios.post("http://localhost:8000/getAttendence", {
+        params:{
+          CRN: CRN
+        }
+      })
+      return response.data
+    }
+
+    static async createAttendence(CRN, studentID, date){
+      const response = await Axios.post("http://localhost:8000/createAttendence", {
+        params:{
+          CRN: CRN,
+          studentID: studentID,
+          date: date
+        }
+      })
+      return response.data
+    }
+
+    static async deleteAttendence(date){
+      const response = await Axios.post("http://localhost:8000/deleteAttendence", {
+        params:{
+          date: date
+        }
+      })
+      return response.data
+    }
+
+    static async deleteAttendenceByID(userID){
+      const response = await Axios.post("http://localhost:8000/deleteAttendenceByID", {
+        params:{
+          userID: userID
+        }
+      })
+      return response.data
+    }
+
+
+
+    
+
     static async getBuildings(){
       const response = await Axios.get("http://localhost:8000/getBuildings")
       return response.data
@@ -284,6 +335,15 @@ import Axios from 'axios';
       const mSchedResponse = await Axios.get("http://localhost:8000/masterSchedule")
       return mSchedResponse.data
   }
+
+  static async getClassList(crn){
+    const res = await Axios.post("http://localhost:8000/getClassList", {
+      params:{
+        CRN: crn
+      }
+    })
+    return res.data
+}
 
     static async addCourse(newCourse){
       const addResponse = await Axios.put("http://localhost:8000/addCourse", {

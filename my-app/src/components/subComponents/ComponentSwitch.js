@@ -42,6 +42,8 @@ import EditUser from './EditUser';
 import AddMinor from './AddMinor';
 import AddMinorRequirement from './AddMinorRequirement';
 import AddAdvising from './AddAdvising';
+import AddMeeting from './AddMeeting';
+import ClassListTable from '../tableComponents/ClassListTable';
 
 
 function ComponentSwitch() {
@@ -247,6 +249,17 @@ function ComponentSwitch() {
                 (privs.isAdmin || privs.isFaculty) ?
                     <ProtectedRoute exact path="/teachSchedule" component={TeachScedule} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/teachSchedule" component={TeachScedule} allowed={false}></ProtectedRoute> 
+            }
+             {
+                (privs.isAdmin || privs.isFaculty) ?
+                    <ProtectedRoute exact path="/addMeeting" component={AddMeeting} allowed={true}></ProtectedRoute> :
+                    <ProtectedRoute exact path="/addMeeting" component={AddMeeting} allowed={false}></ProtectedRoute> 
+            }
+
+            {
+                (privs.isAdmin || privs.isFaculty) ?
+                    <ProtectedRoute exact path="/classList" component={ClassListTable} allowed={true}></ProtectedRoute> :
+                    <ProtectedRoute exact path="/classList" component={ClassListTable} allowed={false}></ProtectedRoute> 
             }
 
             {

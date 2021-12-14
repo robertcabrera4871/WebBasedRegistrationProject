@@ -86,6 +86,13 @@ export default function AllUsers(){
       })
     }
 
+    function viewFacSchedule(userID){
+      history.push({
+        pathname: '/teachSchedule',
+        state: userID
+      })
+    }
+
      const data = users;
 
      const columns = React.useMemo( () =>[
@@ -101,7 +108,9 @@ export default function AllUsers(){
           <Dropdown.Item onClick={() => forwardEdit(cell.row.original)}> ✏️ Edit </Dropdown.Item>
           <Dropdown.Item  onClick={() => deleteUser(cell.row.original)}> ❌ Delete </Dropdown.Item>
           {(cell.row.original.userType === "Faculty") && 
+          <>
            <Dropdown.Item onClick={() =>{viewFacAdvisees(cell.row.original.userID)}}>👨‍🎓 View Advisees</Dropdown.Item>
+           <Dropdown.Item onClick={() =>{viewFacSchedule(cell.row.original.userID)}}>📅 View Schedule</Dropdown.Item></>
            }
           {(cell.row.original.userType).includes("Student") &&
           <Dropdown>

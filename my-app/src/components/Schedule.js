@@ -8,7 +8,7 @@ import decryptUser from '../utilities/decryptUser';
 
 export default function Schedule({title, semesterPicker}){
 
-    const [semesterSelect, setSemester]= useState("Spring 2021")
+    const [semesterSelect, setSemester]= useState("Fall 2021")
     const [schedule, setSchedule] = useState([]);
 
 
@@ -23,7 +23,10 @@ export default function Schedule({title, semesterPicker}){
     var user = decryptUser();
 
    async function dropClass(row){
+      const attRes = await dbUtil.deleteAttendenceByID(user.userID)
+      console.log(attRes)
       const response = await dbUtil.dropMyClass(row.CRN, user.userID)
+      console.log(response)
       if(response.err){
         window.alert(response.err.sqlMessage)
       } else {
@@ -44,11 +47,11 @@ export default function Schedule({title, semesterPicker}){
                 else if(title === 'My Schedule'){
                     data = data.filter(item => (item.grade === "IP") )
                 }
-                if(semesterSelect === "Spring 2021" && semesterPicker){
-                    data = data.filter(item => (item.semesterYearID === 'spring21' ))
+                if(semesterSelect === "Fall 2021" && semesterPicker){
+                    data = data.filter(item => (item.semesterYearID === 'F21' ))
                  } 
-                 else if(semesterSelect === "Fall 2022" && semesterPicker){
-                    data = data.filter(item => (item.Semester === "Fall" && item.Year === "2021"))
+                 else if(semesterSelect === "Spring 2022" && semesterPicker){
+                    data = data.filter(item => (item.semesterYearID === 'S22'))
                  }
                  setSchedule(data)
     }

@@ -15,7 +15,7 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
 
    //Needs more sorting options
     const [schedule, setSchedule] = useState([]);
-    const [semesterSelect, setSemester]= useState("Spring 2021")
+    const [semesterSelect, setSemester]= useState("Fall 2021")
     let history = useHistory();
     const privs = checkPrivs();
     const user = decryptUser();
@@ -57,13 +57,13 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
                if(isTeach){
                   data = data.filter(row => row.userID === isTeach)
                }
-                if(semesterSelect === "Spring 2021"){
-                  data = data.filter(item => (item.semesterYearID === "spring21"))
+                if(semesterSelect === "Fall 2021"){
+                   console.log(data)
+                  data = data.filter(item => (item.semesterYearID === "F21"))
                }
-               //ADD BACK IN LATER
-               // else if(semesterSelect === "Fall 2022"){
-               //    data = data.filter(item => (item.Semester === "Fall" && item.Year === "2021"))
-               // }
+               else if(semesterSelect === "Spring 2022"){
+                  data = data.filter(item => (item.semesterYearID === "S22"))
+               }
                setSchedule(data)
             }
         )
@@ -99,6 +99,13 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
         }
 
 
+     }
+
+     function redirectClassList(row){
+        history.push({
+           pathname: "/classList",
+           state: row
+        })
      }
       
      
@@ -209,7 +216,7 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
                   ...columns
                   ]
             })}
-            else if(isAddClassStudent){
+             if(isAddClassStudent){
                hooks.visibleColumns.push((columns) =>{
                   return[
                       { 
@@ -224,14 +231,14 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
                   ]
                })
             }
-            else if(isTeach){
+             if(isTeach){
                hooks.visibleColumns.push((columns) =>{
                   return[
                       { 
                         id: "addClassTeach",
                         Cell: ({cell}) => (
                            <div>
-                              <button title="Class List" onClick={() =>console.log(cell.row.original)}>📋</button>
+                              <button title="Class List" onClick={() =>redirectClassList(cell.row.original)}>📋</button>
                            </div>
                         )
                      },

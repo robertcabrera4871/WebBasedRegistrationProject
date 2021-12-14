@@ -10,10 +10,10 @@ function ChoseSemester({semesterSelect, onClick}){
 
         <Dropdown.Menu>
             <Dropdown.Item> 
-                <div onClick={() => onClick('Spring 2021')}>Spring 2021</div>
+                <div onClick={() => onClick('Fall 2021')}>Fall 2021</div>
            </Dropdown.Item>
             <Dropdown.Item>
-            <div onClick={() => onClick('Fall 2022')}>Fall 2022</div>
+            <div onClick={() => onClick('Spring 2022')}>Spring 2022</div>
                 </Dropdown.Item>
         </Dropdown.Menu>
         <br/><br/>Semester selected: {semesterSelect}

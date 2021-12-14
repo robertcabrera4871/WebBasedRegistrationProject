@@ -14,6 +14,7 @@ const db = mysql.createConnection({
     host: "localhost",
     password: "password",
     database: "test",
+    multipleStatements: true
 });
 
 
@@ -65,7 +66,7 @@ app.put('/createPartUndergrad', (req, res) =>{
     const params = req.body.params;
     db.query(
         `INSERT INTO UndergradPartTime VALUES(?,?,?)`,
-        [params.studentID, params.minCredit, params.maxCourse],
+        [params.studentID, params.minCredit, params.maxCredit],
         (err, result) => {
             if(err){
                 res.send({err: err})
@@ -969,6 +970,114 @@ app.get('/masterSchedule', (req, res) =>{
     )
 })
 
+app.post("/getClassList", (req, res)=> {
+    const CRN = req.body.params.CRN
+    db.query(
+        `SELECT u.firstName, u.lastName, e.CRN, e.enrollDate, e.grade, e.studentID
+         FROM Enrollment e
+         JOIN USER u 
+         ON e.studentID = u.userID
+         WHERE CRN = ?`,
+        [CRN],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.post("/getAttendence", (req, res)=> {
+    const CRN = req.body.params.CRN
+    db.query(
+        `SELECT u.userID, u.firstName, u.lastName, a.meetingDate, a.presentOrAbsent 
+        FROM Attendence a
+        Join User u
+        ON a.studentID = u.userID
+         WHERE CRN = ?`,
+        [CRN],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.post("/createAttendence", (req, res)=> {
+    const params = req.body.params
+    db.query(
+        `INSERT INTO Attendence VALUES(?,?,?, false)`,
+        [params.CRN, params.studentID, params.date],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.post("/deleteAttendence", (req, res)=> {
+    const date = req.body.params.date
+    db.query(
+        `DELETE FROM Attendence WHERE meetingDate = ?`,
+        [date],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+
+app.post("/deleteAttendenceByID", (req, res)=> {
+    const userID = req.body.params.userID
+    db.query(
+        `DELETE FROM Attendence WHERE studentID = ?`,
+        [userID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+
+
+
+
+app.post("/checkSemesterYear", (req, res)=> {
+    const semesterYearID = req.body.params.semesterYearID
+    db.query(
+        `SELECT * FROM SemesterYear WHERE semesterYearID = ?`,
+        [semesterYearID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
 
 
 app.get('/majors',  (req, res) =>{
@@ -1385,7 +1494,10 @@ app.post('/dropMyClass', (req, res) =>{
     const userID = req.body.params.userID;
 
     db.query(
-        `DELETE FROM Enrollment WHERE CRN = ? AND studentID = ?`,
+        `
+        SET FOREIGN_KEY_CHECKS=0;
+        DELETE FROM Enrollment WHERE CRN = ? AND studentID = ?;
+        SET FOREIGN_KEY_CHECKS=1;`,
         [CRN, userID],
         (err, result) => {
             if(err){
