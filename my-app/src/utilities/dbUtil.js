@@ -11,11 +11,12 @@ import Axios from 'axios';
       }
       
       static async userExists(email){
-        const response = await Axios.post("http://localhost:8000/emailExist",{
+        const response = await Axios.post("/emailExist",{
           params: {
             email: email
           }
         })
+        console.log(response)
         return response.data
       }
 
@@ -298,6 +299,16 @@ import Axios from 'axios';
           CRN: CRN,
           studentID: studentID,
           date: date
+        }
+      })
+      return response.data
+    }
+
+    static async assignGrade(studentID, grade){
+      const response = await Axios.post("http://localhost:8000/assignGrade", {
+        params:{
+          studentID: studentID,
+          grade: grade
         }
       })
       return response.data

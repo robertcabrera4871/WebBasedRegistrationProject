@@ -12,6 +12,8 @@ import decryptUser from "../../utilities/decryptUser";
     var user = decryptUser();
     let privs = checkPrivs();
 
+    const grades = ['A', 'B', 'C', 'D', 'E', 'F', 'IP'];
+
 
     useEffect(() =>{
         getClassList();
@@ -26,8 +28,29 @@ import decryptUser from "../../utilities/decryptUser";
         setClassList(response)
     }
 
+    async function assignGrade(row){
+       const newGrade = window.prompt("Enter Grade")
+       if(!grades.includes(newGrade)){
+           window.alert(`Valid entries are ${grades}`)
+           return("")
+       }
+       const response = await dbUtil.assignGrade(row.studentID, newGrade);
+       if(response.affectedRows === 1){
+           window.location.reload(false)
+       }
+    }
+
 
     const columns = React.useMemo(() => [
+        {
+            accessor: 'Actions',
+            width: 100,
+            Cell: ({cell}) => (
+              <div>
+              <button onClick={() => assignGrade(cell.row.original)}>📖 Edit Grade</button>
+              </div>
+            )
+          },
         {
             Header: "CRN",
             accessor: "CRN",

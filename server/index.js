@@ -9,14 +9,22 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
+
+// const db = mysql.createConnection({
+//     user: "root",
+//     host: "localhost",
+//     password: "password",
+//     database: "test",
+//     multipleStatements: true
+// });
+
 const db = mysql.createConnection({
-    user: "root",
-    host: "localhost",
+    user: "admin",
+    host: "webregistrationdb.cmfdjpexlzt4.us-east-2.rds.amazonaws.com",
     password: "password",
     database: "test",
     multipleStatements: true
 });
-
 
 
 function getDate(){
@@ -303,7 +311,7 @@ app.post('/login', (req, res) =>{
     const email = req.body.email;
     const password = req.body.password;
     db.query(
-        "SELECT * FROM logininfo WHERE email = ? AND password = ?",
+        "SELECT * FROM LoginInfo WHERE email = ? AND password = ?",
         [email, password],
         (err, result) => {
             if(err){
@@ -954,7 +962,7 @@ app.get('/masterSchedule', (req, res) =>{
         ON cs.courseID = c.courseID
         JOIN User u
         ON cs.facultyID = u.userID
-        JOIN TimeSlot t
+        JOIN Timeslot t
         ON cs.timeslotID = t.timeslotID
         JOIN Period p
         ON t.period = p.periodID;`,
@@ -1014,6 +1022,21 @@ app.post("/createAttendence", (req, res)=> {
     db.query(
         `INSERT INTO Attendence VALUES(?,?,?, false)`,
         [params.CRN, params.studentID, params.date],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.post("/assignGrade", (req, res)=> {
+    const params = req.body.params
+    db.query(
+        `UPDATE Enrollment SET grade = ? WHERE studentID = ?`,
+        [params.grade, params.studentID],
         (err, result) =>{
             if(err){
                 res.send({err: err})

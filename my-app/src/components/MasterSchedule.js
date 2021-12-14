@@ -54,6 +54,7 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
         dbUtil.getMasterSchedule().then(
            //CHANGE!!I
             data =>{
+               console.log(data)
                if(isTeach){
                   data = data.filter(row => row.userID === isTeach)
                }
