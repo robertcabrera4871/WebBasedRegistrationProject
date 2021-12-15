@@ -16,9 +16,9 @@ import Axios from 'axios';
             email: email
           }
         })
-        console.log(response)
         return response.data
       }
+
 
       static async AddDepartment(dep){
         const response = await Axios.post("http://localhost:8000/AddDepartment",{
@@ -33,6 +33,36 @@ import Axios from 'axios';
         })
         return response.data;
       }
+
+      static async newDepAssign(newRow){
+        const response = await Axios.put("http://localhost:8000/newDepAssign",{
+          params: {
+            newRow: newRow
+          }
+        })
+        return response.data
+      }
+
+      static async deleteDepAppt(row){
+        const response = await Axios.post("http://localhost:8000/deleteDepAppt",{
+          params: {
+            row: row
+          }
+        })
+        return response.data
+      }
+
+
+      
+      static async getFacultyDepartment(departmentID){
+        const response = await Axios.post("http://localhost:8000/getFacultyDepartment",{
+          params:{
+            departmentID: departmentID,
+          }
+        })
+        return response.data;
+      }
+
 
       static async editRoom(room, oldid){
         const response = await Axios.post('http://localhost:8000/editRoom', {
@@ -356,6 +386,14 @@ import Axios from 'axios';
       const mSchedResponse = await Axios.get("http://localhost:8000/masterSchedule")
       return mSchedResponse.data
   }
+  static async getFallCal(){
+    const mSchedResponse = await Axios.get("http://localhost:8000/getFallCal")
+    return mSchedResponse.data
+}
+static async getSpringCal(){
+  const mSchedResponse = await Axios.get("http://localhost:8000/getSpringCal")
+  return mSchedResponse.data
+}
 
   static async getClassList(crn){
     const res = await Axios.post("http://localhost:8000/getClassList", {
@@ -469,6 +507,23 @@ import Axios from 'axios';
         })
         return userSchedResponse.data
       }
+      static async getStudentHistory(userID){
+        const userSchedResponse = await Axios.post("http://localhost:8000/getStudentHistory", {
+          params: {
+            userID: userID
+          }
+        })
+        return userSchedResponse.data
+      }
+      static async addStudentHistory(newRow){
+        const userSchedResponse = await Axios.post("http://localhost:8000/addStudentHistory", {
+          params: {
+            newRow: newRow
+          }
+        })
+        return userSchedResponse.data
+      }
+
 
       static async addMyClass(CRN, userID){
         const response = await Axios.post("http://localhost:8000/addMyClass", {
@@ -630,6 +685,35 @@ import Axios from 'axios';
         const majorRequireResponse = await Axios.get("http://localhost:8000/majorRequirements")
         return majorRequireResponse.data      
       }
+
+      static async myMajorRequirements(userID){
+        const majorsResponse = await Axios.post("http://localhost:8000/myMajorRequirements",{
+          params: {
+            userID: userID
+          }
+        })
+        return majorsResponse.data      
+      }
+      static async myMinorRequirements(userID){
+        const majorRequireResponse = await Axios.post("http://localhost:8000/myMinorRequirements",{
+          params: {
+            userID: userID
+          }
+        })
+        return majorRequireResponse.data      
+      }
+
+      static async editCalDesc(title, description, semester){
+        const majorRequireResponse = await Axios.post("http://localhost:8000/editCalDesc",{
+          params: {
+            title: title,
+            description: description,
+            semester: semester
+          }
+        })
+        return majorRequireResponse.data      
+      }
+
 
       static async deleteMajorReq(majorID, courseID){
         const majorRequireResponse = await Axios.post("http://localhost:8000/deleteMajorReq",

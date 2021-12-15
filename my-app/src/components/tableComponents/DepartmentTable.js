@@ -1,9 +1,10 @@
-import React from "react"
+import React, { useState } from "react"
 import checkPrivs from "../../utilities/checkPrivs";
 import { useHistory } from 'react-router';
 import Table from 'react-bootstrap/Table'
 import {useTable} from 'react-table'
 import dbUtil from "../../utilities/dbUtil";
+import FacultyDeptTable from "./FacultyDeptTable";
 
 
 
@@ -11,6 +12,8 @@ export default function DepartmentTable({departments}){
 
     let privs = checkPrivs();
     let history = useHistory();
+
+    const [deptChosen, setDeptChosen] = useState([]);
 
     function editDepartment(row){
         history.push({
@@ -27,6 +30,10 @@ export default function DepartmentTable({departments}){
       }
    }
 
+   async function viewFaculty(row){
+      setDeptChosen(row.departmentID)
+   }
+
     function addDepartment(){
       history.push('/addDepartment')
     }
@@ -37,8 +44,8 @@ export default function DepartmentTable({departments}){
             Cell: ({cell}) => (
               <div>
               <button onClick={() => editDepartment(cell.row.original)}>✏️</button>
-              <div className='bigDivider'/>
               <button onClick={() => deleteDepartment(cell.row.original)}>❌</button>
+              <button title="View Faculty" onClick={() => viewFaculty(cell.row.original)}>👨‍🏫</button>
               </div>
             )
           },
@@ -118,5 +125,7 @@ export default function DepartmentTable({departments}){
        })}
      </tbody>
    </Table>
+   <h1>Faculty In: {deptChosen}</h1>
+   <FacultyDeptTable deptChosen={deptChosen}/>
    </div>)
 }

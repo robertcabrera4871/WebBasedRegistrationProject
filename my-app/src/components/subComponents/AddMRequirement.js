@@ -11,6 +11,8 @@ export default function AddMRequirement(majorInfo){
     let history = useHistory();
     
     const major = majorInfo.location.state;
+    const grades = ['A', 'B', 'C', 'D', 'E', 'F', 'IP'];
+
 
     console.log(major)
 
@@ -36,6 +38,10 @@ export default function AddMRequirement(majorInfo){
     }
 
     async function addMajReq(){
+        if(!grades.includes(newReq.minCourseGrade)){
+            window.alert(`Valid entries are ${grades}`)
+            return("")
+        }
         const response = await dbUtil.addMajReq(newReq, major.majorID)
             if(response.err){
                 window.alert(response.err.sqlMessage)

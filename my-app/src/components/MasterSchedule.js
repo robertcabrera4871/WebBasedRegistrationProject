@@ -8,17 +8,24 @@ import checkPrivs from '../utilities/checkPrivs';
 import ChoseSemester from "./subComponents/ChoseSemester";
 import decryptUser from "../utilities/decryptUser";
 import Dropdown from 'react-bootstrap/Dropdown'
+import CalendarTable from "./tableComponents/CalendarTable";
 
 
 
-export default function MasterSchedule({isAddClassStudent, isTeach}){
+export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}){
 
    //Needs more sorting options
     const [schedule, setSchedule] = useState([]);
     const [semesterSelect, setSemester]= useState("Fall 2021")
     let history = useHistory();
     const privs = checkPrivs();
-    const user = decryptUser();
+    var adminUser = adminAccess.adminAccess
+    var user = decryptUser();
+
+
+    if(adminUser !== undefined){
+        user.userID = adminUser
+    }
 
      useEffect(() =>{
          getSchedule();
@@ -34,9 +41,12 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
      async function addClassStudent(row){
         const response = await dbUtil.addMyClass(row.CRN, user.userID); 
         if(response.err){
+           console.log(response)
            window.alert("You are already enrolled in this class")
         } else{
            window.alert("You have been enrolled")
+           window.location.reload(false)
+
         }
      }
 
@@ -54,7 +64,6 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
         dbUtil.getMasterSchedule().then(
            //CHANGE!!I
             data =>{
-               console.log(data)
                if(isTeach){
                   data = data.filter(row => row.userID === isTeach)
                }
@@ -197,7 +206,7 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
       } = useTable({ columns, data: schedule, initialState},
           useFilters, useSortBy, usePagination,
           (hooks) => {
-            if(privs.isAdmin){
+            if(privs.isAdmin && history.location.pathname === "/home" ){
             hooks.visibleColumns.push((columns) => {
                return [
                   {
@@ -217,7 +226,7 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
                   ...columns
                   ]
             })}
-             if(isAddClassStudent){
+             if(history.location.pathname === "/schedule" || history.location.pathname === "/addClass") {
                hooks.visibleColumns.push((columns) =>{
                   return[
                       { 
@@ -232,7 +241,7 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
                   ]
                })
             }
-             if(isTeach){
+             if(history.location.pathname === "/teachSchedule"){
                hooks.visibleColumns.push((columns) =>{
                   return[
                       { 
@@ -257,10 +266,10 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
      return (
       <div >
       <ChoseSemester onClick={choseSemester} semesterSelect={semesterSelect} />
-      <h1 className='text-align'>{isTeach ? "Teaching Schedule":"Master Schedule"}</h1>
+      <h1 className='text-align'>{history.location.pathname==="/teachSchedule" ? "Teaching Schedule":"Master Schedule"}</h1>
 
       <b>Hover column to search, Click column to sort</b>
-         { privs.isAdmin && <div><button onClick={(e) => newRow()}>➕ Add to Master Schedule </button></div>}
+         { privs.isAdmin &&  history.location.pathname === "/home" && <div><button onClick={(e) => newRow()}>➕ Add to Master Schedule </button></div>}
       
       <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
@@ -303,6 +312,7 @@ export default function MasterSchedule({isAddClassStudent, isTeach}){
        <button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</button>
        <button onClick={() => nextPage()} disabled={!canNextPage}>Next</button>
     </span>
+      {(history.location.pathname === "/home") && <CalendarTable semesterSelect={semesterSelect}/>}
     </div>
  )
 }

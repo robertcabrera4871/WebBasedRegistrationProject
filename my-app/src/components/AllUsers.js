@@ -94,6 +94,25 @@ export default function AllUsers(){
       })
     }
 
+    function viewStudentSchedule(userID){
+      history.push({
+        pathname: '/schedule',
+        state: userID
+      })
+    }
+    function viewSMajorMinor(userID){
+      history.push({
+        pathname: '/addMajorMinor',
+        state: userID
+      })
+    }
+    function viewSDegreeAudit(userID){
+      history.push({
+        pathname: '/degreeAudit',
+        state: userID
+      })
+    }
+
      const data = users;
 
      const columns = React.useMemo( () =>[
@@ -124,6 +143,14 @@ export default function AllUsers(){
         </Dropdown.Menu>
         <Dropdown.Item onClick={() =>{viewStudentHolds(cell.row.original.userID)}}>🎟️ View Holds</Dropdown.Item>
         <Dropdown.Item onClick={() =>{viewStudentAdvisor(cell.row.original.userID)}}>🤝🏻 View Advisors</Dropdown.Item>
+        <Dropdown>
+          <DropdownToggle as={"Dropdown.Item"} title={"Student Academics"}>&nbsp;&nbsp;&nbsp;&nbsp;🎓 Academics</DropdownToggle>
+          <Dropdown.Menu>
+          <Dropdown.Item onClick={(e) => {viewStudentSchedule(cell.row.original.userID)}}>Schedule</Dropdown.Item>
+          <Dropdown.Item onClick={(e) => {viewSMajorMinor( cell.row.original.userID)}}>Major/Minor</Dropdown.Item>
+          <Dropdown.Item onClick={(e) => {viewSDegreeAudit( cell.row.original.userID)}}>Degree Audit</Dropdown.Item>
+        </Dropdown.Menu>
+          </Dropdown>
           </Dropdown> }
           </Dropdown.Menu>
           </Dropdown>} </div>

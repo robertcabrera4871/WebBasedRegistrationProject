@@ -32,6 +32,7 @@ export default function AddMS(){
 
         async function submitChanges(e){
             e.preventDefault();
+            newRow.availableSeats = newRow.capacity;
             if (await checkBlanks() === "" ){return("")}
             if (await checkFaculty() === ""){return("")}
             if (await checkTimeSlotID() === ""){return("")}
@@ -137,8 +138,6 @@ export default function AddMS(){
             <Form.Control onChange={e => newRow.lastName = e.target.value} ></Form.Control>
             <Form.Label>ProfFirstName</Form.Label>
             <Form.Control onChange={e => newRow.firstName = e.target.value} ></Form.Control>
-            <Form.Label>Seats</Form.Label>
-            <Form.Control onChange={e => newRow.availableSeats = e.target.value} ></Form.Control>
             <Form.Label>Capacity</Form.Label>
             <Form.Control onChange={e => newRow.capacity = e.target.value}></Form.Control>
                 </Col>

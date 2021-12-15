@@ -1,16 +1,19 @@
 import ChoseSemester from './subComponents/ChoseSemester'
-import { useState, useEffect} from 'react';
+import { useState, useEffect, useLocation} from 'react';
 import dbUtil from '../utilities/dbUtil';
 import {useTable} from 'react-table'
 import React from 'react';
 import Table from 'react-bootstrap/Table'
 import decryptUser from '../utilities/decryptUser';
+import formatDate from '../utilities/formateDate';
+import Transcript from './Transcript';
+import { useHistory } from 'react-router-dom';
 
 export default function Schedule({title, semesterPicker}){
+    let history = useHistory();
 
     const [semesterSelect, setSemester]= useState("Fall 2021")
     const [schedule, setSchedule] = useState([]);
-
 
     const choseSemester = (semesterChosen) => {
         setSemester(semesterChosen) 
@@ -21,12 +24,15 @@ export default function Schedule({title, semesterPicker}){
     }, [semesterSelect]);
 
     var user = decryptUser();
+    var adminUser = history.location.state; 
+
+    if(adminUser !== undefined){
+      user.userID = adminUser
+    }
 
    async function dropClass(row){
       const attRes = await dbUtil.deleteAttendenceByID(user.userID)
-      console.log(attRes)
       const response = await dbUtil.dropMyClass(row.CRN, user.userID)
-      console.log(response)
       if(response.err){
         window.alert(response.err.sqlMessage)
       } else {
@@ -41,12 +47,6 @@ export default function Schedule({title, semesterPicker}){
 
     async function getUserSched(){
         var data = await dbUtil.getUserSched(user.userID)
-                if(title === 'Transcript'){
-                    data = data.filter(item => ( item.grade !== 'IP'))
-                }
-                else if(title === 'My Schedule'){
-                    data = data.filter(item => (item.grade === "IP") )
-                }
                 if(semesterSelect === "Fall 2021" && semesterPicker){
                     data = data.filter(item => (item.semesterYearID === 'F21' ))
                  } 
@@ -55,7 +55,6 @@ export default function Schedule({title, semesterPicker}){
                  }
                  setSchedule(data)
     }
-
     const columns = React.useMemo( () => [
         {
             accessor: 'Actions',
@@ -110,11 +109,19 @@ export default function Schedule({title, semesterPicker}){
 
 
     ], [])
+    
 
+    
     var initialState = ""
     if(title !== "Drop Classes"){
       initialState = {hiddenColumns: ['Actions']}
     }
+    if(adminUser !== undefined && history.location.pathname != "/degreeAudit"){
+      initialState = ""
+    }
+
+    formatDate(schedule, "enrollDate")
+
 
     const {
         getTableProps,
@@ -123,6 +130,9 @@ export default function Schedule({title, semesterPicker}){
         rows,
         prepareRow,
       } = useTable({columns, data: schedule, initialState})
+
+      
+    
 
     
     return(
@@ -160,6 +170,7 @@ export default function Schedule({title, semesterPicker}){
         })}
       </tbody>
     </Table>
+    {adminUser !== undefined && <Transcript adminAccess={adminUser}/>}
         </div>
     );
 }

@@ -44,7 +44,8 @@ import AddMinorRequirement from './AddMinorRequirement';
 import AddAdvising from './AddAdvising';
 import AddMeeting from './AddMeeting';
 import ClassListTable from '../tableComponents/ClassListTable';
-
+import AddTranscript from './AddTranscript';
+import AddFacDept from './AddFacDept';
 
 function ComponentSwitch() {
 
@@ -61,7 +62,16 @@ function ComponentSwitch() {
             <Route exact path="/gradCatalog" component={GradCatalog}></Route>
             <Route exact path="/undergradCatalog" component={UndergradCatalog}></Route>
             <Route exact path="/masterSchedule" component={MasterSchedule}></Route>
-
+            {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/addFacDept" component={AddFacDept} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/addFacDept" component={AddFacDept} allowed={false}></ProtectedRoute> 
+            }
+            {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/AddTranscript" component={AddTranscript} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/AddTranscript" component={AddTranscript} allowed={false}></ProtectedRoute> 
+            }
             {
                 (privs.isAdmin) ? 
                 <ProtectedRoute exact path ="/addAdvising" component={AddAdvising} allowed={true}></ProtectedRoute> : 
@@ -221,6 +231,7 @@ function ComponentSwitch() {
                     <ProtectedRoute exact path="/addClass" component={AddClass} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/addClass" component={AddClass} allowed={false}></ProtectedRoute> 
             }
+            
 
             {
                 (privs.isStudent || privs.isAdmin) ?

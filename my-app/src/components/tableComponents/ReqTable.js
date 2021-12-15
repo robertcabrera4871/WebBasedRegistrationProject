@@ -36,8 +36,6 @@ export default function ReqTable({major, minor, requirements}) {
         width: 100,
         Cell: ({cell}) => (
           <div>
-          <button onClick={() => clicked(cell.row.original)}>✏️</button>
-          <div className='bigDivider'/>
           <button onClick={() => {
            if (window.confirm('Are you sure you wish to delete this item?')) 
            {

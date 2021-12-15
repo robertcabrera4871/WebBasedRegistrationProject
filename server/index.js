@@ -53,6 +53,55 @@ app.post('/AddDepartment', (req,res) =>{
             
     )
 })
+app.put('/newDepAssign', (req,res) =>{
+    const newRow = req.body.params.newRow
+    const date = getDate();
+    db.query(
+        `INSERT INTO FacultyDepartment VALUES(?,?,?,?)`,
+        [newRow.facultyID, newRow.departmentID, newRow.percTimeCommitment, date],
+            (err, result) => {
+                if(err){
+                    res.send({err: err})
+                } 
+                else{
+                    res.send(result)
+                }
+            }
+            
+    )
+})
+app.post('/deleteDepAppt', (req,res) =>{
+    const row = req.body.params.row
+    db.query(
+        `DELETE FROM FacultyDepartment WHERE facultyID = ? AND departmentID = ?`,
+        [row.facultyID, row.departmentID],
+            (err, result) => {
+                if(err){
+                    res.send({err: err})
+                } 
+                else{
+                    res.send(result)
+                }
+            }
+            
+    )
+})
+app.post('/getFacultyDepartment', (req,res) =>{
+    const params = req.body.params
+    db.query(
+        `SELECT * FROM FacultyDepartment WHERE departmentID = ?`,
+        [params.departmentID],
+            (err, result) => {
+                if(err){
+                    res.send({err: err})
+                } 
+                else{
+                    res.send(result)
+                }
+            }
+            
+    )
+})
 app.put('/createFullUndergrad', (req, res) =>{
     const params = req.body.params;
     db.query(
@@ -980,6 +1029,37 @@ app.get('/masterSchedule', (req, res) =>{
     )
 })
 
+app.get('/getFallCal', (req, res) =>{
+    db.query(
+        `SELECT * FROM AcademicCalendarFall`,
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.get('/getSpringCal', (req, res) =>{
+    db.query(
+        `SELECT * FROM AcademicCalendarSpring`,
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+
+
 app.post("/getClassList", (req, res)=> {
     const CRN = req.body.params.CRN
     db.query(
@@ -1149,6 +1229,67 @@ app.get('/majorRequirements',  (req, res) =>{
         }
     )
 })
+app.post('/myMinorRequirements',  (req, res) =>{
+    const userID = req.body.params.userID
+    db.query(
+        `SELECT * FROM MinorRequirements r
+        WHERE r.courseID NOT IN(
+        SELECT c.courseID  FROM StudentHistory h
+        JOIN Enrollment e
+        ON h.studentID = ? OR e.studentID = ?
+        JOIN CourseSection c 
+        ON h.CRN = c.CRN);`,
+        [userID, userID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.post('/myMajorRequirements',  (req, res) =>{
+    const userID = req.body.params.userID
+    db.query(
+        `SELECT * FROM MajorRequirements r
+        WHERE r.courseID NOT IN(
+        SELECT c.courseID  FROM StudentHistory h
+        JOIN Enrollment e
+        ON h.studentID = 's' OR e.studentID = 's'
+        JOIN CourseSection c 
+        ON h.CRN = c.CRN)`,
+        [userID, userID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.post('/editCalDesc',  (req, res) =>{
+    const params = req.body.params
+    db.query(
+        `UPDATE AcademicCalendar${params.semester} SET Description = ? WHERE Title = ?`,
+        [params.description, params.title],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+
+
 app.post('/deleteMajorReq',  (req, res) =>{
     const params = req.body.params;
     db.query(
@@ -1353,6 +1494,34 @@ app.post('/getUserSched', (req, res) =>{
         JOIN User u2 
         ON c.facultyID = u2.userID;
         `, [userID, userID],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        }else{
+            res.send(result)
+        }
+    }
+    )
+})
+
+app.post('/getStudentHistory', (req, res) =>{
+    const userID = req.body.params.userID;
+    db.query(
+        `SELECT * FROM StudentHistory where studentID = ?`, [userID],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        }else{
+            res.send(result)
+        }
+    }
+    )
+})
+
+app.post('/addStudentHistory', (req, res) =>{
+    const newRow = req.body.params.newRow;
+    db.query(
+        `INSERT INTO  StudentHistory VALUES(?,?,?,?)`, [newRow.CRN, newRow.studentID, newRow.semesterYearID, newRow.grade],
     (err, result) =>{
         if(err){
             res.send({err: err})

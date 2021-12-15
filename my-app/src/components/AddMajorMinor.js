@@ -7,7 +7,7 @@ import StudentMajors from "./tableComponents/StudentMajors";
 import StudentMinors from "./tableComponents/StudentMinors";
 import decryptUser from "../utilities/decryptUser";
 
-export default function AddMajorMinor(){
+export default function AddMajorMinor(adminAccess){
 
     const [majors, setMajors] = useState([]);
     const [minors, setMinors] = useState([]);
@@ -23,6 +23,12 @@ export default function AddMajorMinor(){
     }, [])
   
     var user = decryptUser();
+    var adminUser = adminAccess.location.state; 
+
+    if(adminUser !== undefined){
+        user.userID = adminUser
+      }
+
 
 
     function getMajors(majors) {
