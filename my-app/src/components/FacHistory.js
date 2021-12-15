@@ -43,8 +43,9 @@ export default function FacHistory(){
         const res = await dbUtil.deleteFacHistory(row.CRN)
         if(!res.err){
             window.location.reload(false)
+        } else if(res.err){
+            window.alert(res.err.sqlMessage)
         }
-        window.alert(res.err.sqlMessage)
         console.log(res)
     }
 
@@ -54,12 +55,13 @@ export default function FacHistory(){
             width: 10,
             Cell: ({cell}) => (
               <div>
+                { privs.isAdmin &&
               <button onClick={() => {
                if (window.confirm('Are you sure you wish to delete this item?')) 
                {
                   deleteHistory(cell.row.original)
                }}
-                }>❌</button>
+                }>❌</button>}
               </div>
             )
           },

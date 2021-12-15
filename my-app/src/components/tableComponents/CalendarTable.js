@@ -11,7 +11,10 @@ export default function CalendarTable(semesterSelect){
     const [calendar, setCalendar] = useState([])
     let privs = checkPrivs()
     let history = useHistory()
-
+    let fallUndeletable = ['ADD/DROP CLASSES', 'FIRST DAY OF CLASSES', 'SPRING REGISTRATION FOR SENIORS', 'SPRING REGISTRATION FOR JUNIOR', 
+    'SPRING REGISTRATION FOR SOPHOMORES', 'SPRING REGISTRATION FOR FIRST YEAR STUDENTS', 'SPRING REGISTRATION FOR ALL STUDENTS', 'FINAL EXAMS', 'FALL SEMESTER ENDS']
+    let springUndeleatable = ['ADD/DROP CLASSES', 'FIRST DAY OF CLASSES', 'FALL REGISTRATION FOR SENIORS', 'FALL REGISTRATION FOR JUNIOR', 
+    'FALL REGISTRATION FOR SOPHOMORES', 'FALL REGISTRATION FOR FIRST YEAR STUDENTS', 'FALL REGISTRATION FOR ALL STUDENTS', 'FINAL EXAMS', 'SPRING SEMESTER ENDS']
     useEffect(() =>{
         getCalendar();
 
@@ -45,14 +48,28 @@ export default function CalendarTable(semesterSelect){
         console.log(res)
     }
 
+    function checkUndeletable(row){
+        if(semesterSelect.semesterSelect === "Fall 2021"){
+            return !fallUndeletable.includes(row.Title)
+        }
+        if(semesterSelect.semesterSelect === "Spring 2021"){
+            return !springUndeleatable.includes(row.Title)
+        }
+        return true
+    }
+
     const columns = React.useMemo(() => [
         {
             accessor: 'Actions',
-            width: 10,
+            width: 100,
             Cell: ({cell}) => (
                 
-              <div>
-             { privs.isAdmin &&  <button onClick={() => editDescription(cell.row.original)}>✏️</button>}
+              <div id="parent">
+             { privs.isAdmin && history.location.pathname !="/home" &&  <button className="child" title="Edit Description" onClick={() => editDescription(cell.row.original)}>✏️</button>}
+             { privs.isAdmin && history.location.pathname !="/home" &&  <button className="child" title="editDescription" onClick={() => editDescription(cell.row.original)}>🕖</button>}
+             { privs.isAdmin && history.location.pathname !="/home" &&  checkUndeletable(cell.row.original) &&
+             <button className="child" title="editDescription" onClick={() => editDescription(cell.row.original)}>❌</button>}
+
               </div>
             )
           },
