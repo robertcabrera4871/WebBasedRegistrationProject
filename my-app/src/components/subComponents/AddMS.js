@@ -63,11 +63,15 @@ export default function AddMS(){
         }
 
         async function checkFaculty(){
+            if(newRow.firstName.toLowerCase() === "tbd" || newRow.lastName.toLowerCase()==="tbd"){
+                newRow.facultyID = "TBD"
+                return("changed")
+            }
             const facResult = await dbUtil.getFacultyID(newRow.firstName, newRow.lastName);
             if(facResult.err){
                     window.alert(facResult.err.sqlMessage)
                 }else if(facResult.length !== 1){
-                   window.alert("No faculty found with that name")
+                   window.alert("No faculty found with that name You can add TBD to first and last name")
                    return("");
                 }else{
                    newRow.facultyID = facResult[0].userID;

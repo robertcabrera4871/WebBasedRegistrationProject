@@ -1,7 +1,9 @@
 import ListGroup from 'react-bootstrap/ListGroup'
 import checkPrivs from '../utilities/checkPrivs';
+import decryptUser from '../utilities/decryptUser';
 
 const privs = checkPrivs();
+console.log(decryptUser())
 
 function Registration(){
     return(
