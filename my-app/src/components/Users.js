@@ -11,17 +11,7 @@ export default function Users(){
 
     return(
         <div>
-             {privs.isAdmin && <AllUsers/>}
-             {privs.isFaculty &&  <Form className="align-center">
-            <Form.Label>Enter users first name</Form.Label>
-            <Form.Control type="text"></Form.Control>
-            <Form.Label>Enter users last name</Form.Label>
-            <Form.Control type="text"></Form.Control>   
-            <br/>
-            <Button variant="primary" type="sumbit">Submit</Button>
-            <br/> <br/>
-        </Form>
-             }
+             <AllUsers/>
         </div>
        
     

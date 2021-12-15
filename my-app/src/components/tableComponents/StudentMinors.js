@@ -1,15 +1,18 @@
 import React from "react"
 import Table from 'react-bootstrap/Table'
 import {useTable} from 'react-table'
+import checkPrivs from "../../utilities/checkPrivs"
 
 export default function StudentMinors({studentMinors, dropMinor}){
+    let privs = checkPrivs()
     const columns = React.useMemo( () => [
         {
             accessor: 'dropMinor',
             width: 30,
             Cell: ({cell}) => (
                 <div className="text-align">
-                <button onClick={() => dropMinor(cell.row.original.minorID)}>❌</button>
+                    {!privs.isFaculty &&
+                <button onClick={() => dropMinor(cell.row.original.minorID)}>❌</button>}
                 </div>
               )
         },

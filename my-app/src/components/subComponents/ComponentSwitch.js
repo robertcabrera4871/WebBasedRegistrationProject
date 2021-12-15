@@ -46,6 +46,7 @@ import AddMeeting from './AddMeeting';
 import ClassListTable from '../tableComponents/ClassListTable';
 import AddTranscript from './AddTranscript';
 import AddFacDept from './AddFacDept';
+import AddFacHistory from './AddFacHistory';
 
 function ComponentSwitch() {
 
@@ -62,6 +63,11 @@ function ComponentSwitch() {
             <Route exact path="/gradCatalog" component={GradCatalog}></Route>
             <Route exact path="/undergradCatalog" component={UndergradCatalog}></Route>
             <Route exact path="/masterSchedule" component={MasterSchedule}></Route>
+            {
+                (privs.isAdmin) ? 
+                <ProtectedRoute exact path ="/addFacHistory" component={AddFacHistory} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/addFacHistory" component={AddFacHistory} allowed={false}></ProtectedRoute> 
+            }
             {
                 (privs.isAdmin) ? 
                 <ProtectedRoute exact path ="/addFacDept" component={AddFacDept} allowed={true}></ProtectedRoute> : 
@@ -209,7 +215,7 @@ function ComponentSwitch() {
             }
 
             {
-                (privs.isStudent || privs.isAdmin) ?
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
                     <ProtectedRoute exact path="/schedule" component={Schedule} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/schedule" component={Schedule} allowed={false}></ProtectedRoute> 
             }
@@ -221,7 +227,7 @@ function ComponentSwitch() {
             }
 
             {
-                (privs.isStudent || privs.isAdmin) ?
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
                     <ProtectedRoute exact path="/addMajorMinor" component={AddMajorMinor} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/addMajorMinor" component={AddMajorMinor} allowed={false}></ProtectedRoute> 
             }
@@ -245,7 +251,7 @@ function ComponentSwitch() {
                     <ProtectedRoute exact path="/viewHolds" component={ViewHolds} allowed={true}></ProtectedRoute> 
             }
             {
-                (privs.isStudent || privs.isAdmin ) ?
+                (privs.isStudent || privs.isAdmin || privs.isFaculty) ?
                     <ProtectedRoute exact path="/degreeAudit" component={DegreeAudit} allowed={true}></ProtectedRoute> :
                     <ProtectedRoute exact path="/degreeAudit" component={DegreeAudit} allowed={false}></ProtectedRoute> 
             }

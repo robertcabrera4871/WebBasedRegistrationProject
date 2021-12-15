@@ -63,6 +63,33 @@ import Axios from 'axios';
         return response.data;
       }
 
+      static async getFacultyHistory(facultyID){
+        const response = await Axios.post("http://localhost:8000/getFacultyHistory",{
+          params:{
+            facultyID: facultyID,
+          }
+        })
+        return response.data;
+      }
+
+      static async addFacHistory(newRow){
+        const response = await Axios.put("http://localhost:8000/addFacHistory",{
+          params:{
+            newRow: newRow,
+          }
+        })
+        return response.data;
+      }
+      static async deleteFacHistory(CRN){
+        const response = await Axios.post("http://localhost:8000/deleteFacHistory",{
+          params:{
+            CRN: CRN,
+          }
+        })
+        return response.data;
+      }
+
+
 
       static async editRoom(room, oldid){
         const response = await Axios.post('http://localhost:8000/editRoom', {
@@ -171,6 +198,15 @@ import Axios from 'axios';
         })
         return response.data
       }
+
+      static async checkCRNsemester(row){
+        const response = await Axios.post("http://localhost:8000/checkCRNsemester", {
+          params: {
+            row: row
+          }
+        })
+        return response.data
+      }
     static async unenrollAll(row){
       const response = await Axios.put("http://localhost:8000/unenrollAll", {
         params: {
@@ -207,6 +243,31 @@ import Axios from 'axios';
         params : {
           timeSlotID: row.timeSlotID,
           roomID: row.roomID
+        }
+      })
+      return response.data
+    }
+
+    static async checkAvailableSeats(CRN){
+      const response = await Axios.post("http://localhost:8000/checkAvailableSeats", {
+        params : {
+          CRN: CRN
+        }
+      })
+      return response.data
+    }
+    static async minusAvailableSeats(CRN){
+      const response = await Axios.post("http://localhost:8000/minusAvailableSeats", {
+        params : {
+          CRN: CRN
+        }
+      })
+      return response.data
+    }
+    static async plusAvailableSeats(CRN){
+      const response = await Axios.post("http://localhost:8000/minusAvailableSeats", {
+        params : {
+          CRN: CRN
         }
       })
       return response.data

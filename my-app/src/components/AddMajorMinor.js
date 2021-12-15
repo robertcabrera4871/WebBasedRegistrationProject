@@ -31,6 +31,7 @@ export default function AddMajorMinor(adminAccess){
 
 
 
+
     function getMajors(majors) {
         dbUtil.getMajors().then(
             data => {

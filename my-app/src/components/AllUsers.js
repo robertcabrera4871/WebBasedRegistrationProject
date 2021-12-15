@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from "react";
-import { useTable,usePagination } from "react-table";
+import { useTable,usePagination, useFilters } from "react-table";
 import dbUtil from '../utilities/dbUtil'
 import Table from 'react-bootstrap/Table'
 import { useHistory } from 'react-router';
@@ -7,12 +7,15 @@ import DropdownButton from "react-bootstrap/esm/DropdownButton";
 import DropdownItem from "react-bootstrap/DropdownItem";
 import DropdownToggle from "react-bootstrap/esm/DropdownToggle";
 import Dropdown from 'react-bootstrap/Dropdown'
+import checkPrivs from "../utilities/checkPrivs";
+import ColumnFilter from "./tableComponents/ColumnFilter";
 
 
 export default function AllUsers(){
 
     const [users, setUsers] = useState([]);
     let history = useHistory();
+    let privs = checkPrivs();
 
     
     useEffect(() =>{
@@ -23,6 +26,9 @@ export default function AllUsers(){
     function getUsers(){
         dbUtil.getAllUsers().then(
             data =>{
+              if(privs.isFaculty){
+                data = data.filter(item => (item.userType === "Grad Student" || item.userType === "Undergrad Student"))
+              }
                 setUsers(data)
             }
         )
@@ -93,6 +99,13 @@ export default function AllUsers(){
         state: userID
       })
     }
+    function viewFacHistory(userID){
+      history.push({
+        pathname: '/facHistory',
+        state: userID
+      })
+    }
+
 
     function viewStudentSchedule(userID){
       history.push({
@@ -113,14 +126,13 @@ export default function AllUsers(){
       })
     }
 
-     const data = users;
 
      const columns = React.useMemo( () =>[
       {
         accessor: 'Actions',
         width: 100,
-        Cell: ({cell}) => (
-          <div>
+        Cell: ({cell}) => (<div>
+          {privs.isAdmin && <div>
           {cell.row.original.userType !== "guest" && 
           <Dropdown >
           <DropdownToggle as={"button"} title={"Assign Hold"}>🛠️ Actions</DropdownToggle>
@@ -130,7 +142,9 @@ export default function AllUsers(){
           {(cell.row.original.userType === "Faculty") && 
           <>
            <Dropdown.Item onClick={() =>{viewFacAdvisees(cell.row.original.userID)}}>👨‍🎓 View Advisees</Dropdown.Item>
-           <Dropdown.Item onClick={() =>{viewFacSchedule(cell.row.original.userID)}}>📅 View Schedule</Dropdown.Item></>
+           <Dropdown.Item onClick={() =>{viewFacSchedule(cell.row.original.userID)}}>📅 View Schedule</Dropdown.Item>
+           <Dropdown.Item onClick={() =>{viewFacHistory(cell.row.original.userID)}}>📜 View History</Dropdown.Item>
+           </>
            }
           {(cell.row.original.userType).includes("Student") &&
           <Dropdown>
@@ -153,52 +167,69 @@ export default function AllUsers(){
           </Dropdown>
           </Dropdown> }
           </Dropdown.Menu>
-          </Dropdown>} </div>
-        )
+          </Dropdown>} </div>}
+          {privs.isFaculty && <div>
+            <button title="Degree Audit"onClick={(e) => {viewSDegreeAudit( cell.row.original.userID)}}>🎓</button>
+            </div>}
+          </div>
+        ),
+        Filter: ColumnFilter
       },
         {
             Header: "User ID",
-            accessor: "userID"
+            accessor: "userID",
+            Filter: ColumnFilter
         },
         {
             Header: "First Name",
-            accessor: "firstName"
+            accessor: "firstName",
+            Filter: ColumnFilter
         },
         {
             Header: "Last Name",
-            accessor: "lastName"
+            accessor: "lastName",
+            Filter: ColumnFilter
         },
         {
             Header: "DOB",
-            accessor: "DOB"
+            accessor: "DOB",
+            Filter: ColumnFilter
         },
         {
             Header: "City",
-            accessor: "city"
+            accessor: "city",
+            Filter: ColumnFilter
         },
         {
             Header: "State",
-            accessor: "state"
+            accessor: "state",
+            Filter: ColumnFilter
         },
         {
             Header: "Zip",
-            accessor: "zipCode"
+            accessor: "zipCode",
+            Filter: ColumnFilter
         },
         {
             Header: "Address",
-            accessor: "address"
+            accessor: "address",
+            Filter: ColumnFilter
         },
         {
             Header: "Type",
-            accessor: "userType"
+            accessor: "userType",
+            id: "typeFilter",
+            Filter: ColumnFilter
         }
 
      ], []);
 
-     for(const i in data){
-      data[i].DOB = data[i].DOB.substring(0, 10)
+     for(const i in users){
+      users[i].DOB = users[i].DOB.substring(0, 10)
     }
 
+
+   
      const {
        getTableProps,
        getTableBodyProps,
@@ -211,7 +242,7 @@ export default function AllUsers(){
         pageOptions,
         state,
        prepareRow,
-     } = useTable({ columns, data }, usePagination)
+     } = useTable({ columns, data: users}, useFilters, usePagination)
       
 
      const {pageIndex} = state
@@ -219,13 +250,14 @@ export default function AllUsers(){
     return(
       <div className='table-center'>
         <h1 className='text-align'>All Users</h1>
+        {privs.isAdmin && 
         <DropdownButton id='dropdown' title={'Add User'}>
             <DropdownItem onClick={(e) => {forwardAdd('Undergrad Student')}}>Undergrad Student</DropdownItem>
             <DropdownItem onClick={(e) => {forwardAdd('Grad Student')}}>Grad Student</DropdownItem>
             <DropdownItem onClick={(e) => {forwardAdd('Admin')}}>Admin</DropdownItem>
             <DropdownItem onClick={(e) => {forwardAdd('Faculty')}}>Faculty</DropdownItem>
             <DropdownItem onClick={(e) => {forwardAdd('ResearchStaff')}}>ResearchStaff</DropdownItem>
-        </DropdownButton>
+        </DropdownButton>}
         <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         {// Loop over the header rows
@@ -235,10 +267,7 @@ export default function AllUsers(){
             {// Loop over the headers in each row
             headerGroup.headers.map(column => (
               // Apply the header cell props
-              <th {...column.getHeaderProps({
-                style: {width: column.width}
-              }
-              )}>
+              <th {...column.getHeaderProps()}>
                 {// Render the header
                 column.render('Header')}
               </th>

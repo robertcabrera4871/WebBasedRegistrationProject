@@ -96,7 +96,7 @@ export default function Transcript(adminAccess){
     <div>
         <div className="table-center">
         <h1 className="text-align">Transcript</h1>   
-        {adminUser !== undefined  && history.location.pathname != "/degreeAudit" &&<button onClick={() => {addHistory()}}>➕ Add to Transcript</button>}
+        {adminUser !== undefined  && history.location.pathname != "/degreeAudit" && !privs.isFaculty && <button onClick={() => {addHistory()}}>➕ Add to Transcript</button>}
         <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         { headerGroups.map(headerGroup => (
@@ -127,7 +127,7 @@ export default function Transcript(adminAccess){
         })}
       </tbody>
     </Table>
-    {adminUser !== undefined && history.location.pathname!="/degreeAudit" && <MasterSchedule adminAccess ={adminUser} isAddClassStudent={true}/>}
+    {adminUser !== undefined && history.location.pathname!="/degreeAudit" && !privs.isFaculty && <MasterSchedule adminAccess ={adminUser} isAddClassStudent={true}/>}
         </div>
     </div>
     );

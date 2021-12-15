@@ -8,12 +8,15 @@ import decryptUser from '../utilities/decryptUser';
 import formatDate from '../utilities/formateDate';
 import Transcript from './Transcript';
 import { useHistory } from 'react-router-dom';
+import checkPrivs from '../utilities/checkPrivs';
 
 export default function Schedule({title, semesterPicker}){
     let history = useHistory();
 
     const [semesterSelect, setSemester]= useState("Fall 2021")
     const [schedule, setSchedule] = useState([]);
+
+    let privs = checkPrivs()
 
     const choseSemester = (semesterChosen) => {
         setSemester(semesterChosen) 
@@ -36,8 +39,18 @@ export default function Schedule({title, semesterPicker}){
       if(response.err){
         window.alert(response.err.sqlMessage)
       } else {
-        window.location.reload(false);
+       await updateAvailableSeats(row);
       }
+
+   }
+
+   async function updateAvailableSeats(row){
+    const res = await dbUtil.plusAvailableSeats(row.CRN)
+           if(res.err){
+              window.alert(res.err)
+           }else{
+            window.location.reload(false)
+           }
    }
 
    if(!title){
@@ -61,7 +74,8 @@ export default function Schedule({title, semesterPicker}){
             width: 10,
             Cell: ({cell}) => (
               <div>
-              <button onClick={() => dropClass(cell.row.original)}>❌</button>
+                  {!privs.isFaculty &&
+              <button onClick={() => dropClass(cell.row.original)}>❌</button>}
               </div>
             )
         },

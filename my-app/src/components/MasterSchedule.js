@@ -39,16 +39,35 @@ export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}
      }
 
      async function addClassStudent(row){
+        if(await checkAvailableSeats(row)){return("")}
         const response = await dbUtil.addMyClass(row.CRN, user.userID); 
         if(response.err){
            console.log(response)
            window.alert("You are already enrolled in this class")
         } else{
            window.alert("You have been enrolled")
-           window.location.reload(false)
-
+           const res = await dbUtil.minusAvailableSeats(row.CRN)
+           if(res.err){
+              window.alert(res.err)
+           }else{
+            window.location.reload(false)
+           }
         }
      }
+
+     async function checkAvailableSeats(row){
+        const res = await dbUtil.checkAvailableSeats(row.CRN)
+        if(res.err){
+           window.alert(res.err)
+           console.log(res)
+           return true
+        }else if(res[0].availableSeats === 0 ){
+           window.alert("Class is full")
+           return true
+        }
+        return false;
+     }
+
 
      async function addClassTeach(row){
       const response = await dbUtil.addMyClass(row.CRN, user.userID); 
@@ -79,9 +98,6 @@ export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}
         )
      } 
 
-     async function lol(){
-
-     }
 
      function newRow(){
         history.push('/addMS')

@@ -2,8 +2,11 @@ import React from "react"
 import Table from 'react-bootstrap/Table'
 import {useTable} from 'react-table'
 import { useEffect } from "react"
+import checkPrivs from "../../utilities/checkPrivs"
 
 export default function MajorsTable({majors, addMajor}){
+
+  let privs = checkPrivs()
 
     const columns = React.useMemo( () => [
         {
@@ -11,7 +14,8 @@ export default function MajorsTable({majors, addMajor}){
             width: 30,
             Cell: ({cell}) => (
                 <div className="text-align">
-                <button onClick={() => addMajor(cell.row.original.majorID)}>➕</button>
+                    {!privs.isFaculty &&
+                <button onClick={() => addMajor(cell.row.original.majorID)}>➕</button>}
                 </div>
               )
         },

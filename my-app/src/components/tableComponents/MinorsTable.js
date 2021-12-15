@@ -1,15 +1,18 @@
 import React from "react"
 import Table from 'react-bootstrap/Table'
 import {useTable} from 'react-table'
+import checkPrivs from "../../utilities/checkPrivs"
 
 export default function MinorsTable({minors, addMinor}){
+  let privs = checkPrivs()
     const minorColumns = React.useMemo( () => [
         {
             accessor: 'addMinor',
             width: 30,
             Cell: ({cell}) => (
                 <div className="text-align">
-                <button c onClick={() => addMinor(cell.row.original.minorID)}>➕</button>
+                    {!privs.isFaculty &&
+                <button c onClick={() => addMinor(cell.row.original.minorID)}>➕</button>}
                 </div>
               )
         },

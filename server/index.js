@@ -753,6 +753,59 @@ app.put('/editMS', (req, res) =>{
         }
      )
  })
+ 
+ app.post('/checkAvailableSeats', (req, res) =>{
+    const CRN = req.body.params.CRN
+    db.query(
+        `SELECT availableSeats FROM CourseSection WHERE CRN = ?`,
+        [CRN],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+       }
+    )
+})
+
+app.post('/minusAvailableSeats', (req, res) =>{
+    const CRN = req.body.params.CRN
+    db.query(
+        `UPDATE CourseSection cs SET availableSeats = (cs.capacity - (
+            SELECT COUNT(*) FROM Enrollment e WHERE cs.CRN = e.CRN
+        )) WHERE cs.CRN = ?`,
+        [CRN],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+       }
+    )
+})
+
+app.post('/plusAvailableSeats', (req, res) =>{
+    const CRN = req.body.params.CRN
+    db.query(
+        `UPDATE CourseSection cs SET availableSeats = (cs.capacity + (
+            SELECT COUNT(*) FROM Enrollment e WHERE cs.CRN = e.CRN
+        )) WHERE cs.CRN = ?`,
+        [CRN],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+       }
+    )
+})
+
 
  app.put('/unenrollAll' , (req, res) => {
      const CRN = req.body.params.CRN
@@ -882,6 +935,53 @@ app.put('/addMinReq', (req, res) => {
          }
     )
  })
+
+ app.post('/getFacultyHistory', (req, res) => {
+    const params = req.body.params;
+   db.query(
+       `SELECT * FROM FacultyHistory WHERE facultyID = ?`,
+        [params.facultyID],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+        }
+   )
+})
+app.post('/deleteFacHistory', (req, res) => {
+    const params = req.body.params;
+   db.query(
+       `DELETE FROM FacultyHistory WHERE CRN = ?`,
+        [params.CRN],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+        }
+   )
+})
+
+app.put('/addFacHistory', (req, res) => {
+    const newRow = req.body.params.newRow;
+   db.query(
+       `INSERT INTO FacultyHistory VALUES(?,?,?) `,
+        [newRow.CRN, newRow.facultyID, newRow.semesterYearID],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+        }
+   )
+})
 
  app.post('/getFacRank', (req, res) => {
     const params = req.body.params;
@@ -1188,6 +1288,24 @@ app.post("/checkSemesterYear", (req, res)=> {
     db.query(
         `SELECT * FROM SemesterYear WHERE semesterYearID = ?`,
         [semesterYearID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+
+
+app.post("/checkCRNsemester", (req, res)=> {
+    const row = req.body.params.row
+    db.query(
+        `SELECT COUNT(*) FROM CourseSection WHERE semesterYearID = ? AND CRN = ?`,
+        [row.semesterYearID, row.CRN],
         (err, result) =>{
             if(err){
                 res.send({err: err})
