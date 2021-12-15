@@ -21,6 +21,7 @@ export default function CalendarTable(semesterSelect){
     }, [semesterSelect] );
 
     var semesterChosen = semesterSelect.semesterSelect;
+
     async function getCalendar(){
         var data = ""
         if(semesterChosen === "Fall 2021"){
@@ -41,6 +42,7 @@ export default function CalendarTable(semesterSelect){
             semester = 'Spring'
         }
         const desc = window.prompt('Enter new description')
+        if(desc === ""){return("")}
         const res = await dbUtil.editCalDesc(row.Title, desc, semester)
         if(res.err){
             window.alert("Operation failed")
@@ -52,7 +54,7 @@ export default function CalendarTable(semesterSelect){
         if(semesterSelect.semesterSelect === "Fall 2021"){
             return !fallUndeletable.includes(row.Title)
         }
-        if(semesterSelect.semesterSelect === "Spring 2021"){
+        if(semesterSelect.semesterSelect === "Spring 2022"){
             return !springUndeleatable.includes(row.Title)
         }
         return true
@@ -96,7 +98,7 @@ export default function CalendarTable(semesterSelect){
             Header: "Description",
             accessor: "Description"
         }
-    ], [])
+    ], [semesterSelect])
 
     formatDate(calendar, 'Date')
 

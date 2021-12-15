@@ -47,6 +47,7 @@ import ClassListTable from '../tableComponents/ClassListTable';
 import AddTranscript from './AddTranscript';
 import AddFacDept from './AddFacDept';
 import AddFacHistory from './AddFacHistory';
+import CourseTable from '../tableComponents/CourseTable';
 
 function ComponentSwitch() {
 
@@ -63,6 +64,9 @@ function ComponentSwitch() {
             <Route exact path="/gradCatalog" component={GradCatalog}></Route>
             <Route exact path="/undergradCatalog" component={UndergradCatalog}></Route>
             <Route exact path="/masterSchedule" component={MasterSchedule}></Route>
+            <Route exact path="/allCourses" component={CourseTable}></Route>
+
+
             {
                 (privs.isAdmin) ? 
                 <ProtectedRoute exact path ="/addFacHistory" component={AddFacHistory} allowed={true}></ProtectedRoute> : 

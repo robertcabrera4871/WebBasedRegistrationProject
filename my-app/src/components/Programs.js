@@ -14,9 +14,13 @@ function Programs(){
      <ListGroup.Item action href="/gradCatalog" >
         Graduate Catalog 
      </ListGroup.Item>
+     <ListGroup.Item action href="/allCourses" >
+        All Courses 
+     </ListGroup.Item>
      {privs.isAdmin && <ListGroup.Item action href="/departments" >
         Departments
      </ListGroup.Item> }
+     
      </ListGroup>
     );
 }

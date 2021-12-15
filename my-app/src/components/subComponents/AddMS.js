@@ -14,7 +14,6 @@ export default function AddMS(){
 
     const newRow = {
         CRN: "",
-        sectionNum: "",
         courseID: "",
         day: "",
         startTime: "",
@@ -33,6 +32,7 @@ export default function AddMS(){
         async function submitChanges(e){
             e.preventDefault();
             newRow.availableSeats = newRow.capacity;
+            newRow.CRN = history.location.state + newRow.CRN
             if (await checkBlanks() === "" ){return("")}
             if (await checkFaculty() === ""){return("")}
             if (await checkTimeSlotID() === ""){return("")}
@@ -118,8 +118,6 @@ export default function AddMS(){
                 <Col>
                 <Form.Label>CRN</Form.Label>
             <Form.Control onChange={e => newRow.CRN = e.target.value} ></Form.Control>
-            <Form.Label>CourseSection</Form.Label>
-            <Form.Control onChange={e => newRow.sectionNum = e.target.value} ></Form.Control>
             <Form.Label>CourseID</Form.Label>
             <Form.Control onChange={e => newRow.courseID = e.target.value} ></Form.Control>
             <Form.Label>Day</Form.Label>

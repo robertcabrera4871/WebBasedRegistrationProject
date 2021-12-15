@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import dbUtil from '../utilities/dbUtil'
-import CourseTable from "./tableComponents/CourseTable";
 import ReqTable from "./tableComponents/ReqTable";
 import checkPrivs from "../utilities/checkPrivs";
 import { useHistory } from 'react-router';
+import { useTable } from "react-table";
+import Table from 'react-bootstrap/Table'
 
 
 export default function UndergradCatalog() {
@@ -13,18 +14,23 @@ export default function UndergradCatalog() {
     const [minors, setMinors] = useState([]);
     const [minorRequire, setMinorRequire] = useState([]);
     const [majorRequire, setMajorRequire] = useState([]);
-
+    const [courses, setCourses] = useState([]);
     const privs = checkPrivs();
     let history = useHistory();
 
-    useEffect(() => {
+useEffect(() => {
         getMajors();
         getMinors();
         getMajorRequirements();
         getMinorRequirements();
+        getCourses();
     }, [])
 
-   
+    function getCourses(){
+        dbUtil.getUndergradCourses().then(data =>{
+            setCourses(data)
+        })
+    }
     function getMajors() {
         dbUtil.getMajors().then(
             data => {
@@ -55,6 +61,66 @@ export default function UndergradCatalog() {
             }
         )
     }
+    function editCourse(row){
+        history.push({
+          pathname: '/EditCourse',
+          state: row
+        })
+      }
+
+      function deleteCourse(row){
+        dbUtil.deleteCourse(row).then(data =>{
+          if(data.err){
+             window.alert(data.err.sqlMessage)
+         }else{
+          window.location.reload(false);
+         }
+       })
+      }
+
+    const columns = React.useMemo( () => [
+        {
+            accessor: 'Actions',
+            width: 100,
+            Cell: ({cell}) => (
+              <div>
+              <button onClick={() => editCourse(cell.row.original)}>✏️</button>
+              <div className='bigDivider'/>
+              <button onClick={() => {
+               if (window.confirm('Are you sure you wish to delete this item?')) 
+               {
+                  deleteCourse(cell.row.original)
+               }}
+                }>❌</button>
+              </div>
+            )
+          },
+        {
+            Header: 'Course Name',
+            accessor: 'courseID'
+        },
+        {
+            Header: 'Department',
+            accessor: 'departmentID'
+        },
+        {
+            Header: 'Credits',
+            accessor: 'numOfCredits'
+        }
+    ], [])
+
+    var initialState = ""
+    if(!privs.isAdmin){
+      initialState = {hiddenColumns: ['Actions']}
+    }
+
+    const {
+        getTableProps,
+        getTableBodyProps,
+        headerGroups,
+        rows,
+        prepareRow,
+      } = useTable({columns, data: courses, initialState})
 
     function addMajor(){
         history.push({
@@ -83,11 +149,6 @@ export default function UndergradCatalog() {
 
      
 
-     function addCourse(){
-        history.push({
-            pathname: '/AddCourse'
-         })
-     }
 
     let majorsTables = majors.map((major, index) =>{
         return (
@@ -131,8 +192,38 @@ export default function UndergradCatalog() {
     return (
         <div className="align-center">
             <h1 className="text-align"> Undergraduate Courses</h1>
-            {privs.isAdmin && <button onClick={() =>{addCourse()}}>➕ Add Course</button>}
-            <CourseTable/>
+                    <Table size="sm" striped bordered hover {...getTableProps()}>
+            <thead>
+                { headerGroups.map(headerGroup => (
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map(column => (
+                    <th {...column.getHeaderProps({
+                        style: {width: column.width}
+                    })}>
+                        { column.render('Header')}
+                    </th>
+                    ))}
+                </tr>
+                ))}
+            </thead>
+        
+            <tbody {...getTableBodyProps()}>
+                {rows.map(row => {
+                prepareRow(row)
+                return (
+                    <tr {...row.getRowProps()}>
+                    {row.cells.map(cell => {
+                        return (
+                        <td {...cell.getCellProps()}>
+                            { cell.render('Cell')}
+                        </td>
+                        )
+                    })}
+                    </tr>
+                )
+                })}
+            </tbody>
+            </Table>
             {privs.isAdmin && <button onClick={() =>{addMajor()}}
             >📘 Add Major</button>}
             <h1 className="text-align">Major Requirements</h1>

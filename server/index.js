@@ -684,7 +684,9 @@ app.put('/editMS', (req, res) =>{
  app.put('/addMS' , (req, res) =>{
     const params = req.body.params
     db.query(
-       `INSERT INTO CourseSection VALUES(?,?,?,?,?,?,?,?,?)`,
+       `INSERT INTO CourseSection(CRN, timeslotID, facultyID, roomID, semesterYearID,
+        courseID, availableSeats, capacity)
+        VALUES(?,?,?,?,?,?,?,?)`,
        [params.CRN, params.timeSlotID, params.facultyID, params.roomID,
        params.semesterYearID, params.courseID, params.availableSeats, 
        params.capacity, params.sectionNum],
@@ -1106,8 +1108,8 @@ app.get('/masterSchedule', (req, res) =>{
     db.query(
         `SELECT cs.CRN, cs.sectionNum, cs.courseID, 
         t.day, p.startTime, p.endTime, cs.semesterYearID,
-         cs.roomID, u.firstName, u.lastName, u.userID,
-        cs.availableSeats, cs.capacity
+        cs.roomID, u.firstName, u.lastName, u.userID,
+        cs.availableSeats, cs.capacity, c.numOfCredits
         FROM CourseSection cs
         JOIN Course c
         ON cs.courseID = c.courseID
@@ -1675,7 +1677,25 @@ app.get('/getGradCourses', (req,res) =>{
         FROM CourseSection cs
         JOIN Course c
         ON cs.courseID = c.courseID
-        WHERE cs.CRN LIKE  '%3';`,
+        WHERE cs.CRN LIKE  '3%'`,
+     [],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        } else{
+            res.send(result)
+        }
+    }
+    )
+})
+app.get('/getUndergradCourses', (req,res) =>{
+
+    db.query(
+        `SELECT cs.courseID, c.departmentID, c.numOfCredits
+        FROM CourseSection cs
+        JOIN Course c
+        ON cs.courseID = c.courseID
+        WHERE cs.CRN LIKE  '2%'`,
      [],
     (err, result) =>{
         if(err){

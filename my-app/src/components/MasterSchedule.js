@@ -14,7 +14,6 @@ import CalendarTable from "./tableComponents/CalendarTable";
 
 export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}){
 
-   //Needs more sorting options
     const [schedule, setSchedule] = useState([]);
     const [semesterSelect, setSemester]= useState("Fall 2021")
     let history = useHistory();
@@ -81,8 +80,8 @@ export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}
  
       function getSchedule(){
         dbUtil.getMasterSchedule().then(
-           //CHANGE!!I
             data =>{
+               console.log(data)
                if(isTeach){
                   data = data.filter(row => row.userID === isTeach)
                }
@@ -99,14 +98,22 @@ export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}
      } 
 
 
-     function newRow(){
-        history.push('/addMS')
+     function newRow(startNum){
+        history.push({
+           pathname: '/addMS',
+           state: startNum
+         })
      }
      function editRow(rowData){
       history.push({
          pathname: '/editMS', 
          state: rowData
       })
+   }
+   function addCourse(){
+      history.push({
+          pathname: '/AddCourse'
+       })
    }
    
 
@@ -143,8 +150,13 @@ export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}
          },
 
          {
-            Header: "Course Section",
+            Header: "Section",
             accessor: "sectionNum",
+            Filter: ColumnFilter
+         },
+         {
+            Header: "Credits",
+            accessor: "numOfCredits",
             Filter: ColumnFilter
          },
          {
@@ -174,7 +186,7 @@ export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}
             Filter: ColumnFilter
          },
          {
-            Header: "Room No.",
+            Header: "Room",
             accessor: "roomID",
             Filter: ColumnFilter
          },
@@ -285,7 +297,21 @@ export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}
       <h1 className='text-align'>{history.location.pathname==="/teachSchedule" ? "Teaching Schedule":"Master Schedule"}</h1>
 
       <b>Hover column to search, Click column to sort</b>
-         { privs.isAdmin &&  history.location.pathname === "/home" && <div><button onClick={(e) => newRow()}>➕ Add to Master Schedule </button></div>}
+      <div id='parent'>
+         { privs.isAdmin &&  history.location.pathname === "/home" &&
+          <div className="child">
+            <Dropdown>
+          <Dropdown.Toggle>Add Course Section</Dropdown.Toggle>
+          <Dropdown.Menu>
+          <Dropdown.Item onClick={(e) => {newRow(2)}}>Undergrad Course Section</Dropdown.Item>
+          <Dropdown.Item onClick={(e) => {newRow(3)}}>Graduate Course Section</Dropdown.Item>
+        </Dropdown.Menu>
+        </Dropdown>
+         </div>}
+         <div className = "child">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+         {privs.isAdmin && <button className="child" onClick={() =>{addCourse()}}>➕ Add Course</button>}
+
+         </div>
       
       <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>

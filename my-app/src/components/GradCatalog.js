@@ -96,7 +96,6 @@ export default function GradCatalog(){
     return(
     <div className="table-center"> 
      <h1 className="text-align"> Graduate Courses</h1>
-     {privs.isAdmin && <button onClick={() =>{addCourse()}}>➕ Add Course</button>}
          <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         { headerGroups.map(headerGroup => (

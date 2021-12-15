@@ -1017,6 +1017,11 @@ static async getSpringCal(){
       const gradResponse = await Axios.get("http://localhost:8000/getGradCourses")
       return gradResponse.data
     }
+    static async getUndergradCourses(){
+      const gradResponse = await Axios.get("http://localhost:8000/getUndergradCourses")
+      return gradResponse.data
+    }
+     
      
     static async dropMyMajor(majorID, userID){
       const dropResponse = await Axios.put("http://localhost:8000/dropMyMajor", {

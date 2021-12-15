@@ -95,7 +95,8 @@ export default function CourseTable() {
     const {pageIndex} = state
 
     return (
-      <div>
+      <div className="table-center">
+        <h1 className="text-align">All Courses</h1>
      <Table size="sm" striped bordered hover {...getTableProps()}>
      <thead>
        { headerGroups.map(headerGroup => (

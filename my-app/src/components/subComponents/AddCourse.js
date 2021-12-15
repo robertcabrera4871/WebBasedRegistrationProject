@@ -27,7 +27,7 @@ export default function AddCourse(){
             if(data.err){
                 window.alert(data.err.sqlMessage)
             }else if(data.affectedRows === 1){
-                history.push('/undergradCatalog')
+                window.alert("Course added succesfully, Add a Course Section to affect Catalogs")
             }
         })
     }
