@@ -87,24 +87,32 @@ export default function AllUsers(){
         state: userID
       })
     }
-    function viewFacAdvisees(userID){
+    async function viewFacAdvisees(userID){
+      if(await checkOther(userID)){
       history.push({
         pathname: '/advisees',
         state: userID
-      })
+      })}
+      else{
+        window.alert("This faculty member is not a teacher")}
     }
 
-    function viewFacSchedule(userID){
+   async function viewFacSchedule(userID){
+    if(await checkOther(userID)){
       history.push({
         pathname: '/teachSchedule',
         state: userID
-      })
+      })}
+      else{
+        window.alert("This faculty member is not a teacher")}
     }
-    function viewFacHistory(userID){
+    async function viewFacHistory(userID){
+      if(await checkOther(userID)){
       history.push({
         pathname: '/facHistory',
         state: userID
-      })
+      })}else{
+      window.alert("This faculty member is not a teacher")}
     }
 
 
@@ -128,6 +136,17 @@ export default function AllUsers(){
     }
 
 
+
+    async function checkOther(userID){
+      const res = await dbUtil.getFacRank(userID)
+      if(res[0].rank === 'other'){
+        console.log(res[0].rank === "other")
+        return false
+      }
+      return true;
+    }
+
+
      const columns = React.useMemo( () =>[
       {
         accessor: 'Actions',
@@ -140,7 +159,7 @@ export default function AllUsers(){
           <Dropdown.Menu>
           <Dropdown.Item onClick={() => forwardEdit(cell.row.original)}> ✏️ Edit </Dropdown.Item>
           <Dropdown.Item  onClick={() => deleteUser(cell.row.original)}> ❌ Delete </Dropdown.Item>
-          {(cell.row.original.userType === "Faculty") && 
+          {(cell.row.original.userType === "Faculty")  && 
           <>
            <Dropdown.Item onClick={() =>{viewFacAdvisees(cell.row.original.userID)}}>👨‍🎓 View Advisees</Dropdown.Item>
            <Dropdown.Item onClick={() =>{viewFacSchedule(cell.row.original.userID)}}>📅 View Schedule</Dropdown.Item>

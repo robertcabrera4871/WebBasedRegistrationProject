@@ -160,19 +160,22 @@ export default function AddUser(chosenType){
         newRow.userType="faculty";
         if(await checkBlanksFac()){return("")}
         const checkTime = await checkFullOrPartFac();
-        
+        if(checkTime === 'other'){
+            window.alert("User will not have login info or min max courses")
+        }
         const userRes = await dbUtil.createUser(newRow);
         if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID OR First/Last name"); return("")}
         if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
-
+        if(checkTime !== 'other'){
         const loginRes = await dbUtil.createLogin(newRow);
-        if(loginRes.err){window.alert("Failed to Insert: LoginInfo Email Password combo taken"); return(reverseChanges())}
+        if(loginRes.err){window.alert("Failed to Insert: LoginInfo Email Password combo taken"); return(reverseChanges())}}
       
         const facResponse = await dbUtil.createFaculty(newRow)
         if(facResponse.err){window.alert(`Failed to Insert: Faculty, (Check number fields and dates)`); return(reverseChanges())}
 
+        if(checkTime !== "other"){
         const fullRes = await dbUtil.createFullPartFac(newRow, checkTime)
-        if(fullRes.err){window.alert(`Failed to Insert: ${checkTime}time Faculty, (Check number fields and dates)`); return(reverseChanges())}
+        if(fullRes.err){window.alert(`Failed to Insert: ${checkTime}time Faculty, (Check number fields and dates)`); return(reverseChanges())}}
         history.push('/users')
 
     }
@@ -186,6 +189,11 @@ export default function AddUser(chosenType){
         return("")
     }
     async function checkFullOrPartFac(){
+        if(newRow.rank === 'other'){
+            newRow.minCourse = 0
+            newRow.maxCourse = 0
+            return "other"
+        }
         if(newRow.rank === "part" && newRow.minCourse <= newRow.maxCourse && newRow.maxCourse <= 2 && 
         newRow.mincCourse >= 0){
             return "part"
@@ -194,7 +202,7 @@ export default function AddUser(chosenType){
         newRow.maxCourse <= 4 && newRow.maxCourse > 2 && newRow.minCourse >= 0){
             return "full"
         }
-      window.alert("Valid Ranks: full / part Max Course for Part: 2 Max Course for Full: 4")
+      window.alert("Valid Ranks: full / part / other Max Course for Part: 2 Max Course for Full: 4")
       return("")
 
     }

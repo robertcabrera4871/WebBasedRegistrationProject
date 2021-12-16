@@ -122,6 +122,7 @@ export default function EditUser(rowData){
 
     async function handleFaculty(){
         if(!(newRow.status !== "locked" || newRow.status !== "active")){window.alert("status must be locked or active"); return("")}
+        const res = await checkFacCourse();
         if(await checkFacCourse()){return("")}
         const useRes = await dbUtil.updateUser(newRow)
         if(useRes.err){window.alert("Failed to Update user"); return("")};
@@ -129,7 +130,8 @@ export default function EditUser(rowData){
         if(loginRes.err){window.alert("Failed to Update: LoginInfo Email taken"); return("")}
         const fullPart = await dbUtil.updateFullPartFac(newRow);
         console.log(fullPart.err)
-        if(fullPart.err){window.alert(`Failed to Update: ${newRow.rank}time Faculty`); return("")}
+        if(newRow.rank !== 'other'){
+        if(fullPart.err){window.alert(`Failed to Update: ${newRow.rank}time Faculty`); return("")}}
         history.push('/users')
     }
      
@@ -174,6 +176,9 @@ export default function EditUser(rowData){
 
 
     async function checkFacCourse(){
+        if(newRow.rank === "other"){
+            return false
+        }
         if(newRow.rank === "part" && newRow.minCourse <= newRow.maxCourse && newRow.maxCourse <= 2 && 
         newRow.minCourse >= 0){
             return false
@@ -249,9 +254,9 @@ export default function EditUser(rowData){
         <Form.Label>Rank</Form.Label>
         <Form.Control placeholder ={userData.rank} disabled={true} ></Form.Control>
         <Form.Label>Min Courses</Form.Label>
-        <Form.Control placeholder ={userData.minCourse} onChange={e => newRow.minCourse = e.target.value} ></Form.Control>
+        <Form.Control placeholder ={userData.minCourse} disabled={newRow.rank === "other"} onChange={e => newRow.minCourse = e.target.value} ></Form.Control>
         <Form.Label>Max Courses</Form.Label>
-        <Form.Control placeholder ={userData.maxCourse} onChange={e => newRow.maxCourse= e.target.value} ></Form.Control>
+        <Form.Control placeholder ={userData.maxCourse} disabled={newRow.rank === "other"} onChange={e => newRow.maxCourse= e.target.value} ></Form.Control>
         </div>
         }
         {(row.userType === 'Undergrad Student' || row.userType === 'Grad Student' )&& <div>
