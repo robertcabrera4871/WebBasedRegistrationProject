@@ -1396,6 +1396,22 @@ app.post('/editCalDesc',  (req, res) =>{
     )
 })
 
+app.post('/updateCalDate',  (req, res) =>{
+    const params = req.body.params
+    db.query(
+        `UPDATE AcademicCalendar${params.semester} SET Date = ? WHERE Title = ?`,
+        [params.date, params.title],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
 app.post('/deleteCalEvent',  (req, res) =>{
     const params = req.body.params
     db.query(

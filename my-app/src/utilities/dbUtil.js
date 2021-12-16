@@ -779,6 +779,16 @@ static async getSpringCal(){
         })
         return majorRequireResponse.data      
       }
+      static async updateCalDate(title, date, semester){
+        const majorRequireResponse = await Axios.post("http://localhost:8000/updateCalDate",{
+          params: {
+            title: title,
+            date: date,
+            semester: semester
+          }
+        })
+        return majorRequireResponse.data      
+      }
       static async deleteCalEvent(title, semester){
         const res = await Axios.post("http://localhost:8000/deleteCalEvent",{
           params: {

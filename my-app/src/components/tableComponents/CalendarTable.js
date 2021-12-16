@@ -11,6 +11,7 @@ import timeWindow from "../../utilities/timeWindow";
 export default function CalendarTable(semesterSelect){
 
     const [calendar, setCalendar] = useState([])
+
     let privs = checkPrivs()
     let history = useHistory()
     let fallUndeletable = ['ADD/DROP CLASSES', 'FIRST DAY OF CLASSES', 'SPRING REGISTRATION FOR SENIORS', 'SPRING REGISTRATION FOR JUNIOR', 
@@ -65,18 +66,58 @@ export default function CalendarTable(semesterSelect){
     }
 
     async function editDate(row){
-      // const semester = getSemester(semesterChosen)
+      const semester = getSemester(semesterChosen)
+      var calendar = ""
+      if(semester === "Fall"){
+        calendar = await dbUtil.getFallCal()
+      } else {
+        calendar = await dbUtil.getSpringCal()
+      }
 
-      const date = window.prompt("Enter new date YYYY/MM/DD");
+      const date = window.prompt("Enter new date YYYY-MM-DD for " + row.Title);
+      var canEdit = false;
+
       if(moment(date, "YYYY-MM-DD", true).isValid()){
         switch(row.Title){
-          case funcs.addDrop: if(true){}
-      }
+          case funcs.addDrop: if(date <= await getDate(funcs.firstDay)){canEdit = true}break;
+          //Fall Specific
+          case funcs.firstDay: if(semester === "Fall" && date < await getDate(calendar, funcs.springRegSen) && date >= await getDate(calendar, funcs.addDrop))  {canEdit = true}break;
+          case funcs.springRegSen: if(date < await getDate(calendar, funcs.springRegJun) && date > await getDate(calendar, funcs.firstDay))                      {canEdit = true}break;
+          case funcs.springRegJun: if(date < await getDate(calendar, funcs.springRegSop) && date > await getDate(calendar, funcs.springRegSen))                 {canEdit = true}break;
+          case funcs.springRegSop: if(date < await getDate(calendar, funcs.springRegFirst) && date > await getDate(calendar, funcs.springRegJun))               {canEdit = true}break;
+          case funcs.springRegFirst: if(date < await getDate(calendar, funcs.finalExams) && date >await  getDate(calendar, funcs.springRegSop))                 {canEdit = true}break;
+          case funcs.finalExams: if(semester === "Fall" && date < await getDate(calendar, funcs.fallSemEnd) &&
+           date > await getDate(calendar, funcs.springRegFirst))                                                                                      {canEdit = true}break;
+          //Spring Specific
+          case funcs.firstDay: if(semester === "Spring" && date < await getDate(calendar, funcs.fallRegSen) && 
+          date >= await getDate(calendar, funcs.addDrop))                                                                                             {canEdit = true}break;
+          case funcs.fallRegSen: if(date < await getDate(calendar, funcs.fallRegJun) && date > await getDate(calendar, funcs.firstDay))                         {canEdit = true}break;
+          case funcs.fallRegJun: if(date < await getDate(calendar, funcs.fallRegSop) && date > await getDate(calendar, funcs.fallRegSen))                       {canEdit = true}break;
+          case funcs.fallRegSop: if(date < await getDate(calendar, funcs.fallRegFirst) && date > await getDate(calendar, funcs.fallRegJun))                     {canEdit = true}break;
+          case funcs.fallRegFirst: if(date < await getDate(calendar, funcs.finalExams) && date > await getDate(calendar, funcs.fallRegSop))                     {canEdit = true}break;
+          case funcs.finalExams: if(semester === "Spring" && date < await getDate(calendar, funcs.springSemEnd) 
+          && date > await getDate(calendar, funcs.fallRegFirst) )                                                                                     {canEdit = true}break;
+          
+        }
     }
-      else{
-        return("")
+
+      if(canEdit){
+        const res = await dbUtil.updateCalDate(row.Title, date, semester)
+        if(!res.err){
+          window.location.reload(false)
+        }
+        else{
+          window.alert(res.err)
+          console.log(res)
+        }
       }
       return("")
+    }
+
+    async function getDate(calendar, func){
+      return(
+        calendar.find(x => x.Title === func).Date
+      )
     }
 
      function getSemester(){
