@@ -9,7 +9,7 @@ import MasterSchedule from './MasterSchedule';
 import { useHistory } from 'react-router-dom';
 import checkPrivs from '../utilities/checkPrivs';
 
-export default function Transcript(adminAccess){
+export default function Transcript(){
 
     const [transcript, setTranscript] = useState([]);
     let history = useHistory();
@@ -18,12 +18,11 @@ export default function Transcript(adminAccess){
     useEffect(() =>{
         getStudentHistory();
     }, []);
-    var adminUser = adminAccess.adminAccess
 
     var user = decryptUser();
 
-    if(adminUser !== undefined){
-        user.userID = adminUser
+    if(history.location.state !== undefined){
+        user.userID = history.location.state
     }
 
     async function getStudentHistory(){
@@ -96,7 +95,7 @@ export default function Transcript(adminAccess){
     <div>
         <div className="table-center">
         <h1 className="text-align">Transcript</h1>   
-        {adminUser !== undefined  && history.location.pathname != "/degreeAudit" && !privs.isFaculty && <button onClick={() => {addHistory()}}>➕ Add to Transcript</button>}
+        {privs.isAdmin && <button onClick={() => {addHistory()}}>➕ Add to Transcript</button>}
         <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
         { headerGroups.map(headerGroup => (
@@ -127,7 +126,6 @@ export default function Transcript(adminAccess){
         })}
       </tbody>
     </Table>
-    {adminUser !== undefined && history.location.pathname!="/degreeAudit" && !privs.isFaculty && <MasterSchedule adminAccess ={adminUser} isAddClassStudent={true}/>}
         </div>
     </div>
     );

@@ -28,6 +28,7 @@ export default function AddCourse(){
                 window.alert(data.err.sqlMessage)
             }else if(data.affectedRows === 1){
                 window.alert("Course added succesfully, Add a Course Section to affect Catalogs")
+                history.goBack();
             }
         })
     }

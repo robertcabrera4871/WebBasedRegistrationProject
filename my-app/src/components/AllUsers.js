@@ -53,12 +53,45 @@ export default function AllUsers(){
     }
     async function deleteUser(row){
       if(window.confirm("Are you sure you want to delete this user?")){
+        if(await deleteSAttendance(row)){return("")}
+        if(await deleteSHistory(row)){return("")}
+        if(await dropClasses(row)){return("")}
         const response = await dbUtil.deleteUser(row.userID)
         console.log(response)
         if(!response.err){
           window.location.reload(false);
         }
+        if(response.err){
+          window.alert(response.err.sqlMessage)
+        }
       }
+    }
+    async function deleteSAttendance(row){
+      const res = await dbUtil.deleteAttendenceByID(row.userID)
+      if(res.err){
+        window.alert(res.err.sqlMessage)
+        console.log(res.err, "attendance err")
+        return true
+      }
+      return false
+    }
+    async function dropClasses(row){
+      const res = await dbUtil.dropAllClasses(row.userID)
+        if(res.err){
+          window.alert(res.err.sqlMessage)
+          console.log(res, "class error")
+          return true
+        }
+        return false
+    }
+    async function deleteSHistory(row){
+      const res = await dbUtil.deleteAllStudentHistory(row.userID)
+        if(res.err){
+          window.alert(res.err.sqlMessage)
+          console.log(res, "history err")
+          return true
+        }
+        return false
     }
     async function assignHold(holdID, userID){
        var response = ""

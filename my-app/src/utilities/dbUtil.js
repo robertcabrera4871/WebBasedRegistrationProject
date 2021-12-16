@@ -432,9 +432,6 @@ import Axios from 'axios';
       })
       return response.data
     }
-
-
-
     
 
     static async getBuildings(){
@@ -585,7 +582,15 @@ static async getSpringCal(){
         return userSchedResponse.data
       }
 
-
+      static async addMyClass(CRN, userID){
+        const response = await Axios.post("http://localhost:8000/addMyClass", {
+          params: {
+            CRN: CRN,
+            userID: userID
+          }
+        })
+        return response.data;
+      }
       static async addTeachClass(CRN, userID){
         const response = await Axios.post("http://localhost:8000/addTeachClass", {
           params: {
@@ -1052,6 +1057,24 @@ static async getSpringCal(){
       })
       return response.data
     }
+
+    static async dropAllClasses(userID){
+      const response = await Axios.post("http://localhost:8000/dropAllClasses",{
+        params: {
+          userID: userID
+        }
+      })
+      return response.data
+    }
+    static async deleteAllStudentHistory(userID){
+      const response = await Axios.post("http://localhost:8000/deleteAllStudentHistory",{
+        params: {
+          userID: userID
+        }
+      })
+      return response.data
+    }
+
 
 
 

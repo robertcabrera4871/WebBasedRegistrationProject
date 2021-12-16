@@ -9,6 +9,7 @@ import formatDate from '../utilities/formateDate';
 import Transcript from './Transcript';
 import { useHistory } from 'react-router-dom';
 import checkPrivs from '../utilities/checkPrivs';
+import MasterSchedule from './MasterSchedule';
 
 export default function Schedule({title, semesterPicker}){
     let history = useHistory();
@@ -184,7 +185,8 @@ export default function Schedule({title, semesterPicker}){
         })}
       </tbody>
     </Table>
-    {adminUser !== undefined && <Transcript adminAccess={adminUser}/>}
+    {history.location.state !== undefined && 
+    history.location.pathname != '/degreeAudit' && history.location.pathname != '/dropClass' &&<MasterSchedule/>}
         </div>
     );
 }

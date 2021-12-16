@@ -207,13 +207,13 @@ export default function AddUser(chosenType){
 
     }
     async function checkFullOrPart(){
-        if(newRow.minCredit === "0" && newRow.maxCredit === "12"){
+        if(newRow.minCredit === "0" && newRow.maxCredit === "9"){
             return "part"
         }
-        if(newRow.minCredit === "12" && newRow.maxCredit === "18"){
+        if(newRow.minCredit === "9" && newRow.maxCredit === "15"){
             return "full"
         }
-      window.alert("Valid Min: 0/12 Valid Max: 12/18")
+      window.alert("Valid Min: 0/9 Valid Max: 9/15")
       return("")
 
     }

@@ -66,6 +66,7 @@ import Form from 'react-bootstrap/Form'
        if(!date){return("")}
         response = await dbUtil.deleteAttendence(date);
         if(response.err){
+          console.log(response.err)
             window.alert("No meeting with that date")
             return("")
         }

@@ -4,6 +4,7 @@ const mysql = require('mysql')
 const app = express();
 const port = 8000;
 const cors = require("cors");
+const e = require('express');
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -1248,10 +1249,11 @@ app.post("/assignGrade", (req, res)=> {
     )
 })
 
+
 app.post("/deleteAttendence", (req, res)=> {
     const date = req.body.params.date
     db.query(
-        `DELETE FROM Attendence WHERE meetingDate = ?`,
+        `DELETE FROM Attendance WHERE meetingDate = ?`,
         [date],
         (err, result) =>{
             if(err){
@@ -1265,21 +1267,7 @@ app.post("/deleteAttendence", (req, res)=> {
 })
 
 
-app.post("/deleteAttendenceByID", (req, res)=> {
-    const userID = req.body.params.userID
-    db.query(
-        `DELETE FROM Attendence WHERE studentID = ?`,
-        [userID],
-        (err, result) =>{
-            if(err){
-                res.send({err: err})
-            }
-            else{
-                res.send(result)
-            }
-        }
-    )
-})
+
 
 
 
@@ -1652,6 +1640,57 @@ app.post('/addStudentHistory', (req, res) =>{
     )
 })
 
+app.post('/deleteAllStudentHistory', (req, res) =>{
+    const userID = req.body.params.userID;
+    db.query(
+        `DELETE FROM StudentHistory WHERE studentID = ?;`,
+         [userID],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        }else{
+            res.send(result)
+        }
+    }
+    )
+})
+app.post('/dropAllCLasses', (req, res) =>{
+    const userID = req.body.params.userID;
+    db.query(
+        `
+        SET FOREIGN_KEY_CHECKS=0;
+        DELETE FROM Enrollment WHERE studentID = ?;
+        SET FOREIGN_KEY_CHECKS=1;
+        `,
+        [userID],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+
+})
+
+app.post("/deleteAttendenceByID", (req, res)=> {
+    const userID = req.body.params.userID;
+    db.query(
+        `DELETE FROM Attendance WHERE studentID = ?`,
+        [userID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+
 app.post('/addMyClass', (req, res) => {
     const CRN = req.body.params.CRN;
     const userID = req.body.params.userID;
@@ -1859,8 +1898,7 @@ app.post('/dropMyClass', (req, res) =>{
     const userID = req.body.params.userID;
 
     db.query(
-        `
-        SET FOREIGN_KEY_CHECKS=0;
+        `SET FOREIGN_KEY_CHECKS=0;
         DELETE FROM Enrollment WHERE CRN = ? AND studentID = ?;
         SET FOREIGN_KEY_CHECKS=1;`,
         [CRN, userID],
@@ -1875,6 +1913,8 @@ app.post('/dropMyClass', (req, res) =>{
     )
 
 })
+
+
 app.put('/dropMyMinor', (req, res) =>{
     const minorID = req.body.params.minorID;
     const userID = req.body.params.userID;
