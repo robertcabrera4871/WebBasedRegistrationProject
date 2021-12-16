@@ -12,19 +12,18 @@ import CalendarTable from "./tableComponents/CalendarTable";
 
 
 
-export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}){
+export default function MasterSchedule(){
 
     const [schedule, setSchedule] = useState([]);
     const [semesterSelect, setSemester]= useState("Fall 2021")
     let history = useHistory();
     const privs = checkPrivs();
-    var adminUser = adminAccess.adminAccess
     var user = decryptUser();
 
-
-    if(adminUser !== undefined){
-        user.userID = adminUser
+    if(history.location.state !== undefined){
+       user.userID = history.location.state
     }
+
 
      useEffect(() =>{
          getSchedule();
@@ -68,12 +67,14 @@ export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}
      }
 
 
-     async function addClassTeach(row){
-      const response = await dbUtil.addMyClass(row.CRN, user.userID); 
+     async function addClassTeach(){
+       const CRN = window.prompt("Enter CRN of Class you wish to add")
+      const response = await dbUtil.addTeachClass(CRN, user.userID); 
       if(response.err){
-         window.alert("You are already enrolled in this class")
-      } else{
-         window.alert("You have been enrolled")
+         window.alert("Teacher is already teaching this class")
+      } else if(response.affectedRows === 1){
+         window.alert("Teacher is assigned")
+         window.location.reload(false);
       }
    }
  
@@ -81,9 +82,8 @@ export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}
       function getSchedule(){
         dbUtil.getMasterSchedule().then(
             data =>{
-               console.log(data)
-               if(isTeach){
-                  data = data.filter(row => row.userID === isTeach)
+               if(history.location.pathname==="/teachSchedule"){
+                  data = data.filter(row => row.userID === user.userID)
                }
                 if(semesterSelect === "Fall 2021"){
                    console.log(data)
@@ -215,7 +215,7 @@ export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}
       
     
     var initialState = ""
-    if(isTeach){
+    if(history.location.pathname === "/teachSchedule"){
       initialState = {hiddenColumns: ['firstName', 'lastName']}
     }
       
@@ -309,8 +309,8 @@ export default function MasterSchedule(adminAccess, {isAddClassStudent, isTeach}
         </Dropdown>
          </div>}
          <div className = "child">&nbsp;&nbsp;&nbsp;&nbsp;</div>
-         {privs.isAdmin && <button className="child" onClick={() =>{addCourse()}}>➕ Add Course</button>}
-
+         {privs.isAdmin && history.location.pathname === '/home' && <button className="child" onClick={() =>{addCourse()}}>➕ Add Course</button>}
+         {privs.isAdmin && history.location.pathname === '/teachSchedule' && <button onClick={() =>addClassTeach()}>➕ Add Teacher to Class</button>}
          </div>
       
       <Table size="sm" striped bordered hover {...getTableProps()}>

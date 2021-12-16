@@ -1670,6 +1670,23 @@ app.post('/addMyClass', (req, res) => {
     )
 })
 
+app.post('/addTeachClass', (req, res) => {
+    const CRN = req.body.params.CRN;
+    const userID = req.body.params.userID;
+
+    db.query(
+        `UPDATE CourseSection SET facultyID = ? WHERE CRN = ?`,
+        [ userID, CRN],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }else{
+                res.send(result)
+            }
+        }
+    )
+})
+
 app.get('/getGradCourses', (req,res) =>{
 
     db.query(

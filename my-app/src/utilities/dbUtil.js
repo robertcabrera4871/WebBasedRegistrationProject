@@ -586,8 +586,8 @@ static async getSpringCal(){
       }
 
 
-      static async addMyClass(CRN, userID){
-        const response = await Axios.post("http://localhost:8000/addMyClass", {
+      static async addTeachClass(CRN, userID){
+        const response = await Axios.post("http://localhost:8000/addTeachClass", {
           params: {
             CRN: CRN,
             userID: userID
