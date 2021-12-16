@@ -23,15 +23,16 @@ export default function AllUsers(){
     }, []
     );
 
-    function getUsers(){
-        dbUtil.getAllUsers().then(
-            data =>{
-              if(privs.isFaculty){
-                data = data.filter(item => (item.userType === "Grad Student" || item.userType === "Undergrad Student"))
-              }
-                setUsers(data)
-            }
-        )
+    async function getUsers(){
+        var res = await dbUtil.getAllUsers()
+        console.log(res)
+        res = res.filter(item => (item.userID !== "guest"))
+        res = res.filter(item => (item.userID !== "TBD"))
+        if(privs.isFaculty){
+          res = res.filter(item => (item.userType === "Grad Student" || item.userType === "Undergrad Student"))
+        }
+          setUsers(res)
+      
      } 
 
   
