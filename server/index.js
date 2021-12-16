@@ -1396,6 +1396,22 @@ app.post('/editCalDesc',  (req, res) =>{
     )
 })
 
+app.post('/deleteCalEvent',  (req, res) =>{
+    const params = req.body.params
+    db.query(
+        `DELETE FROM AcademicCalendar${params.semester} WHERE Title = ?`,
+        [params.title],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
 
 
 app.post('/deleteMajorReq',  (req, res) =>{

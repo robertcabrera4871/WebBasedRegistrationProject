@@ -9,6 +9,8 @@ import DropdownToggle from "react-bootstrap/esm/DropdownToggle";
 import Dropdown from 'react-bootstrap/Dropdown'
 import checkPrivs from "../utilities/checkPrivs";
 import ColumnFilter from "./tableComponents/ColumnFilter";
+import timeWindow from "../utilities/timeWindow";
+import funcs from "../utilities/timeWindowFunc";
 
 
 export default function AllUsers(){
@@ -16,11 +18,12 @@ export default function AllUsers(){
     const [users, setUsers] = useState([]);
     let history = useHistory();
     let privs = checkPrivs();
+   
 
     
     useEffect(() =>{
         getUsers();
-    }, []
+          }, []
     );
 
     async function getUsers(){

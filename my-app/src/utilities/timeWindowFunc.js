@@ -1,0 +1,19 @@
+const funcs = {
+    addDrop: 'ADD/DROP CLASSES',
+    firstDay:'FIRST DAY OF CLASSES',
+    finalExams:  'FINAL EXAMS', 
+    springRegSen: 'SPRING REGISTRATION FOR SENIORS',
+    springRegSop: 'SPRING REGISTRATION FOR SOPHOMORES', 
+    springRegJun: 'SPRING REGISTRATION FOR JUNIOR', 
+    springRegFirst:'SPRING REGISTRATION FOR FIRST YEAR STUDENTS',
+    springRegAll: 'SPRING REGISTRATION FOR ALL STUDENTS',
+    fallSemEnd: 'FALL SEMESTER ENDS',
+    fallRegSen: 'FALL REGISTRATION FOR SENIORS',
+    fallRegJun: 'FALL REGISTRATION FOR JUNIOR', 
+    fallRegSop:'FALL REGISTRATION FOR SOPHOMORES', 
+    fallRegFirst: 'FALL REGISTRATION FOR FIRST YEAR STUDENTS',
+    springSemEnd: 'SPRING SEMESTER ENDS'
+
+}
+
+export default funcs;
