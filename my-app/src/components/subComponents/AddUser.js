@@ -162,11 +162,12 @@ export default function AddUser(chosenType){
 
     async function handleFaculty(){
         newRow.userType="faculty";
-        if(await checkBlanksFac()){return("")}
         const checkTime = await checkFullOrPartFac();
         if(checkTime === 'other'){
             window.alert("User will not have login info or min max courses")
         }
+        if(await checkBlanksFac()){return("")}
+        
         const userRes = await dbUtil.createUser(newRow);
         if(userRes?.err?.code === "ER_DUP_ENTRY"){window.alert("Duplicate userID OR First/Last name"); return("")}
         if(userRes.err){window.alert("Failed to Insert: User (Check number fields and dates)"); return("")}
@@ -198,8 +199,9 @@ export default function AddUser(chosenType){
             newRow.maxCourse = 0
             return "other"
         }
+
         if(newRow.rank === "part" && newRow.minCourse <= newRow.maxCourse && newRow.maxCourse <= 2 && 
-        newRow.mincCourse >= 0){
+        newRow.minCourse >= 0){
             return "part"
         }
         if(newRow.rank === "full" && newRow.minCourse <= newRow.maxCourse && 

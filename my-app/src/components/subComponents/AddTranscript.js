@@ -55,7 +55,6 @@ const newRow = {
 
     async function deleteEnroll(CRN, userID){
         const res = await dbUtil.dropMyClass(CRN, userID)
-        console.log(res)
         if(res.err){
             window.alert(res.sqlMessage)
             console.log(res)
@@ -66,7 +65,6 @@ const newRow = {
 
     async function checkSemesterYear(semesterID, CRN){
         const check = await dbUtil.checkSemID(semesterID, CRN)
-        console.log(check)
         if(check.err){
             window.alert(check.err.sqlMessage)
             console.log(check)
@@ -81,10 +79,8 @@ const newRow = {
 
     async function deleteAttendance(){
         const res = await dbUtil.deleteAttendenceByID(adminUser)
-        console.log(res)
         if(res.err){
             window.alert(res.err.sqlMessage)
-            console.log(res)
             return true
         }
         return false
@@ -94,7 +90,6 @@ const newRow = {
         const res = await dbUtil.addStudentHistory(newRow)
         if(res.err){
             window.alert(res.err.sqlMessage)
-            console.log(res)
             return true
         }
         return false
