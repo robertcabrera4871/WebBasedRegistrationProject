@@ -33,12 +33,30 @@ export default function AddMS(){
             e.preventDefault();
             newRow.availableSeats = newRow.capacity;
             newRow.CRN = history.location.state + newRow.CRN
+            if (await checkGradUndergrad() === ""){return("")}
             if (await checkBlanks() === "" ){return("")}
             if (await checkFaculty() === ""){return("")}
             if (await checkTimeSlotID() === ""){return("")}
             if (await checkAvailability() === ""){return("")}
             if (await checkSemesterYear() === ""){return("")}
             await addMS();
+        }
+
+        async function checkGradUndergrad(){
+            const grad = await dbUtil.getGradCourses();
+            const under = await dbUtil.getUndergradCourses();
+            if(newRow.CRN === '2'){
+                for(const i in grad){
+                    if(grad[i].courseID === newRow.courseID){window.alert("Cannot add: Course is a Graduate Course"); return("")}
+                }
+            }
+         
+            if(newRow.CRN === '3'){
+                for(const i in under){
+                    console.log(newRow.CRN === '3' && under[i].courseID === newRow.courseID) 
+                    if(under[i].courseID === newRow.courseID){window.alert("Cannot add: Course is a Undergraduate Course"); return('')}
+                }
+            }
         }
 
         async function checkAvailability(){
@@ -91,6 +109,7 @@ export default function AddMS(){
             }
             return timeSlotResult
         }
+        
 
         async function addMS(){
             const addMSResult = await dbUtil.addMS(newRow);

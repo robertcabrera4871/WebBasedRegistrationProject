@@ -6,7 +6,7 @@ import formatDate from "../../utilities/formateDate";
 import checkPrivs from "../../utilities/checkPrivs";
 import { useHistory } from "react-router-dom";
 import funcs from "../../utilities/timeWindowFunc";
-import timeWindow from "../../utilities/timeWindow";
+import globalDate from "../../utilities/globalDate";
 
 export default function CalendarTable(semesterSelect){
 
@@ -74,6 +74,7 @@ export default function CalendarTable(semesterSelect){
         calendar = await dbUtil.getSpringCal()
       }
 
+
       const date = window.prompt("Enter new date YYYY-MM-DD for " + row.Title);
       var canEdit = false;
 
@@ -112,6 +113,18 @@ export default function CalendarTable(semesterSelect){
         }
       }
       return("")
+    }
+
+    function changeDate(){
+      const date = window.prompt("Enter new date")
+      if(moment(date, "YYYY-MM-DD", true).isValid())
+      {
+        globalDate.setGlobalDate(date)
+        window.location.reload(false)
+      }else{
+        window.alert("Not a valid date")
+      }
+
     }
 
     async function getDate(calendar, func){
@@ -205,6 +218,12 @@ export default function CalendarTable(semesterSelect){
     return(
         <div className='table-center'>
         <h1 className='text-align'>Academic Calendar</h1>    
+        {privs.isAdmin && 
+        <div>
+        <h3>Current Date: {globalDate.getGlobalDate()}</h3>
+        {history.location.pathname === '/timeWindow' && <button onClick={() => changeDate()}>Change Date 📅</button>}
+        </div>
+        }
         <Table size="sm" striped bordered hover {...getTableProps()}>
      <thead>
        { headerGroups.map(headerGroup => (

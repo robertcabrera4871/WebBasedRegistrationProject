@@ -10,6 +10,9 @@ import Transcript from './Transcript';
 import { useHistory } from 'react-router-dom';
 import checkPrivs from '../utilities/checkPrivs';
 import MasterSchedule from './MasterSchedule';
+import timeWindow from '../utilities/timeWindow';
+import globalDate from '../utilities/globalDate';
+import funcs from '../utilities/timeWindowFunc';
 
 export default function Schedule({title, semesterPicker}){
     let history = useHistory();
@@ -35,6 +38,8 @@ export default function Schedule({title, semesterPicker}){
     }
 
    async function dropClass(row){
+      if(!privs.isAdmin){
+      if(checkDropTime()){return("")}}
       const attRes = await dbUtil.deleteAttendenceByID(user.userID)
       const response = await dbUtil.dropMyClass(row.CRN, user.userID)
       if(response.err){
@@ -43,6 +48,12 @@ export default function Schedule({title, semesterPicker}){
        await updateAvailableSeats(row);
       }
 
+   }
+
+   async function checkDropTime(){
+    const res = await timeWindow(funcs.addDrop, false)
+    console.log(res)
+    return res
    }
 
    async function updateAvailableSeats(row){

@@ -33,7 +33,7 @@ function getDate(){
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
-    today = yyyy + '/' + mm + '/' + dd
+    today = yyyy + '-' + mm + '-' + dd
     return today
     }
 
@@ -682,25 +682,7 @@ app.put('/editMS', (req, res) =>{
      )
  })
 
- app.put('/addMS' , (req, res) =>{
-    const params = req.body.params
-    db.query(
-       `INSERT INTO CourseSection(CRN, timeslotID, facultyID, roomID, semesterYearID,
-        courseID, availableSeats, capacity)
-        VALUES(?,?,?,?,?,?,?,?)`,
-       [params.CRN, params.timeSlotID, params.facultyID, params.roomID,
-       params.semesterYearID, params.courseID, params.availableSeats, 
-       params.capacity, params.sectionNum],
-       (err, result) =>{
-           if(err){
-               res.send({err: err})
-           }
-           else{
-               res.send(result)
-           }
-       }
-    )
-})
+
 
  app.put('/editCourse', (req, res) =>{
      const params = req.body.params
@@ -772,6 +754,23 @@ app.put('/editMS', (req, res) =>{
        }
     )
 })
+
+app.post('/getSemesterFromCRN', (req, res) =>{
+    const CRN = req.body.params.CRN
+    db.query(
+        `SELECT semesterYearID FROM CourseSection WHERE CRN = ?`,
+        [CRN],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+       }
+    )
+})
+
 
 app.post('/minusAvailableSeats', (req, res) =>{
     const CRN = req.body.params.CRN
@@ -1202,6 +1201,23 @@ app.post("/getAttendence", (req, res)=> {
         }
     )
 })
+
+app.put("/generateAttendance", (req, res)=> {
+    const params = req.body.params
+    db.query(
+        `INSERT IGNORE INTO Attendance VALUES(?,?,?, false)`,
+        [params.CRN, params.studentID, params.meetingDate],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
 
 app.post("/switchAttendence", (req, res)=> {
     const params = req.body.params

@@ -1,14 +1,38 @@
 import { useEffect } from "react";
 import dbUtil from "./dbUtil";
 import funcs from "./timeWindowFunc";
+import globalDate from "./globalDate";
+import checkPrivs from "./checkPrivs";
 
-export default async function timeWindow(date, func, semester, alertDisabled){
+export default async function timeWindow(func, alertDisabled){
 
     const springCalendar = await dbUtil.getSpringCal();
     const fallCalendar = await dbUtil.getFallCal();
-    var response= ""
+    const date = globalDate.getGlobalDate()
+    var semester = ""
+    var response = false;
+    let privs = checkPrivs()
 
-    if(semester.toLowerCase() === "fall"){
+    const FfirstDayIndex = fallCalendar.map(e => e.Title).indexOf(funcs.firstDay)
+    const FfirstDay = fallCalendar[FfirstDayIndex].Date.substring(0,10)
+    const FsemesterEndIndex = fallCalendar.map(e => e.Title).indexOf(funcs.fallSemEnd)
+    const FsemesterEnd = fallCalendar[FsemesterEndIndex].Date.substring(0,10)
+
+    const SfirstDayIndex = springCalendar.map(e => e.Title).indexOf(funcs.firstDay)
+    const SfirstDay = springCalendar[SfirstDayIndex].Date.substring(0,10)
+    const SsemesterEndIndex = springCalendar.map(e => e.Title).indexOf(funcs.springSemEnd)
+    const SsemesterEnd = springCalendar[SsemesterEndIndex].Date.substring(0,10)
+
+    if(FfirstDay <= date && date <= FsemesterEnd ){
+        semester = 'fall'
+    }else if(SfirstDay <= date && date <= SsemesterEnd){
+        semester = 'spring'
+    }else if(!privs.isAdmin){
+        window.alert("You are not within the semester")
+        return(false)
+    }
+    
+    if(semester === "fall"){
         var calDate = ""
         for(const i in fallCalendar){
             if(fallCalendar[i].Title === func){
@@ -19,36 +43,34 @@ export default async function timeWindow(date, func, semester, alertDisabled){
             window.alert("No timewindow event for that title")
         }
 
-        const firstDayIndex = fallCalendar.map(e => e.Title).indexOf(funcs.firstDay)
-        const firstDay = fallCalendar[firstDayIndex].Date.substring(0,10)
+        const FRegStartInd = fallCalendar.map(e => e.Title).indexOf(funcs.springRegSen)
+        const FRegStart = fallCalendar[FRegStartInd].Date.substring(0,10)
 
-
-        const semesterEndIndex = fallCalendar.map(e => e.Title).indexOf(funcs.fallSemEnd)
-        const semesterEnd = fallCalendar[semesterEndIndex].Date.substring(0,10)
-
-
-
+        console.log(date)
+        console.log(calDate)
+        console.log(FRegStart)
         switch(func){
             case funcs.addDrop: {
-                if(date > calDate){response = false}else if(date < calDate){response = true} break;
+                console.log(date > calDate && date < FRegStart)
+                if(date > calDate && date < FRegStart){console.log("here"); window.alert("addDrop error")}else if(date < calDate){response = true}else{window.alert("Error in time window")} break;
             }
             case funcs.springRegSen: {
-                if(date < calDate){response = false}else if(date >= calDate){response = true} break;
+                if(date < calDate){response = false ; window.alert("spring reg senior error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
             }
             case funcs.springRegJun: {
-                if(date < calDate){response = false}else if(date >= calDate){response = true} break;
+                if(date < calDate){response = false; window.alert("spring reg jun error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
             }
             case funcs.springRegSop: {
-                if(date < calDate){response = false}else if(date >= calDate){response = true} break;
+                if(date < calDate){response = false; window.alert("spring reg sop error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
             }
             case funcs.springRegFirst: {
-                if(date < calDate){response = false}else if(date >= calDate){response = true} break;
+                if(date < calDate){response = false ; window.alert("spring reg fresh error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
             }
             case funcs.finalExams: {
-                if(date > semesterEnd || date <= firstDay){response = false}else if(date < semesterEnd && date >= firstDay){response = true}break;
+                if(date > FsemesterEnd || date <= FfirstDay){response = false; window.alert("finals error")}else if(date < FsemesterEnd && date >= FfirstDay){response = true}else{window.alert("Error in time window")}break;
             }
             case funcs.fallSemEnd: {
-                if(date > semesterEnd){response = false}else if(date < semesterEnd){response = true}break;
+                if(date > FsemesterEnd){response = false; window.alert("fall semester end error")}else if(date < FsemesterEnd){response = true}else{window.alert("Error in time window")}break;
             }
             default :{
                 console.log("An error has occured in time window")
@@ -69,36 +91,34 @@ export default async function timeWindow(date, func, semester, alertDisabled){
             window.alert("No timewindow event for that title")
         }
 
-        const firstDayIndex = springCalendar.map(e => e.Title).indexOf(funcs.firstDay)
-        const firstDay = springCalendar[firstDayIndex].Date.substring(0,10)
+        
+        const SRegStartInd = springCalendar.map(e => e.Title).indexOf(funcs.fallRegSen)
+        const SRegStart = springCalendar[SRegStartInd].Date.substring(0,10)
 
-        const semesterEndIndex = springCalendar.map(e => e.Title).indexOf(funcs.springSemEnd)
-        const semesterEnd = springCalendar[semesterEndIndex].Date.substring(0,10)
+       
 
-        console.log(date, 'userDate')
-        console.log(calDate, 'calDate')
-        console.log(date < calDate)
+
         switch(func){
             case funcs.addDrop: {
-                if(date > calDate){response = false}else if(date < calDate){response = true} break;
+                if(date > calDate && date < SRegStart){response = false; window.alert("addDrop error")}else if(date < calDate){response = true}else{window.alert("Error in time window")} break;
             }
             case funcs.fallRegSen: {
-                if(date < calDate){response = false}else if(date >= calDate){response = true} break;
+                if(date < calDate){response = false; window.alert("fallRegSen error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
             }
             case funcs.fallRegJun: {
-                if(date < calDate){response = false}else if(date >= calDate){response = true} break;
+                if(date < calDate){response = false; window.alert("fallRegJun error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
             }
             case funcs.fallRegSop: {
-                if(date < calDate){response = false}else if(date >= calDate){response = true} break;
+                if(date < calDate){response = false; window.alert("fallRegSop error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
             }
             case funcs.fallRegFirst: {
-                if(date < calDate){response = false}else if(date >= calDate){response = true} break;
+                if(date < calDate){response = false; window.alert("fallRegFirst error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
             }
             case funcs.finalExams: {
-                if(date > semesterEnd || date <= firstDay){response = false}else if(date < semesterEnd && date >= firstDay){response = true}break;
+                if(date > SsemesterEnd || date <= SfirstDay){response = false; window.alert("finalExams error")}else if(date < SsemesterEnd && date >= SfirstDay){response = true}else{window.alert("Error in time window")}break;
             }
             case funcs.springSemEnd: {
-                if(date > semesterEnd){response = false}else if(date < semesterEnd){response = true}break;
+                if(date > SsemesterEnd){response = false; window.alert("springSemEnd error")}else if(date < SsemesterEnd){response = true}else{window.alert("Error in time window")}break;
             }
             default :{
                 console.log("An error has occured in time window")
@@ -109,8 +129,5 @@ export default async function timeWindow(date, func, semester, alertDisabled){
         
     }
 
-    if(response === false && !alertDisabled){
-        window.alert("You are outside of the time window for this action")
-    }
     return(response)
 }

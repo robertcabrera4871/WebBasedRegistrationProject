@@ -14,6 +14,8 @@ export default function EditUser(rowData){
     const row = rowData.location.state
     // console.log(row)
 
+    const yearLevels = ['freshman', 'sophmore','junior','senior']
+
     var userData = { }
     var newRow = {
         userID: "",
@@ -147,6 +149,7 @@ export default function EditUser(rowData){
     }
 
     async function handleUndergrad(){
+        if(!yearLevels.includes(newRow.yearLevel.toLowerCase())){window.alert(`Valid year level: ${yearLevels}`); return("")}
         if(!(newRow.status !== "locked" || newRow.status !== "active")){window.alert("status must be locked or active"); return("")}
         const useRes = await dbUtil.updateUser(newRow)
         if(useRes.err){window.alert("Failed to Update user"); return("")};

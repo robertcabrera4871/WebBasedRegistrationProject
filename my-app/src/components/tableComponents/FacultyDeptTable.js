@@ -3,6 +3,7 @@ import {useTable} from 'react-table'
 import Table from 'react-bootstrap/Table'
 import dbUtil from "../../utilities/dbUtil";
 import { useHistory } from "react-router-dom";
+import formatDate from "../../utilities/formateDate";
 
 
 export default function FacultyDeptTable({deptChosen}){
@@ -17,6 +18,7 @@ export default function FacultyDeptTable({deptChosen}){
     async function getFacultyDepartment(){
         const res = await dbUtil.getFacultyDepartment(deptChosen)
     if(!res.err){
+            formatDate(res, 'dateOfAppt')
             setFacDept(res)
         }
         
@@ -71,6 +73,9 @@ export default function FacultyDeptTable({deptChosen}){
             accessor: "dateOfAppt"
         }
     ], [])
+
+
+    
     
     const {
         getTableProps,

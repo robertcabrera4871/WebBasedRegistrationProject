@@ -19,6 +19,7 @@ export default function EditMS(rowData){
     
     async function submitChanges(e){
         e.preventDefault();
+        if(rowChanges.capacity < rowChanges.availableSeats){window.alert("Cannot be lower then available seats"); return("")}
         await trimWhiteSpace()
         if (await checkFaculty() === ""){return("")}
         if (await checkTimeSlotID() === ""){return("")}
@@ -121,7 +122,7 @@ export default function EditMS(rowData){
             <Form.Label>ProfFirstName</Form.Label>
             <Form.Control onChange={e => rowChanges.firstName = e.target.value} placeholder={row.firstName}></Form.Control>
             <Form.Label>Seats</Form.Label>
-            <Form.Control onChange={e => rowChanges.availableSeats = e.target.value} placeholder={row.availableSeats}></Form.Control>
+            <Form.Control disabled={true} onChange={e => rowChanges.availableSeats = e.target.value} placeholder={row.availableSeats}></Form.Control>
             <Form.Label>Capacity</Form.Label>
             <Form.Control onChange={e => rowChanges.capacity = e.target.value} placeholder={row.capacity}></Form.Control>
             </Col>

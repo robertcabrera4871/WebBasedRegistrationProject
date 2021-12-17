@@ -1,3 +1,10 @@
-var globalDate = "2021-10-01"
+export default class globalDate {
 
-export default globalDate;
+   static setGlobalDate(date){
+        sessionStorage.setItem("globalDate", date);
+    }   
+
+    static getGlobalDate(){
+       return (sessionStorage.getItem('globalDate'))
+    }
+}

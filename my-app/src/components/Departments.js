@@ -14,7 +14,7 @@ export default function Deparmtent(){
     async function getDepartments(){
         const response = await dbUtil.getDepartments();
         setDepartments(response)
-    }
+}
     
     
 

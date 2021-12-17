@@ -1,11 +1,12 @@
 import { useState, useEffect} from 'react';
-import {useSortBy, useTable} from 'react-table'
+import {useSortBy, useTable, usePagination} from 'react-table'
 import React from 'react';
 import Table from 'react-bootstrap/Table'
 import dbUtil from '../../utilities/dbUtil';
 import checkPrivs from "../../utilities/checkPrivs";
 import { useHistory } from 'react-router-dom';
 import Form from 'react-bootstrap/Form'
+import funcs from '../../utilities/timeWindowFunc';
 
 
     export default function AttendenceTable({row, classList}){
@@ -13,10 +14,12 @@ import Form from 'react-bootstrap/Form'
 
     let privs = checkPrivs()
     let history = useHistory()
+    const moment = require("moment");
+    
 
     const CRN = row.location.state.CRN 
+    const day = row.location.state.day;
 
-    var inAttendence = []
 
     useEffect(() =>{
             getAttendence();
@@ -25,53 +28,89 @@ import Form from 'react-bootstrap/Form'
 
     async function getAttendence(){
         const response = await dbUtil.getAttendence(CRN);
+        if(response.err){
+          window.alert("Error getting attendence")
+          return("")
+        }
+        response.sort(function(a, b) {
+          return new Date(b.meetingDate) - new Date(a.meetingDate)
+        })
+    
+        for(const i in response){
+          response[i].meetingDate = response[i].meetingDate.substring(0, 10)
+              }
         setAttList(response)
     }
 
-    async function updateAttendence(studentID){
-        var dates = []
-        var response = ""
-        for(const i in attList){
-            dates.push(attList[i].meetingDate)
-        }
-        dates = dates.filter(onlyUnique)
-        for(const i in dates){
-            response = await dbUtil.createAttendence(CRN, studentID, dates[i])
-        }
-    }
 
-    function onlyUnique(value, index, self) {
-        return self.indexOf(value) === index;
+    async function generateAttendance(){
+      const firstLast = await getFirstLastDay()
+      const meetingDates = await getDates(firstLast);
+
+      for(const i in classList){
+        for(const x in meetingDates)
+        {
+          console.log(classList[i])
+          var res = await dbUtil.generateAttendance(CRN, classList[i].studentID, meetingDates[x].toString());
+        }
+       
+         if(res.err){
+           console.log(res.err.sqlMessage)
+         }
       }
-      
+
+      window.location.reload(false);
+  }
+
+  async function getDates(firstLast){
+    var result = [];
+    var current = moment(firstLast.firstDay).clone();
+    var end = moment(firstLast.lastDay).clone();
+    var day = parseDay();
+    while(current.day(7 + day).isBefore(end)){
+      result.push(current.clone());
+    }
+    return(result.map(m => m.format('YYYY-MM-DD')));
     
-    async function addMeeting(){
-        var response = ""
-       const date = window.prompt("Enter Meeting Date", "YYYY-MM-DD")
-       if(!date){return("")}
-       for(const i in classList){
-        response = await dbUtil.createAttendence(CRN, classList[i].studentID, date);
-        if(response.err){
-            console.log(response)
-            window.alert("Check date format")
-            return("")
-        }
-       }
-       window.location.reload(false)
+  }
+
+  function parseDay(){
+    switch(day){
+      case 'Monday': return 1; 
+      case 'Tuesday': return 2;
+      case 'Wednesday': return 3;
+      case 'Thursday': return 4;
+      case 'Friday': return 5;
+      case 'Saturday': return 6;
+      case 'Sunday': return 0;
+      default: {
+        window.alert("Error in day parse")
+      }
+    }
+  }
+
+  async function getFirstLastDay(){
+    const res = await dbUtil.getSemesterFromCRN(CRN);
+    if(res.err){
+      window.alert(res.err.sqlMessage)
     }
 
-    async function deleteMeeting(){
-        var response = ""
-       const date = window.prompt("Enter Meeting Date", "YYYY-MM-DD")
-       if(!date){return("")}
-        response = await dbUtil.deleteAttendence(date);
-        if(response.err){
-          console.log(response.err)
-            window.alert("No meeting with that date")
-            return("")
-        }
-       window.location.reload(false)
+    var calendar = []
+    var endIndex = ""
+    if(res[0].semesterYearID === 'F21'){
+      calendar = await dbUtil.getFallCal();
+      endIndex = calendar.map(e => e.Title).indexOf(funcs.fallSemEnd)
+
+    }else if(res[0].semesterYearID === 'S22'){
+      calendar  = await dbUtil.getSpringCal();
+      endIndex = calendar.map(e => e.Title).indexOf(funcs.springSemEnd)
     }
+    const firstDayIndex = calendar.map(e => e.Title).indexOf(funcs.firstDay)
+    return ({
+      firstDay: calendar[firstDayIndex].Date.substring(0,10),
+      lastDay: calendar[endIndex].Date.substring(0,10)
+    })
+  }
 
     async function switchAttendence(id, meetingDate, presence){
         const res = await dbUtil.switchAttendence(id, meetingDate, !presence)
@@ -116,16 +155,6 @@ import Form from 'react-bootstrap/Form'
       
     ], [])
 
-        for(const i in attList){
-            attList[i].meetingDate = attList[i].meetingDate.substring(0, 10)
-            inAttendence.push(attList[i].userID)
-          }
-
-          for(const i in classList){
-            if(!inAttendence.includes(classList[i].studentID)){
-                 updateAttendence(classList[i].studentID);
-            }
-        }
 
       var initialState = {hiddenColumns: ['presentOrAbsent']}
    
@@ -133,17 +162,23 @@ import Form from 'react-bootstrap/Form'
         getTableProps,
         getTableBodyProps,
         headerGroups,
-        rows,
+        page,
+        nextPage,
+        previousPage,
+        canNextPage,
+        canPreviousPage,
+        pageOptions,
+        state,
         prepareRow,
-      } = useTable({columns, data: attList, initialState}, useSortBy)
+      } = useTable({columns, data: attList, initialState}, useSortBy, usePagination)
+
+      const {pageIndex} = state
 
     
 
     return(<div  className="table-center">
         <h5>Click column to sort</h5>
-        {privs.isAdmin && <button onClick={() => {addMeeting()}}>➕ Add Meeting</button>}
-        {privs.isAdmin && <button onClick={() => {deleteMeeting()}}>❌ Delete Meeting</button>}
-        <button onClick={() => {window.location.reload(false)}}>🔄  Refresh Attendence</button>
+        <button onClick={() => {generateAttendance()}}>Refresh Attendance 🔄</button>
     <Table size="sm" striped bordered hover {...getTableProps()}>
   <thead>
     { headerGroups.map(headerGroup => (
@@ -161,7 +196,7 @@ import Form from 'react-bootstrap/Form'
   </thead>
 
   <tbody {...getTableBodyProps()}>
-    {rows.map(row => {
+    {page.map(row => {
       prepareRow(row)
       return (
         <tr {...row.getRowProps()}>
@@ -177,5 +212,13 @@ import Form from 'react-bootstrap/Form'
     })}
   </tbody>
 </Table>
+<span className='align-center'>
+       Page{' '}
+       <strong>
+          {pageIndex + 1} of {pageOptions.length}
+       </strong>
+       <button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</button>
+       <button onClick={() => nextPage()} disabled={!canNextPage}>Next</button>
+    </span>
     </div>)
     }

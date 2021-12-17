@@ -6,6 +6,9 @@ import dbUtil from '../../utilities/dbUtil';
 import AttendenceTable from './AttendenceTable';
 import checkPrivs from "../../utilities/checkPrivs";
 import decryptUser from "../../utilities/decryptUser";
+import timeWindow from '../../utilities/timeWindow';
+import funcs from '../../utilities/timeWindowFunc';
+import globalDate from '../../utilities/globalDate';
 
     export default function ClassListTable(row){
     const[classList, setClassList] = useState([]);
@@ -32,6 +35,9 @@ import decryptUser from "../../utilities/decryptUser";
     }
 
     async function assignGrade(row){
+      console.log(row)
+      if(!(await timeWindow( funcs.finalExams, false))){return("")}
+
        const newGrade = window.prompt("Enter Grade")
        if(!grades.includes(newGrade)){
            window.alert(`Valid entries are ${grades}`)

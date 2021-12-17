@@ -11,7 +11,9 @@ export default function AddUser(chosenType){
     const userChosen = chosenType.location.state
     let history = useHistory()
 
-    
+
+    const yearLevels = ['freshman', 'sophmore','junior','senior']
+
     const newRow = {
       userID: "",
       firstName: "",
@@ -95,7 +97,8 @@ export default function AddUser(chosenType){
 
     async function handleUndergrad(){
         var fullRes = ""
-        newRow.userType="student";
+        console.log(newRow.yearLevel)
+        if(!yearLevels.includes(newRow.yearLevel.toLowerCase())){window.alert(`Valid year level: ${yearLevels}`); return("")}
         if(await checkBlanksUndergrad()){return("")}
         const checkTime = await checkFullOrPart();
         if(checkTime === ""){return("")}
@@ -126,6 +129,7 @@ export default function AddUser(chosenType){
     async function handleGrad(){
         var fullRes = ""
         newRow.userType="student";
+        newRow.yearLevel="grad";
         if(await checkBlanksGrad()){return("")}
         const checkTime = await checkFullOrPart();
         if(checkTime === ""){return("")}
@@ -314,11 +318,14 @@ export default function AddUser(chosenType){
         <Form.Control onChange={e => newRow.maxCourse= e.target.value} ></Form.Control>
         </div>
         }
+        {
+        (userChosen === 'Undergrad Student') && <div>
+        <Form.Label>Year Level</Form.Label>
+        <Form.Control onChange={e => newRow.yearLevel = e.target.value} ></Form.Control></div>
+        }
         {(userChosen === 'Undergrad Student' || userChosen === 'Grad Student' )&& <div>
         <Form.Label>Credits Earned</Form.Label>
         <Form.Control onChange={e => newRow.creditsEarned = e.target.value} ></Form.Control>
-        <Form.Label>Year Level</Form.Label>
-        <Form.Control onChange={e => newRow.yearLevel = e.target.value} ></Form.Control>
         <Form.Label>Year of Entrance</Form.Label>
         <Form.Control onChange={e => newRow.yearOfEntrance = e.target.value} ></Form.Control>
         <Form.Label>Min Credit</Form.Label>

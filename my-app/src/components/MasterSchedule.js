@@ -9,6 +9,8 @@ import ChoseSemester from "./subComponents/ChoseSemester";
 import decryptUser from "../utilities/decryptUser";
 import Dropdown from 'react-bootstrap/Dropdown'
 import CalendarTable from "./tableComponents/CalendarTable";
+import timeWindow from "../utilities/timeWindow";
+import funcs from "../utilities/timeWindowFunc";
 
 
 
@@ -19,7 +21,7 @@ export default function MasterSchedule(){
     let history = useHistory();
     const privs = checkPrivs();
     var user = decryptUser();
-
+   
     if(history.location.state !== undefined){
        user.userID = history.location.state
     }
@@ -35,9 +37,17 @@ export default function MasterSchedule(){
          setSemester(semesterChosen) 
          getSchedule()
      }
-
+     
      async function addClassStudent(row){
-        if(await checkAvailableSeats(row)){return("")}
+      if(row.availableSeats === 0){window.alert("Class is full"); return("")}
+      if(await checkGradUndergrad(row)){return("")}  
+      
+      if(await yearLevelCheck()){return("")}
+
+      if(!privs.isAdmin){
+         if(await yearLevelCheck()){return("")}
+         if(await addClassTimeCheck()){return("")}}
+
         const response = await dbUtil.addMyClass(row.CRN, user.userID); 
         if(response.err){
            console.log(response)
@@ -53,17 +63,65 @@ export default function MasterSchedule(){
         }
      }
 
-     async function checkAvailableSeats(row){
-        const res = await dbUtil.checkAvailableSeats(row.CRN)
-        if(res.err){
-           window.alert(res.err)
-           console.log(res)
-           return true
-        }else if(res[0].availableSeats === 0 ){
-           window.alert("Class is full")
-           return true
-        }
-        return false;
+
+     async function addClassTimeCheck(){
+      const res = (await timeWindow(funcs.addDrop, false))
+     }
+
+     async function yearLevelCheck(){
+      const res = await dbUtil.getStudent(user.userID)
+      if(res[0].studentType === 'Grad Student'){
+         return false
+      } 
+      console.log(res[0].yearLevel)
+
+      if(semesterSelect === 'Fall 2021'){
+      switch(res[0].yearLevel.toLowerCase()){
+         case 'freshman':{
+            if(!(await timeWindow(funcs.springRegFirst, false)  )){return("")}
+         }
+         case 'sophmore':{
+            if(!(await timeWindow(funcs.springRegSop, false)  )){return("")}
+         }
+         case 'junior': {
+            if(!(await timeWindow(funcs.springRegJun, false)  )){return("")}
+
+         }
+         case 'senior': {
+            if(!(await timeWindow(funcs.springRegSen, false)  )){return("")}
+
+         }
+      }}
+      else if(semesterSelect === 'Spring 2022'){
+         switch(res[0].yearLevel.toLowerCase()){
+            case 'freshman':{
+               if(!(await timeWindow(funcs.fallRegFirst, false)  )){return("")}
+            }
+            case 'sophmore':{
+               if(!(await timeWindow(funcs.fallRegFirst, false)  )){return("")}
+            }
+            case 'junior': {
+               if(!(await timeWindow(funcs.fallRegJun, false)  )){return("")}
+   
+            }
+            case 'senior': {
+               if(!(await timeWindow(funcs.fallRegSen, false)  )){return("")}
+   
+            }
+         }}
+
+      }
+
+     async function checkGradUndergrad(row){
+         const res = await dbUtil.getStudent(user.userID)
+         if(res[0].studentType === 'Undergrad Student' && row.CRN.charAt(0) === '3'){
+            window.alert("Cannot register: Undergrad to Grad")
+            return true
+         }else if(res[0].studentType === 'Grad Student' && row.CRN.charAt(0) === '2'){
+            window.alert("Cannot register: Grad to Undergrad")
+            return true
+         }
+         return false
      }
 
 
@@ -86,7 +144,6 @@ export default function MasterSchedule(){
                   data = data.filter(row => row.userID === user.userID)
                }
                 if(semesterSelect === "Fall 2021"){
-                   console.log(data)
                   data = data.filter(item => (item.semesterYearID === "F21"))
                }
                else if(semesterSelect === "Spring 2022"){

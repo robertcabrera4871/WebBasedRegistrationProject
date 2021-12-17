@@ -189,6 +189,25 @@ import Axios from 'axios';
         })
         return addResponse.data
       }
+      static async generateAttendance(CRN, studentID, meetingDate){
+        const addResponse = await Axios.put("http://localhost:8000/generateAttendance", {
+          params:{
+           CRN: CRN,
+           studentID: studentID,
+           meetingDate: meetingDate
+          }
+        })
+        return addResponse.data
+      }
+
+      static async getSemesterFromCRN(CRN){
+        const addResponse = await Axios.post("http://localhost:8000/getSemesterFromCRN", {
+          params:{
+           CRN: CRN
+          }
+        })
+        return addResponse.data
+      }
 
       static async checkSemesterYear(row){
         const response = await Axios.post("http://localhost:8000/checkSemesterYear", {
