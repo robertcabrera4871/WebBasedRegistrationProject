@@ -37,11 +37,16 @@ export default function Transcript(){
          })
     }
 
-    async function editGrade(){
-      
-    }
-    async function deleteTranscript(){
-        
+    async function deleteHistory(row){
+      console.log(row.CRN)
+      console.log(user.userID)
+        const res = await dbUtil.deleteStudentHistory(row.CRN, user.userID)
+        if(res.err){
+          window.alert(res.err.sqlMessage)
+          console.log(res)
+        }else{
+          window.location.reload(false)
+        }
     }
 
     const columns = React.useMemo(() => [
@@ -50,12 +55,11 @@ export default function Transcript(){
             width: 10,
             Cell: ({cell}) => (
               <div>
-              <button onClick={() => editGrade(cell.row.original)}>✏️</button>
               <div className='bigDivider'/>
               <button onClick={() => {
                if (window.confirm('Are you sure you wish to delete this item?')) 
                {
-                deleteTranscript(cell.row.original)
+                deleteHistory(cell.row.original)
                }}
                 }>❌</button>
               </div>
@@ -76,7 +80,7 @@ export default function Transcript(){
     ], [])
 
     var initialState = ""
-    if(!privs.isAdmin || history.location.pathname === "/degreeAudit"){
+    if(!privs.isAdmin){
       initialState = {hiddenColumns: ['Actions']}
     }
 

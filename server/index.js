@@ -825,6 +825,24 @@ app.post('/plusAvailableSeats', (req, res) =>{
      )
  })
 
+ 
+ app.post('/checkEnrollment' , (req, res) => {
+    const studentID = req.body.params.studentID
+    const CRN = req.body.params.CRN
+    db.query(
+        "SELECT * FROM Enrollment WHERE studentID = ? AND CRN = ?",
+        [studentID, CRN],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+       }
+    )
+})
+
  app.put('/deleteCourse', (req, res) => {
      const courseID = req.body.params.courseID
      db.query(
@@ -1306,6 +1324,27 @@ app.post("/checkSemesterYear", (req, res)=> {
 })
 
 
+app.post("/checkSemID", (req, res)=> {
+    const semesterID = req.body.params.semesterID
+    const CRN = req.body.params.CRN
+
+    db.query(
+        `SELECT * FROM CourseSection WHERE semesterYearID = ? AND CRN =? `,
+        [semesterID, CRN],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+
+
+
 
 app.post("/checkCRNsemester", (req, res)=> {
     const row = req.body.params.row
@@ -1677,7 +1716,10 @@ app.post('/getStudentHistory', (req, res) =>{
 app.post('/addStudentHistory', (req, res) =>{
     const newRow = req.body.params.newRow;
     db.query(
-        `INSERT INTO  StudentHistory VALUES(?,?,?,?)`, [newRow.CRN, newRow.studentID, newRow.semesterYearID, newRow.grade],
+
+        `SET FOREIGN_KEY_CHECKS=0;
+        INSERT INTO StudentHistory VALUES(?,?,?,?);
+        SET FOREIGN_KEY_CHECKS=1;`, [newRow.CRN, newRow.studentID, newRow.semesterYearID, newRow.grade],
     (err, result) =>{
         if(err){
             res.send({err: err})
@@ -1694,6 +1736,23 @@ app.post('/deleteAllStudentHistory', (req, res) =>{
         `DELETE FROM StudentHistory WHERE studentID = ?;`,
          [userID],
     (err, result) =>{
+        if(err){
+            res.send({err: err})
+        }else{
+            res.send(result)
+        }
+    }
+    )
+})
+
+app.post('/deleteStudentHistory', (req, res) =>{
+    const userID = req.body.params.userID;
+    const CRN = req.body.params.CRN
+
+    db.query(
+        `DELETE FROM StudentHistory WHERE studentID = ? AND CRN = ?`,
+         [userID, CRN],
+         (err, result) =>{
         if(err){
             res.send({err: err})
         }else{
@@ -1747,6 +1806,32 @@ app.post('/addMyClass', (req, res) => {
     db.query(
         `INSERT INTO Enrollment VALUES(?,?, 'IP', ?)`,
         [CRN, userID, currentDate],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.post('/creditCheck', (req, res) => {
+    const studentID = req.body.params.studentID;
+
+    db.query(
+        `SELECT studentID, minCredit, maxCredit FROM GradFullTime
+        WHERE studentID = ?
+        UNION
+        SELECT studentID, minCredit, maxCredit  FROM GradPartTime
+        WHERE studentID = ?
+        UNION
+        SELECT studentID, minCredit, maxCredit FROM UndergradFullTime
+        WHERE studentID = ?
+        UNION
+        SELECT studentID, minCredit, maxCredit FROM UndergradPartTime
+        WHERE studentID = ?`,
+        [studentID, studentID, studentID, studentID],
         (err, result) =>{
             if(err){
                 res.send({err: err})
@@ -1950,6 +2035,30 @@ app.post('/dropMyClass', (req, res) =>{
         DELETE FROM Enrollment WHERE CRN = ? AND studentID = ?;
         SET FOREIGN_KEY_CHECKS=1;`,
         [CRN, userID],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+
+})
+
+app.post('/getCreditsTaking', (req, res) =>{
+    const studentID = req.body.params.studentID;
+
+    db.query(
+        `SELECT c.numOfCredits FROM Course c
+        JOIN CourseSection cs
+        ON cs.courseID = c.courseID
+        JOIN Enrollment e
+        ON cs.CRN = e.CRN
+        WHERE e.studentID = ?;
+        `,
+        [studentID],
         (err, result) => {
             if(err){
                 res.send({err: err})

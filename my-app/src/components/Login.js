@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button'
 import dbUtil from '../utilities/dbUtil'
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
+import globalDate from '../utilities/globalDate';
 
 
 
@@ -90,6 +91,15 @@ export default function Login({ setUser, setToken }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    today = yyyy + '-' + mm + '-' + dd
+    globalDate.setGlobalDate(today)
+
+
     const response = await dbUtil.userExists(email)
     var loginResponse = ""
     if(response.length === 0){

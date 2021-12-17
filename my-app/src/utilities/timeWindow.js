@@ -18,6 +18,12 @@ export default async function timeWindow(func, alertDisabled){
     const FsemesterEndIndex = fallCalendar.map(e => e.Title).indexOf(funcs.fallSemEnd)
     const FsemesterEnd = fallCalendar[FsemesterEndIndex].Date.substring(0,10)
 
+     const FfinalExamsInd = fallCalendar.map(e => e.Title).indexOf(funcs.finalExams)
+     const FfinalExams = fallCalendar[FfinalExamsInd].Date.substring(0,10)
+
+     const SfinalExamsInd = springCalendar.map(e => e.Title).indexOf(funcs.finalExams)
+     const SfinalExams = springCalendar[SfinalExamsInd].Date.substring(0,10)
+
     const SfirstDayIndex = springCalendar.map(e => e.Title).indexOf(funcs.firstDay)
     const SfirstDay = springCalendar[SfirstDayIndex].Date.substring(0,10)
     const SsemesterEndIndex = springCalendar.map(e => e.Title).indexOf(funcs.springSemEnd)
@@ -46,31 +52,31 @@ export default async function timeWindow(func, alertDisabled){
         const FRegStartInd = fallCalendar.map(e => e.Title).indexOf(funcs.springRegSen)
         const FRegStart = fallCalendar[FRegStartInd].Date.substring(0,10)
 
-        console.log(date)
-        console.log(calDate)
-        console.log(FRegStart)
+        // console.log(date)
+        // console.log(calDate)
+        // console.log(FRegStart)
         switch(func){
             case funcs.addDrop: {
-                console.log(date > calDate && date < FRegStart)
-                if(date > calDate && date < FRegStart){console.log("here"); window.alert("addDrop error")}else if(date < calDate){response = true}else{window.alert("Error in time window")} break;
+                console.log()
+                if(date > calDate && date < FRegStart){response = false; window.alert("addDrop error")}else if(date < calDate || date > FRegStart){response = true} break;
             }
             case funcs.springRegSen: {
-                if(date < calDate){response = false ; window.alert("spring reg senior error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
+                if(date < calDate){response = false ; window.alert("spring reg senior error")}else if(date >= calDate){response = true} break;
             }
             case funcs.springRegJun: {
-                if(date < calDate){response = false; window.alert("spring reg jun error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
+                if(date < calDate){response = false; window.alert("spring reg jun error")}else if(date >= calDate){response = true} break;
             }
             case funcs.springRegSop: {
-                if(date < calDate){response = false; window.alert("spring reg sop error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
+                if(date < calDate){response = false; window.alert("spring reg sop error")}else if(date >= calDate){response = true} break;
             }
             case funcs.springRegFirst: {
-                if(date < calDate){response = false ; window.alert("spring reg fresh error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
+                if(date < calDate){response = false ; window.alert("spring reg fresh error")}else if(date >= calDate){response = true} break;
             }
             case funcs.finalExams: {
-                if(date > FsemesterEnd || date <= FfirstDay){response = false; window.alert("finals error")}else if(date < FsemesterEnd && date >= FfirstDay){response = true}else{window.alert("Error in time window")}break;
+                if(date > FsemesterEnd || date < FfinalExams){response = false; window.alert("finals error")}else if(date <= FsemesterEnd && date >= FfinalExams){response = true}break;
             }
             case funcs.fallSemEnd: {
-                if(date > FsemesterEnd){response = false; window.alert("fall semester end error")}else if(date < FsemesterEnd){response = true}else{window.alert("Error in time window")}break;
+                if(date > FsemesterEnd){response = false; window.alert("fall semester end error")}else if(date < FsemesterEnd){response = true}break;
             }
             default :{
                 console.log("An error has occured in time window")
@@ -100,25 +106,25 @@ export default async function timeWindow(func, alertDisabled){
 
         switch(func){
             case funcs.addDrop: {
-                if(date > calDate && date < SRegStart){response = false; window.alert("addDrop error")}else if(date < calDate){response = true}else{window.alert("Error in time window")} break;
+                if(date > calDate && date < SRegStart){response = false; window.alert("addDrop error")}else if(date < calDate){response = true} break;
             }
             case funcs.fallRegSen: {
-                if(date < calDate){response = false; window.alert("fallRegSen error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
+                if(date < calDate){response = false; window.alert("fallRegSen error")}else if(date >= calDate){response = true} break;
             }
             case funcs.fallRegJun: {
-                if(date < calDate){response = false; window.alert("fallRegJun error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
+                if(date < calDate){response = false; window.alert("fallRegJun error")}else if(date >= calDate){response = true} break;
             }
             case funcs.fallRegSop: {
-                if(date < calDate){response = false; window.alert("fallRegSop error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
+                if(date < calDate){response = false; window.alert("fallRegSop error")}else if(date >= calDate){response = true} break;
             }
             case funcs.fallRegFirst: {
-                if(date < calDate){response = false; window.alert("fallRegFirst error")}else if(date >= calDate){response = true}else{window.alert("Error in time window")} break;
+                if(date < calDate){response = false; window.alert("fallRegFirst error")}else if(date >= calDate){response = true} break;
             }
             case funcs.finalExams: {
-                if(date > SsemesterEnd || date <= SfirstDay){response = false; window.alert("finalExams error")}else if(date < SsemesterEnd && date >= SfirstDay){response = true}else{window.alert("Error in time window")}break;
+                if(date > SsemesterEnd || date < SfinalExams){response = false; window.alert("finalExams error")}else if(date <= SsemesterEnd && date >= SfinalExams){response = true}break;
             }
             case funcs.springSemEnd: {
-                if(date > SsemesterEnd){response = false; window.alert("springSemEnd error")}else if(date < SsemesterEnd){response = true}else{window.alert("Error in time window")}break;
+                if(date > SsemesterEnd){response = false; window.alert("springSemEnd error")}else if(date < SsemesterEnd){response = true}break;
             }
             default :{
                 console.log("An error has occured in time window")

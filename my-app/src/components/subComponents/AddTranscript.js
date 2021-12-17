@@ -5,11 +5,17 @@ import Row from 'react-bootstrap/Row'
 import Col from "react-bootstrap/Col";
 import dbUtil from "../../utilities/dbUtil";
 import { useHistory } from 'react-router';
+import timeWindow from "../../utilities/timeWindow";
+import funcs from "../../utilities/timeWindowFunc";
+import checkPrivs from "../../utilities/checkPrivs";
+
 export default function AddTranscript(adminAccess){
 
 var adminUser = adminAccess.location.state
 let history = useHistory();
 const grades = ['A', 'B', 'C', 'D', 'E', 'F', 'IP'];
+let privs = checkPrivs();
+
 
 const newRow = {
         CRN: "",
@@ -24,13 +30,74 @@ const newRow = {
             window.alert(`Valid entries for grade are ${grades}`)
             return("")
         }
-        const res = await dbUtil.addStudentHistory(newRow)
-        console.log(res)
-        if(!res.err){
-            history.goBack()
+        if(await checkSemesterYear(newRow.semesterYearID, newRow.CRN)){return("")}
+        const checkEnrolled = await dbUtil.checkEnrollment(adminUser, newRow.CRN)
+        if(checkEnrolled.length !== 0){
+            if(window.confirm("Student is enrolled. Would you like to transfer to Transcript?"))
+            {
+                const check = await timeWindow(funcs.finalExams, false)
+                if(!check){
+                    if(window.confirm("You are not within the time window for assigning final grades. Are you sure you wish to conitinue?")){
+                       if(await deleteAttendance()){window.alert("Deltetion from Attendance Failed"); return("")}
+                       if(await deleteEnroll(newRow.CRN, adminUser)){return("")}
+                       if(await addHistory()){window.alert("Insertion to Student History Failed"); return("") }
+                       history.goBack();
+                    }
+                }
+        
+            }
         }else{
-            window.alert(res.err.sqlMessage)
+            window.alert("That CRN does not exist OR you are not enrolled")
         }
+    
+        
+    }
+
+    async function deleteEnroll(CRN, userID){
+        const res = await dbUtil.dropMyClass(CRN, userID)
+        console.log(res)
+        if(res.err){
+            window.alert(res.sqlMessage)
+            console.log(res)
+            return true
+        }
+        return false
+    }
+
+    async function checkSemesterYear(semesterID, CRN){
+        const check = await dbUtil.checkSemID(semesterID, CRN)
+        console.log(check)
+        if(check.err){
+            window.alert(check.err.sqlMessage)
+            console.log(check)
+            return true
+        }else if(check.length === 0){
+            window.alert("Incorrect semestear year ID for that CRN")
+            return true
+        }   
+        console.log(check)
+        return false
+    }
+
+    async function deleteAttendance(){
+        const res = await dbUtil.deleteAttendenceByID(adminUser)
+        console.log(res)
+        if(res.err){
+            window.alert(res.err.sqlMessage)
+            console.log(res)
+            return true
+        }
+        return false
+    }
+
+    async function addHistory(){
+        const res = await dbUtil.addStudentHistory(newRow)
+        if(res.err){
+            window.alert(res.err.sqlMessage)
+            console.log(res)
+            return true
+        }
+        return false
     }
 
     return(

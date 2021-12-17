@@ -39,10 +39,12 @@ export default function MasterSchedule(){
      }
      
      async function addClassStudent(row){
+      const student = await dbUtil.getStudent(user.userID)
       if(row.availableSeats === 0){window.alert("Class is full"); return("")}
-      if(await checkGradUndergrad(row)){return("")}  
+      if(await checkGradUndergrad(row, student)){return("")}  
+      if(await yearLevelCheck(student)){return("")}
+      if(await creditCheck(row, student)){return("")}
       
-      if(await yearLevelCheck()){return("")}
 
       if(!privs.isAdmin){
          if(await yearLevelCheck()){return("")}
@@ -63,57 +65,70 @@ export default function MasterSchedule(){
         }
      }
 
+     async function creditCheck(row, student){
+      const minMax = await dbUtil.creditCheck(student[0].studentID)
+      const credTaking = await dbUtil.getCreditsTaking(student[0].studentID)
+      const maxCredit = (minMax[0].maxCredit)
+      const newClassCred = row.numOfCredits
+      const currentCreds = credTaking[0]?.numOfCredits
+      if(currentCreds + newClassCred > maxCredit){
+         window.alert("You are taking too many credits")
+         return(true)
+      }
+      return(false)      
+   }
+
 
      async function addClassTimeCheck(){
       const res = (await timeWindow(funcs.addDrop, false))
+      return(!res)
      }
 
-     async function yearLevelCheck(){
-      const res = await dbUtil.getStudent(user.userID)
+     async function yearLevelCheck(res){
       if(res[0].studentType === 'Grad Student'){
          return false
       } 
-      console.log(res[0].yearLevel)
 
       if(semesterSelect === 'Fall 2021'){
       switch(res[0].yearLevel.toLowerCase()){
          case 'freshman':{
-            if(!(await timeWindow(funcs.springRegFirst, false)  )){return("")}
+            if(!(await timeWindow(funcs.springRegFirst, false)  )){return(true)}
          }
          case 'sophmore':{
-            if(!(await timeWindow(funcs.springRegSop, false)  )){return("")}
+            if(!(await timeWindow(funcs.springRegSop, false)  )){return(true)}
          }
          case 'junior': {
-            if(!(await timeWindow(funcs.springRegJun, false)  )){return("")}
+            if(!(await timeWindow(funcs.springRegJun, false)  )){return(true)}
 
          }
          case 'senior': {
-            if(!(await timeWindow(funcs.springRegSen, false)  )){return("")}
+            if(!(await timeWindow(funcs.springRegSen, false)  )){return(true)}
 
          }
       }}
       else if(semesterSelect === 'Spring 2022'){
          switch(res[0].yearLevel.toLowerCase()){
             case 'freshman':{
-               if(!(await timeWindow(funcs.fallRegFirst, false)  )){return("")}
+               if(!(await timeWindow(funcs.fallRegFirst, false)  )){return(true)}
             }
             case 'sophmore':{
-               if(!(await timeWindow(funcs.fallRegFirst, false)  )){return("")}
+               if(!(await timeWindow(funcs.fallRegFirst, false)  )){return(true)}
             }
             case 'junior': {
-               if(!(await timeWindow(funcs.fallRegJun, false)  )){return("")}
+               if(!(await timeWindow(funcs.fallRegJun, false)  )){return(true)}
    
             }
             case 'senior': {
-               if(!(await timeWindow(funcs.fallRegSen, false)  )){return("")}
+               if(!(await timeWindow(funcs.fallRegSen, false)  )){return(true)}
    
             }
          }}
 
+         return false
+
       }
 
-     async function checkGradUndergrad(row){
-         const res = await dbUtil.getStudent(user.userID)
+     async function checkGradUndergrad(row, res){
          if(res[0].studentType === 'Undergrad Student' && row.CRN.charAt(0) === '3'){
             window.alert("Cannot register: Undergrad to Grad")
             return true

@@ -38,8 +38,10 @@ export default function Schedule({title, semesterPicker}){
     }
 
    async function dropClass(row){
+     const student = await dbUtil.getStudent(user.userID)
+      if(await creditCheck(row, student)){{return("")}}
       if(!privs.isAdmin){
-      if(checkDropTime()){return("")}}
+      if(!checkDropTime()){return("")}}
       const attRes = await dbUtil.deleteAttendenceByID(user.userID)
       const response = await dbUtil.dropMyClass(row.CRN, user.userID)
       if(response.err){
@@ -49,6 +51,20 @@ export default function Schedule({title, semesterPicker}){
       }
 
    }
+
+   async function creditCheck(row, student){
+    const minMax = await dbUtil.creditCheck(student[0].studentID)
+    const credTaking = await dbUtil.getCreditsTaking(student[0].studentID)
+    const minCredit = (minMax[0].minCredit)
+    const dropClass = row.numOfCredits
+    const currentCreds = (credTaking[0].numOfCredits)
+
+    if(currentCreds - dropClass < minCredit){
+       window.alert("You will not have enough credits to be fulltime")
+       return(true)
+    }
+    return(false)      
+ }
 
    async function checkDropTime(){
     const res = await timeWindow(funcs.addDrop, false)
@@ -80,6 +96,8 @@ export default function Schedule({title, semesterPicker}){
                  }
                  setSchedule(data)
     }
+
+
     const columns = React.useMemo( () => [
         {
             accessor: 'Actions',

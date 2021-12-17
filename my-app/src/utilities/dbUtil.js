@@ -218,6 +218,16 @@ import Axios from 'axios';
         return response.data
       }
 
+      static async checkSemID(semesterID, CRN){
+        const response = await Axios.post("http://localhost:8000/checkSemID", {
+          params: {
+            semesterID: semesterID,
+            CRN: CRN
+          }
+        })
+        return response.data
+      }
+
       static async checkCRNsemester(row){
         const response = await Axios.post("http://localhost:8000/checkCRNsemester", {
           params: {
@@ -230,6 +240,15 @@ import Axios from 'axios';
       const response = await Axios.put("http://localhost:8000/unenrollAll", {
         params: {
           CRN: row.CRN
+        }
+      })
+      return response.data
+    }
+    static async checkEnrollment(studentID, CRN){
+      const response = await Axios.post("http://localhost:8000/checkEnrollment", {
+        params: {
+          studentID: studentID,
+          CRN: CRN
         }
       })
       return response.data
@@ -606,6 +625,22 @@ static async getSpringCal(){
           params: {
             CRN: CRN,
             userID: userID
+          }
+        })
+        return response.data;
+      }
+      static async creditCheck(studentID){
+        const response = await Axios.post("http://localhost:8000/creditCheck", {
+          params: {
+            studentID: studentID
+          }
+        })
+        return response.data;
+      }
+      static async getCreditsTaking(studentID){
+        const response = await Axios.post("http://localhost:8000/getCreditsTaking", {
+          params: {
+            studentID: studentID
           }
         })
         return response.data;
@@ -1096,6 +1131,7 @@ static async getSpringCal(){
       return response.data
     }
 
+  
     static async dropAllClasses(userID){
       const response = await Axios.post("http://localhost:8000/dropAllClasses",{
         params: {
@@ -1108,6 +1144,16 @@ static async getSpringCal(){
       const response = await Axios.post("http://localhost:8000/deleteAllStudentHistory",{
         params: {
           userID: userID
+        }
+      })
+      return response.data
+    }
+
+    static async deleteStudentHistory(CRN, userID){
+      const response = await Axios.post("http://localhost:8000/deleteStudentHistory",{
+        params: {
+          userID: userID,
+          CRN: CRN
         }
       })
       return response.data

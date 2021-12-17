@@ -28,7 +28,6 @@ export default function AllUsers(){
 
     async function getUsers(){
         var res = await dbUtil.getAllUsers()
-        console.log(res)
         res = res.filter(item => (item.userID !== "guest"))
         res = res.filter(item => (item.userID !== "TBD"))
         if(privs.isFaculty){
