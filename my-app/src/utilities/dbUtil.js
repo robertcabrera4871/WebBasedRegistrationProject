@@ -619,6 +619,15 @@ static async getSpringCal(){
         })
         return userSchedResponse.data
       }
+
+      static async getCoursesTeaching(userID){
+        const userSchedResponse = await Axios.post("http://localhost:8000/getCoursesTeaching", {
+          params: {
+            userID: userID
+          }
+        })
+        return userSchedResponse.data
+      }
       static async checkStudentHistory(userID, CRN){
         const userSchedResponse = await Axios.post("http://localhost:8000/checkStudentHistory", {
           params: {

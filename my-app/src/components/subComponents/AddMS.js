@@ -33,9 +33,11 @@ export default function AddMS(){
             e.preventDefault();
             newRow.availableSeats = newRow.capacity;
             newRow.CRN = history.location.state + newRow.CRN
+            let isnum = /^\d+$/.test(newRow.CRN);
+            if (!isnum){window.alert("Please only use numbers in CRN");return("")}
+            if (await checkFaculty() === ""){return("")}
             if (await checkGradUndergrad() === ""){return("")}
             if (await checkBlanks() === "" ){return("")}
-            if (await checkFaculty() === ""){return("")}
             if (await checkTimeSlotID() === ""){return("")}
             if (await checkAvailability() === ""){return("")}
             if (await checkSemesterYear() === ""){return("")}
@@ -80,6 +82,32 @@ export default function AddMS(){
              }
         }
 
+        async function courseMaxCheck(fac){
+            const minMax = await dbUtil.courseMinMaxCheck(fac[0].userID)
+            const currentTeaching = await getCoursesTeaching(fac[0].userID)
+            const maxCourse = minMax[0].maxCourse;
+            console.log(currentTeaching.length, maxCourse)
+            console.log(currentTeaching.length + 1 > maxCourse)
+            if(currentTeaching.length + 1 > maxCourse){
+               window.alert("This teacher is at there max courses")
+               return ""
+            }
+            return "passed"
+            
+         }
+
+         async function getCoursesTeaching(userID){
+             const res = await dbUtil.getCoursesTeaching(userID)
+             if(res.err){
+                 window.alert(res.err.sqlMessage)
+                 console.log(res)
+             }
+             return res
+         }
+       
+
+        
+
         async function checkFaculty(){
             if(newRow.firstName.toLowerCase() === "tbd" || newRow.lastName.toLowerCase()==="tbd"){
                 newRow.facultyID = "TBD"
@@ -92,6 +120,7 @@ export default function AddMS(){
                    window.alert("No faculty found with that name You can add TBD to first and last name")
                    return("");
                 }else{
+                   if(await courseMaxCheck(facResult)){return("")}
                    newRow.facultyID = facResult[0].userID;
                 }
                 return facResult

@@ -1729,6 +1729,20 @@ app.post('/getStudentHistory', (req, res) =>{
     )
 })
 
+app.post('/getCoursesTeaching', (req, res) =>{
+    const userID = req.body.params.userID;
+    db.query(
+        `SELECT * FROM CourseSection where facultyID = ?`, [userID],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        }else{
+            res.send(result)
+        }
+    }
+    )
+})
+
 app.post('/checkStudentHistory', (req, res) =>{
     const userID = req.body.params.userID;
     const CRN = req.body.params.CRN;

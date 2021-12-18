@@ -158,19 +158,19 @@ export default function MasterSchedule(){
 
 
      async function addClassTeach(){
-      console.log(schedule)
-      await courseMinMaxCheck()
+      if(await courseMaxCheck()){return("")}
        const CRN = window.prompt("Enter CRN of Class you wish to add")
-      // const response = await dbUtil.addTeachClass(CRN, user.userID); 
-      // if(response.err){
-      //    window.alert("Teacher is already teaching this class")
-      // } else if(response.affectedRows === 1){
-      //    window.alert("Teacher is assigned")
-      //    window.location.reload(false);
-      // }
+      const response = await dbUtil.addTeachClass(CRN, user.userID); 
+      if(response.err){
+         window.alert("Teacher is already teaching this class")
+      } else if(response.affectedRows === 1){
+         window.alert("Teacher is assigned")
+         window.location.reload(false);
+      }
    }
 
    async function dropTeacher(row){
+      if(await courseMinCheck()){return("")}
       if(window.confirm("Are you sure you wish to delete this item?")){
          const res = await dbUtil.addTeachClass(row.CRN, "TBD");
          console.log(res)
@@ -184,13 +184,41 @@ export default function MasterSchedule(){
    
    }
 
-   async function courseMinMaxCheck(){
+   async function courseMinCheck(){
       const minMax = await dbUtil.courseMinMaxCheck(user.userID)
-      const currentTeaching = schedule.length;
+      const currentTeaching = await getCoursesTeaching(user.userID)
       const minCourse = minMax[0].minCourse;
-      const maxCourse = minMax[0].maxCourse;
+      if(currentTeaching - 1 < minCourse){
+         window.alert("This teacher is at there minimum courses")
+         return true
+      }
+      return false
       
    }
+ 
+
+   async function courseMaxCheck(){
+      const minMax = await dbUtil.courseMinMaxCheck(user.userID)
+      const currentTeaching =  await getCoursesTeaching(user.userID)
+      const maxCourse = minMax[0].maxCourse;
+
+      if(currentTeaching + 1 > maxCourse){
+         window.alert("This teacher is at there max courses")
+         return true
+      }
+      return false
+      
+   }
+
+   async function getCoursesTeaching(userID){
+      const res = await dbUtil.getCoursesTeaching(userID)
+      if(res.err){
+          window.alert(res.err.sqlMessage)
+          console.log(res)
+      }
+      return res
+  }
+
  
  
       function getSchedule(){
