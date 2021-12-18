@@ -2400,7 +2400,7 @@ app.post('/assignHold', (req, res) =>{
 app.get('/getStudentsEnrolled', (req, res) =>{
     db.query(
         `SELECT COUNT(DISTINCT studentID) FROM 
-        ENROLLMENT `,
+        Student `,
         [],
         (err, result) =>{
             if(err){
@@ -2412,6 +2412,56 @@ app.get('/getStudentsEnrolled', (req, res) =>{
         }
     )
 })
+app.get('/getUndergradStudents', (req, res) =>{
+    db.query(
+        `SELECT COUNT(DISTINCT studentID) FROM 
+        Undergraduate`,
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.get('/getGradStudents', (req, res) =>{
+    db.query(
+        `SELECT COUNT(DISTINCT studentID) FROM 
+        Graduate`,
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.get('/getGrades', (req, res) =>{
+    db.query(
+        `SELECT grade FROM StudentHistory
+        UNION ALL
+        SELECT grade FROM Enrollment;
+        `,
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
 
 
 app.listen(port, () => {
