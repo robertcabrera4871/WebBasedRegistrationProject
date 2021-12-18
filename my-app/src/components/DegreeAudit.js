@@ -21,10 +21,8 @@ export default function DegreeAudit(){
     useEffect(() => {
         getMyMajors();
         getMyMinors();
-        getMajorRequirements();
-        getMinorRequirements();
     }, [])
-
+        
     var user = decryptUser();
     if(history.location.state !== undefined){
         user.userID = history.location.state
@@ -32,19 +30,31 @@ export default function DegreeAudit(){
    
     async function getMyMajors(){
         const response = await dbUtil.getMyMajors(user.userID)
+        await getMajorRequirements(response)
         setMyMajors(response)
     }
     async function getMyMinors(){
         const res = await dbUtil.getMyMinors(user.userID)
+        await getMinorRequirements(res)
         setMyMinors(res)
     }
-    async function getMinorRequirements() {
-        const res = await dbUtil.myMinorRequirements(user.userID)
-        setMinorRequire(res)
+    async function getMinorRequirements(minors) {
+        const requirements = [];
+        for(const minor in minors){
+           const reqs = await dbUtil.myMinorRequirements(user.userID, minors[minor].minorID)
+            for(const req in reqs)
+            requirements.push(reqs[req])
+        }
+        setMinorRequire(requirements)
     }
-    async function getMajorRequirements() {
-        const res = await dbUtil.myMajorRequirements(user.userID)
-        setMajorRequire(res)
+    async function getMajorRequirements(majors) {
+        const requirements = [];
+        for(const major in majors){
+           const reqs = await dbUtil.myMajorRequirements(user.userID, majors[major].majorID)
+            for(const req in reqs)
+            requirements.push(reqs[req])
+        }
+        setMajorRequire(requirements)
     }
     
 

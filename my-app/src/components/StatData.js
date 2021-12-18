@@ -1,7 +1,7 @@
 import Card from 'react-bootstrap/Card'
 import { useEffect, useState } from 'react';
 import dbUtil from '../utilities/dbUtil';
-import {Doughnut} from 'react-chartjs-2'
+import { Chart, Doughnut } from 'react-chartjs-2';
 
 
 export default function StatData(){
@@ -9,8 +9,8 @@ export default function StatData(){
     const [studentEnrollment, setStudentEnrollment] = useState("")
     const [underGradStudent, setUndergradStudent] = useState("")
     const [gradStudents, setGradStudent]= useState("");
-    const [avgGrade, setAvgGrad] = useState("")
     const [courses, setCourses] = useState("")
+    const [chart, setChart] = useState([])
 
     useEffect(() => {
         generatestudentEnrollment();
@@ -56,6 +56,15 @@ export default function StatData(){
                 window.alert(res.err.sqlMessage)
             }
         console.log(res)  
+
+        // let doughnut = {
+        //     labels = ['A', 'B', 'C', 'D', 'F', 'IP'],
+        //     dataSets: [
+
+        //     ]
+        // }
+
+
        }
        async function generatecourses(){
 
@@ -81,11 +90,6 @@ export default function StatData(){
         <Card border="success" className='align-center topSpace'>
             <Card.Header>Gradate Student</Card.Header>
             <Card.Body>{gradStudents}</Card.Body>
-            <Card.Text></Card.Text>
-        </Card>
-        <Card border="success" className='align-center topSpace'>
-            <Card.Header>Average Grade</Card.Header>
-            <Card.Body></Card.Body>
             <Card.Text></Card.Text>
         </Card>
         <Card border="success" className='align-center topSpace'>

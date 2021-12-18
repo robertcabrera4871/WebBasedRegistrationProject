@@ -6,7 +6,7 @@ import dbUtil from "../../utilities/dbUtil";
 
 export default function ReqTable({major, minor, requirements}) {
 
-    const grades = ['A', 'B', 'C', 'D', 'E', 'F', 'IP'];
+    const grades = ['A', 'B', 'C', 'D', 'F', 'IP'];
 
 
     const privs = checkPrivs();

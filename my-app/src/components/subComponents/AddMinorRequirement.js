@@ -10,6 +10,9 @@ export default function AddMinorRequirement(minorInfo){
     let history = useHistory();
     const minor = minorInfo.location.state;
 
+    const grades = ['A', 'B', 'C', 'D', 'E', 'IP'];
+
+
     const newReq = {
         courseID: '',
         minCourseGrade: ''
@@ -17,6 +20,10 @@ export default function AddMinorRequirement(minorInfo){
 
     async function submitChanges(e){
         e.preventDefault();
+        if(!grades.includes(newReq.minCourseGrade)){
+            window.alert(`Valid entries are ${grades}`)
+            return("")
+        }
         if (await checkBlanks() === "" ){return("")}
         await addMinReq();
         

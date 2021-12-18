@@ -1475,15 +1475,16 @@ app.get('/majorRequirements',  (req, res) =>{
 })
 app.post('/myMinorRequirements',  (req, res) =>{
     const userID = req.body.params.userID
+    const minorID = req.body.params.minorID
     db.query(
         `SELECT * FROM MinorRequirements r
-        WHERE r.courseID NOT IN(
+        WHERE r.minorID = ? AND r.courseID NOT IN(
         SELECT c.courseID  FROM StudentHistory h
         JOIN Enrollment e
         ON h.studentID = ? OR e.studentID = ?
         JOIN CourseSection c 
         ON h.CRN = c.CRN);`,
-        [userID, userID],
+        [minorID, userID, userID],
         (err, result) =>{
             if(err){
                 res.send({err: err})
@@ -1496,15 +1497,17 @@ app.post('/myMinorRequirements',  (req, res) =>{
 })
 app.post('/myMajorRequirements',  (req, res) =>{
     const userID = req.body.params.userID
+    const majorID = req.body.params.majorID
     db.query(
         `SELECT * FROM MajorRequirements r
-        WHERE r.courseID NOT IN(
+        WHERE  r.majorID = ? AND r.courseID NOT IN(
         SELECT c.courseID  FROM StudentHistory h
         JOIN Enrollment e
-        ON h.studentID = 's' OR e.studentID = 's'
+        ON h.studentID = ? OR e.studentID = ?
         JOIN CourseSection c 
-        ON h.CRN = c.CRN)`,
-        [userID, userID],
+        ON h.CRN = c.CRN)
+        `,
+        [majorID, userID, userID],
         (err, result) =>{
             if(err){
                 res.send({err: err})
@@ -1787,7 +1790,7 @@ app.post('/getStudentHistory', (req, res) =>{
         FROM StudentHistory s
         JOIN CourseSection c
         ON s.CRN = c.CRN
-        WHERE s.studentID = 'u';`, [userID],
+        WHERE s.studentID = ?`, [userID],
     (err, result) =>{
         if(err){
             res.send({err: err})
@@ -2032,7 +2035,7 @@ app.post('/addTeachClass', (req, res) => {
 app.get('/getGradCourses', (req,res) =>{
 
     db.query(
-        `SELECT DISTINC cs.courseID, c.departmentID, c.numOfCredits
+        `SELECT DISTINCT cs.courseID, c.departmentID, c.numOfCredits
         FROM CourseSection cs
         JOIN Course c
         ON cs.courseID = c.courseID

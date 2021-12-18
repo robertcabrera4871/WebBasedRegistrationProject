@@ -15,7 +15,7 @@ import globalDate from '../../utilities/globalDate';
     var user = decryptUser();
     let privs = checkPrivs();
 
-    const grades = ['A', 'B', 'C', 'D', 'E', 'F', 'IP'];
+    const grades = ['A', 'B', 'C', 'D', 'F', 'IP'];
 
 
     useEffect(() =>{
@@ -43,6 +43,7 @@ import globalDate from '../../utilities/globalDate';
            window.alert(`Valid entries are ${grades}`)
            return("")
        }
+       
        const response = await dbUtil.assignGrade(row.studentID, newGrade);
        if(response.affectedRows === 1){
            window.location.reload(false)

@@ -13,7 +13,7 @@ export default function AddTranscript(adminAccess){
 
 var adminUser = adminAccess.location.state
 let history = useHistory();
-const grades = ['A', 'B', 'C', 'D', 'E', 'F', 'IP'];
+const grades = ['A', 'B', 'C', 'D', 'F', 'IP'];
 let privs = checkPrivs();
 
 

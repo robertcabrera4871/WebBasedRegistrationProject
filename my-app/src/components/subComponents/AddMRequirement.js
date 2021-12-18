@@ -11,7 +11,7 @@ export default function AddMRequirement(majorInfo){
     let history = useHistory();
     
     const major = majorInfo.location.state;
-    const grades = ['A', 'B', 'C', 'D', 'E', 'F', 'IP'];
+    const grades = ['A', 'B', 'C', 'D', 'F', 'IP'];
 
 
     console.log(major)

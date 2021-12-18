@@ -880,18 +880,20 @@ static async getSpringCal(){
         return majorRequireResponse.data      
       }
 
-      static async myMajorRequirements(userID){
+      static async myMajorRequirements(userID, majorID){
         const majorsResponse = await Axios.post("http://localhost:8000/myMajorRequirements",{
           params: {
-            userID: userID
+            userID: userID,
+            majorID:majorID
           }
         })
         return majorsResponse.data      
       }
-      static async myMinorRequirements(userID){
+      static async myMinorRequirements(userID, minorID){
         const majorRequireResponse = await Axios.post("http://localhost:8000/myMinorRequirements",{
           params: {
-            userID: userID
+            userID: userID,
+            minorID: minorID
           }
         })
         return majorRequireResponse.data      

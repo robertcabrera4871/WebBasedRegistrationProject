@@ -18,10 +18,14 @@ export default function GradCatalog(){
         getGradCatalog();
     }, [])
 
-    function getGradCatalog(){
-        dbUtil.getGradCourses().then(data =>{
-            setGradCourse(data)
-        })
+   async function getGradCatalog(){
+        const res = await dbUtil.getGradCourses()
+        console.log(res)
+            if(res.err){
+              window.alert(res.err.sqlMessage)
+              return("")
+            }
+            setGradCourse(res)
     }
     function editCourse(row){
       history.push({
