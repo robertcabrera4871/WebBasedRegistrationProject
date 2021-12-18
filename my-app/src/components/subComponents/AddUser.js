@@ -51,7 +51,6 @@ export default function AddUser(chosenType){
 
     async function submitChanges(e){
         e.preventDefault();
-        console.log(newRow)
         await trimWhiteSpace();
 
         switch(userChosen){
@@ -97,7 +96,6 @@ export default function AddUser(chosenType){
 
     async function handleUndergrad(){
         var fullRes = ""
-        console.log(newRow.yearLevel)
         if(!yearLevels.includes(newRow.yearLevel.toLowerCase())){window.alert(`Valid year level: ${yearLevels}`); return("")}
         if(await checkBlanksUndergrad()){return("")}
         const checkTime = await checkFullOrPart();

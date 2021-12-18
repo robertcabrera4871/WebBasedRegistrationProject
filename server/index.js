@@ -107,7 +107,7 @@ app.put('/createFullUndergrad', (req, res) =>{
     const params = req.body.params;
     db.query(
         `INSERT INTO UndergradFulltime VALUES(?,?,?)`,
-        [params.studentID, params.minCourse, params.maxCredit],
+        [params.studentID, params.minCredit, params.maxCredit],
         (err, result) => {
             if(err){
                 res.send({err: err})
@@ -2396,6 +2396,24 @@ app.post('/assignHold', (req, res) =>{
     }
     )
 })
+
+app.get('/getStudentsEnrolled', (req, res) =>{
+    db.query(
+        `SELECT COUNT(DISTINCT studentID) FROM 
+        ENROLLMENT `,
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}.`)
 });

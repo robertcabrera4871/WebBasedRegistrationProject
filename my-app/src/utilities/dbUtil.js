@@ -1026,6 +1026,7 @@ static async getSpringCal(){
   }
 
     static async createFullUndergrad(student){
+      console.log(student.minCredit)
       const response = await Axios.put("http://localhost:8000/createFullUndergrad",{
         params: {
           studentID: student.userID,
@@ -1316,6 +1317,11 @@ static async getSpringCal(){
           day: day
         }
       })
+      return getResponse.data
+    }
+
+    static async getStudentsEnrolled(){
+      const getResponse = await Axios.get("http://localhost:8000/getStudentsEnrolled")
       return getResponse.data
     }
 

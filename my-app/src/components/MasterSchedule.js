@@ -50,7 +50,7 @@ export default function MasterSchedule(){
       
 
       if(!privs.isAdmin){
-         if(await yearLevelCheck()){return("")}
+         if(await yearLevelCheck(student)){return("")}
          if(await addClassTimeCheck()){return("")}}
 
         const response = await dbUtil.addMyClass(row.CRN, user.userID); 
@@ -79,8 +79,8 @@ export default function MasterSchedule(){
              return true
          }
          return false
-        }
-      return true
+        } 
+        return false
       }
 
       
@@ -139,6 +139,7 @@ export default function MasterSchedule(){
      }
 
      async function yearLevelCheck(res){
+        console.log(res[0].studentType)
       if(res[0].studentType === 'Grad Student'){
          return false
       } 

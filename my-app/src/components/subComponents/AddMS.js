@@ -82,12 +82,29 @@ export default function AddMS(){
              }
         }
 
+        async function checkFaculty(){
+            if(newRow.firstName.toLowerCase() === "tbd" || newRow.lastName.toLowerCase()==="tbd"){
+                newRow.facultyID = "TBD"
+                return("changed")
+            }
+            const facResult = await dbUtil.getFacultyID(newRow.firstName, newRow.lastName);
+            if(facResult.err){
+                    window.alert(facResult.err.sqlMessage)
+                }else if(facResult.length !== 1){
+                   window.alert("No faculty found with that name You can add TBD to first and last name")
+                   return("");
+                }else{
+                   const res = await courseMaxCheck(facResult)
+                   newRow.facultyID = facResult[0].userID;
+                   return res
+                }
+                return facResult
+        }
+
         async function courseMaxCheck(fac){
             const minMax = await dbUtil.courseMinMaxCheck(fac[0].userID)
             const currentTeaching = await getCoursesTeaching(fac[0].userID)
             const maxCourse = minMax[0].maxCourse;
-            console.log(currentTeaching.length, maxCourse)
-            console.log(currentTeaching.length + 1 > maxCourse)
             if(currentTeaching.length + 1 > maxCourse){
                window.alert("This teacher is at there max courses")
                return ""
@@ -108,23 +125,7 @@ export default function AddMS(){
 
         
 
-        async function checkFaculty(){
-            if(newRow.firstName.toLowerCase() === "tbd" || newRow.lastName.toLowerCase()==="tbd"){
-                newRow.facultyID = "TBD"
-                return("changed")
-            }
-            const facResult = await dbUtil.getFacultyID(newRow.firstName, newRow.lastName);
-            if(facResult.err){
-                    window.alert(facResult.err.sqlMessage)
-                }else if(facResult.length !== 1){
-                   window.alert("No faculty found with that name You can add TBD to first and last name")
-                   return("");
-                }else{
-                   if(await courseMaxCheck(facResult)){return("")}
-                   newRow.facultyID = facResult[0].userID;
-                }
-                return facResult
-        }
+    
 
         async function checkTimeSlotID(){
             const timeSlotResult = await dbUtil.getTimeSlotID(newRow.startTime, newRow.endTime, newRow.day);
