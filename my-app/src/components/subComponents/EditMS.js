@@ -118,11 +118,11 @@ export default function EditMS(rowData){
             <Form.Label>RoomNumber</Form.Label>
             <Form.Control onChange={e => rowChanges.roomID = e.target.value} placeholder={row.roomID}></Form.Control>
             <Form.Label>ProfLastName</Form.Label>
-            <Form.Control onChange={e => rowChanges.lastName = e.target.value} placeholder={row.lastName}></Form.Control>
+            <Form.Control disabled={true} placeholder={row.lastName}></Form.Control>
             <Form.Label>ProfFirstName</Form.Label>
-            <Form.Control onChange={e => rowChanges.firstName = e.target.value} placeholder={row.firstName}></Form.Control>
+            <Form.Control disabled={true} placeholder={row.firstName}></Form.Control>
             <Form.Label>Seats</Form.Label>
-            <Form.Control disabled={true} onChange={e => rowChanges.availableSeats = e.target.value} placeholder={row.availableSeats}></Form.Control>
+            <Form.Control disabled={true} placeholder={row.availableSeats}></Form.Control>
             <Form.Label>Capacity</Form.Label>
             <Form.Control onChange={e => rowChanges.capacity = e.target.value} placeholder={row.capacity}></Form.Control>
             </Col>

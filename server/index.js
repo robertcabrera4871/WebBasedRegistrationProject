@@ -847,7 +847,7 @@ app.post('/checkAnyEnrollment' , (req, res) => {
     const CRN = req.body.params.CRN
     db.query(
         "SELECT * FROM Enrollment WHERE CRN = ?",
-        [CRN],
+        [ CRN],
         (err, result) =>{
            if(err){
                res.send({err: err})
@@ -1863,6 +1863,26 @@ app.post('/creditCheck', (req, res) => {
         SELECT studentID, minCredit, maxCredit FROM UndergradPartTime
         WHERE studentID = ?`,
         [studentID, studentID, studentID, studentID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.post('/courseMinMaxCheck', (req, res) => {
+    const userID = req.body.params.userID;
+
+    db.query(
+        `SELECT minCourse, maxCourse FROM FullTimeFac
+        WHERE facultyID = ?
+        UNION
+        SELECT minCourse, maxCourse FROM PartTimeFac
+        WHERE facultyID = ?`,
+        [userID, userID],
         (err, result) =>{
             if(err){
                 res.send({err: err})

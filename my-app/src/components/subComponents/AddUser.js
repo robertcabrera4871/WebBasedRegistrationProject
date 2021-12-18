@@ -190,13 +190,18 @@ export default function AddUser(chosenType){
 
     async function reverseChanges(){
         const response = await dbUtil.deleteUser(newRow.userID)
-        console.log("User deleted")
+        if(response.err){
+            window.alert(response.err.sqlMesssage)
+            console.log(response)
+        }else if(!response.err){
+            console.log("User deleted")
+        }
         return("")
     }
     async function checkFullOrPartFac(){
         if(newRow.rank === 'other'){
             newRow.minCourse = 0
-            newRow.maxCourse = 0
+            newRow.maxCourse = 99999
             return "other"
         }
 

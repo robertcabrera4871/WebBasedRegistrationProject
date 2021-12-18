@@ -87,7 +87,7 @@ export default function MasterSchedule(){
       const newClassCred = row.numOfCredits
       const currentCreds = credTaking[0]?.numOfCredits
       if(currentCreds + newClassCred > maxCredit){
-         window.alert("You are taking too many credits")
+         window.alert("You are taking too more than your maximum credits")
          return(true)
       }
       return(false)      
@@ -148,7 +148,9 @@ export default function MasterSchedule(){
             window.alert("Cannot register: Undergrad to Grad")
             return true
          }else if(res[0].studentType === 'Grad Student' && row.CRN.charAt(0) === '2'){
-            window.alert("Cannot register: Grad to Undergrad")
+            if(window.confirm("You are a Graduate registering for an Undergrad, are you sure you wish to add?")){
+               return false
+            }
             return true
          }
          return false
@@ -156,14 +158,38 @@ export default function MasterSchedule(){
 
 
      async function addClassTeach(){
+      console.log(schedule)
+      await courseMinMaxCheck()
        const CRN = window.prompt("Enter CRN of Class you wish to add")
-      const response = await dbUtil.addTeachClass(CRN, user.userID); 
-      if(response.err){
-         window.alert("Teacher is already teaching this class")
-      } else if(response.affectedRows === 1){
-         window.alert("Teacher is assigned")
-         window.location.reload(false);
+      // const response = await dbUtil.addTeachClass(CRN, user.userID); 
+      // if(response.err){
+      //    window.alert("Teacher is already teaching this class")
+      // } else if(response.affectedRows === 1){
+      //    window.alert("Teacher is assigned")
+      //    window.location.reload(false);
+      // }
+   }
+
+   async function dropTeacher(row){
+      if(window.confirm("Are you sure you wish to delete this item?")){
+         const res = await dbUtil.addTeachClass(row.CRN, "TBD");
+         console.log(res)
+         if(res.err){
+            window.alert(res.err.sqlMessage)
+            return("")
+         }
+         window.alert("Teacher Dropped")
+         window.location.reload(false)
       }
+   
+   }
+
+   async function courseMinMaxCheck(){
+      const minMax = await dbUtil.courseMinMaxCheck(user.userID)
+      const currentTeaching = schedule.length;
+      const minCourse = minMax[0].minCourse;
+      const maxCourse = minMax[0].maxCourse;
+      
    }
  
  
@@ -362,8 +388,9 @@ export default function MasterSchedule(){
                       { 
                         id: "addClassTeach",
                         Cell: ({cell}) => (
-                           <div>
-                              <button title="Class List" onClick={() =>redirectClassList(cell.row.original)}>📋</button>
+                           <div id='parent'>
+                              {privs.isAdmin && <button onClick={() => {dropTeacher(cell.row.original)}} className="child" title="Drop Teacher">❌</button>}
+                              <button className="child" title="Class List" onClick={() =>redirectClassList(cell.row.original)}>📋</button>
                            </div>
                         )
                      },

@@ -654,6 +654,14 @@ static async getSpringCal(){
         })
         return response.data;
       }
+      static async courseMinMaxCheck(userID){
+        const response = await Axios.post("http://localhost:8000/courseMinMaxCheck", {
+          params: {
+            userID: userID
+          }
+        })
+        return response.data;
+      }
       static async getCreditsTaking(studentID){
         const response = await Axios.post("http://localhost:8000/getCreditsTaking", {
           params: {
