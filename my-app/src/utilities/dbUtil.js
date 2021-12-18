@@ -253,6 +253,14 @@ import Axios from 'axios';
       })
       return response.data
     }
+    static async checkAnyEnrollment(CRN){
+      const response = await Axios.post("http://localhost:8000/checkAnyEnrollment", {
+        params: {
+          CRN: CRN
+        }
+      })
+      return response.data
+    }
     static async updateEnroll(row, oldCRN){
       const response = await Axios.put("http://localhost:8000/updateEnroll", {
         params: {
@@ -607,6 +615,15 @@ static async getSpringCal(){
         const userSchedResponse = await Axios.post("http://localhost:8000/getStudentHistory", {
           params: {
             userID: userID
+          }
+        })
+        return userSchedResponse.data
+      }
+      static async checkStudentHistory(userID, CRN){
+        const userSchedResponse = await Axios.post("http://localhost:8000/checkStudentHistory", {
+          params: {
+            userID: userID,
+            CRN: CRN
           }
         })
         return userSchedResponse.data

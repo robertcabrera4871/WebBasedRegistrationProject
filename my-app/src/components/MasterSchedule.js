@@ -40,6 +40,7 @@ export default function MasterSchedule(){
      
      async function addClassStudent(row){
       const student = await dbUtil.getStudent(user.userID)
+      if(await checkAlreadyComplete(row.CRN, user.userID)){window.alert("You have already taken this class"); return("")}
       if(row.availableSeats === 0){window.alert("Class is full"); return("")}
       if(await checkGradUndergrad(row, student)){return("")}  
       if(await yearLevelCheck(student)){return("")}
@@ -63,6 +64,20 @@ export default function MasterSchedule(){
             window.location.reload(false)
            }
         }
+     }
+
+     async function checkAlreadyComplete(CRN, userID){
+        const res = await dbUtil.checkStudentHistory(userID, CRN)
+        console.log(CRN)
+        console.log(res)
+        if(res.err){
+           window.alert(res.err.sqlMessage)
+           console.log(res)
+           return true
+        }else if(res.length !== 0 ){
+           return true
+        }
+        return false
      }
 
      async function creditCheck(row, student){

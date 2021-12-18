@@ -27,8 +27,11 @@ export default function FacHistory(){
         const res = await dbUtil.getFacultyHistory(user.userID);
         if(!res.err){
             setFacHistory(res)
+        }else if(res.err){
+          window.alert(res.err.sqlMessage)
+          console.log(res)
+
         }
-        console.log(res)
 
     }
 

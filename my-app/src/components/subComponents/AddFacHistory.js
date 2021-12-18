@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button'
 
 export default function AddFacHistory(){
     let history = useHistory();
-
+    
     const newRow = {
         CRN	: "",
         facultyID: history.location.state,
@@ -15,6 +15,7 @@ export default function AddFacHistory(){
     async function submitChanges(e){
         e.preventDefault();
         if(await checkCRNsemester()){return("")}
+        if(await checkEnrollment()){return("")}
         const res = await dbUtil.addFacHistory(newRow)
         if(!res.err){
             history.goBack()
@@ -22,6 +23,19 @@ export default function AddFacHistory(){
             window.alert(res.err.sqlMessage)
         }
         console.log(res)
+     }
+
+     async function checkEnrollment(){
+        const res = await dbUtil.checkAnyEnrollment(newRow.CRN)
+        if(res.err){
+            window.alert(res.err.sqlMessage)
+            console.log(res)
+            return true
+        } else if(res.length !== 0){
+            window.alert("There are students enrolled in this class still. Move them over to Transcript to continue")
+            return true      
+        }
+        return false
      }
 
      async function checkCRNsemester(){

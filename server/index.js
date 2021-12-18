@@ -843,6 +843,22 @@ app.post('/plusAvailableSeats', (req, res) =>{
     )
 })
 
+app.post('/checkAnyEnrollment' , (req, res) => {
+    const CRN = req.body.params.CRN
+    db.query(
+        "SELECT * FROM Enrollment WHERE CRN = ?",
+        [CRN],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+       }
+    )
+})
+
  app.put('/deleteCourse', (req, res) => {
      const courseID = req.body.params.courseID
      db.query(
@@ -1703,6 +1719,21 @@ app.post('/getStudentHistory', (req, res) =>{
     const userID = req.body.params.userID;
     db.query(
         `SELECT * FROM StudentHistory where studentID = ?`, [userID],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        }else{
+            res.send(result)
+        }
+    }
+    )
+})
+
+app.post('/checkStudentHistory', (req, res) =>{
+    const userID = req.body.params.userID;
+    const CRN = req.body.params.CRN;
+    db.query(
+        `SELECT * FROM StudentHistory WHERE studentID = ? AND CRN = ?`, [userID, CRN],
     (err, result) =>{
         if(err){
             res.send({err: err})

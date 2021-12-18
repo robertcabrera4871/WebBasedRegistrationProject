@@ -43,6 +43,11 @@ const newRow = {
                        if(await addHistory()){window.alert("Insertion to Student History Failed"); return("") }
                        history.goBack();
                     }
+                }else{
+                    if(await deleteAttendance()){window.alert("Deltetion from Attendance Failed"); return("")}
+                    if(await deleteEnroll(newRow.CRN, adminUser)){return("")}
+                    if(await addHistory()){window.alert("Insertion to Student History Failed"); return("") }
+                    history.goBack();
                 }
         
             }
@@ -73,7 +78,6 @@ const newRow = {
             window.alert("Incorrect semestear year ID for that CRN")
             return true
         }   
-        console.log(check)
         return false
     }
 
@@ -81,6 +85,7 @@ const newRow = {
         const res = await dbUtil.deleteAttendenceByID(adminUser)
         if(res.err){
             window.alert(res.err.sqlMessage)
+            console.log(res)
             return true
         }
         return false
@@ -90,6 +95,7 @@ const newRow = {
         const res = await dbUtil.addStudentHistory(newRow)
         if(res.err){
             window.alert(res.err.sqlMessage)
+            console.log(res)
             return true
         }
         return false
