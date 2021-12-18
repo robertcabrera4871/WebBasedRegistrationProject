@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import decryptUser from "../utilities/decryptUser";
 import Transcript from "./Transcript";
 import { useHistory } from "react-router-dom";
+import ListGroup from 'react-bootstrap/ListGroup'
+
+import Dropdown from 'react-bootstrap/Dropdown'
 
 
 export default function DegreeAudit(){
@@ -43,33 +46,28 @@ export default function DegreeAudit(){
         const res = await dbUtil.myMajorRequirements(user.userID)
         setMajorRequire(res)
     }
-
-    // console.log(majorRequire, "MR")
-    // console.log(minorRequire , "NR")
-    // console.log(myMajors, "MM")
-    // console.log(myMinors, "MX")
-
+    
 
     let majorsList = myMajors.map((major, index) => {
         return(
         
-        <div key={index}>{major.majorID}</div>
+        <ListGroup.Item  variant="primary" className="align-center text-align"  key={index}>{major.majorID}</ListGroup.Item>
         )
     })
     let minorList = myMinors.map((minor, index) => {
         return(
-        <div key={index}>{minor.minorID}</div>
+        <ListGroup.Item variant="info" className="align-center text-align"  key={index}>{minor.minorID}</ListGroup.Item>
         )
     })
 
      let requiredCourseMajor = majorRequire.map((course, index) => {
         return(
-        <h4 className="align-center" key={index}>- {course.courseID}</h4>
+        <ListGroup.Item  variant="danger" className="align-center text-align" key={index}>{course.courseID}</ListGroup.Item >
         )
     })
     let requiredCourseMinor = minorRequire.map((course, index) => {
         return(
-        <h4 key={index}>- {course.courseID}</h4>
+        <ListGroup.Item variant="warning" className="align-center text-align" key={index}>{course.courseID}</ListGroup.Item >
         )
     })
     return(
@@ -77,13 +75,20 @@ export default function DegreeAudit(){
     <h1 className="text-align">Degree Audit 🎓</h1>
     <Transcript/>
     <Schedule/>
-    <h1 className="text-align">Courses Needed</h1>
-    <h3 >Majors Enrolled</h3>
+    <h2 className="text-align">Majors Enrolled:</h2>
+    <ListGroup>
     {majorsList}
-    <h3 >Minors Enrolled</h3>
+    </ListGroup>
+    <h2 className="text-align">Minors Enrolled:</h2>
+    <ListGroup>
     {minorList}
+    </ListGroup>
+    <h3 className="text-align">Courses Needed</h3>
+    <ListGroup>
     {requiredCourseMajor}
     {requiredCourseMinor}
+    </ListGroup>
+
     </div>
     );
 }

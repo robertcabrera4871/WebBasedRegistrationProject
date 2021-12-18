@@ -519,6 +519,25 @@ static async getSpringCal(){
       return addResponse.data
     }
 
+    static async addPreReq(newCourse){
+      const addResponse = await Axios.put("http://localhost:8000/addPreReq", {
+        params: {
+          newCourse: newCourse
+        }
+      })
+      return addResponse.data
+    }
+
+    static async checkReveseReq(newCourse){
+      const addResponse = await Axios.post("http://localhost:8000/checkReveseReq", {
+        params: {
+          newCourse: newCourse
+        }
+      })
+      return addResponse.data
+    }
+    
+
       static async deleteMS(row){
         const deleteResponse = await Axios.put("http://localhost:8000/deleteMS", {
           params: {
@@ -637,6 +656,27 @@ static async getSpringCal(){
         })
         return userSchedResponse.data
       }
+
+      static async checkDoubleCourse(courseID, userID){
+        const userSchedResponse = await Axios.post("http://localhost:8000/checkDoubleCourse", {
+          params: {
+            userID: userID,
+            courseID: courseID
+          }
+        })
+        return userSchedResponse.data
+      }
+
+      static async checkPreReq(courseID, userID){
+        const userSchedResponse = await Axios.post("http://localhost:8000/checkPreReq", {
+          params: {
+            userID: userID,
+            courseID: courseID
+          }
+        })
+        return userSchedResponse.data
+      }
+
       static async addStudentHistory(newRow){
         const userSchedResponse = await Axios.post("http://localhost:8000/addStudentHistory", {
           params: {
@@ -935,6 +975,29 @@ static async getSpringCal(){
         const courseResponse = await Axios.get("http://localhost:8000/courses")
         return courseResponse.data
       }
+
+         static async getPrereqs(){
+        const courseResponse = await Axios.get("http://localhost:8000/getPrereqs")
+        return courseResponse.data
+      }
+
+      static async getPrereqByID(courseID){
+        const courseResponse = await Axios.post("http://localhost:8000/getPrereqByID",{
+          params:{
+            courseID: courseID
+          }
+        })
+        return courseResponse.data
+      }
+
+      static async deletePrereq(courseID){
+        const courseResponse = await Axios.post("http://localhost:8000/deletePrereq",{
+          params:{
+            courseID: courseID
+          }
+        })
+        return courseResponse.data
+      }
       static async getHolds(userID){
         const holdResponse = await Axios.post("http://localhost:8000/getHolds", {
         params: {
@@ -1120,9 +1183,9 @@ static async getSpringCal(){
       params: {
         userType: user.userType,
         userID: user.userID,
-
       }
       })
+      return response.data
     }
 
     static async getGradCourses(){
@@ -1135,6 +1198,7 @@ static async getSpringCal(){
     }
      
      
+
     static async dropMyMajor(majorID, userID){
       const dropResponse = await Axios.put("http://localhost:8000/dropMyMajor", {
         params: {
@@ -1164,6 +1228,18 @@ static async getSpringCal(){
       })
       return response.data
     }
+
+    
+    static async changeNumOfCredits(courseID, numOfCredits){
+      const response = await Axios.post("http://localhost:8000/changeNumOfCredits",{
+        params: {
+          courseID: courseID,
+          numOfCredits: numOfCredits
+        }
+      })
+      return response.data
+    }
+
 
   
     static async dropAllClasses(userID){

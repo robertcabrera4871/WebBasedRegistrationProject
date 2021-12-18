@@ -6,9 +6,8 @@ import dbUtil from "../../utilities/dbUtil";
 
 export default function ReqTable({major, minor, requirements}) {
 
-    function clicked(row){
-      console.log(row)
-    }
+    const grades = ['A', 'B', 'C', 'D', 'E', 'F', 'IP'];
+
 
     const privs = checkPrivs();
 
@@ -29,23 +28,42 @@ export default function ReqTable({major, minor, requirements}) {
       }
 
     }
+    async function displayPreReq(row){
+      const res = await dbUtil.getPrereqByID(row.courseID)
+      if(res.err){
+          window.alert(res.err.sqlMessage)
+      }else if(res.length === 0){
+          window.alert("There are no prereqs for this course")
+      }else{
+          window.alert(res[0].prereqCourseID)
+      }
+}
+
 
     const columns = React.useMemo( () =>[
       {
         accessor: 'Actions',
         width: 100,
         Cell: ({cell}) => (
-          <div>
-          <button onClick={() => {
+          <div id="parent">
+          <button className="child" onClick={() => {
            if (window.confirm('Are you sure you wish to delete this item?')) 
            {
              if(major){deleteMajorReq(cell.row.original)}
              else if(minor){deleteMinorReq(cell.row.original)}
            }}
             }>❌</button>
-          </div>
+            </div>
         )
       },
+      {
+        accessor: 'PreReq',
+        Cell: ({cell}) => (
+            <div className='bigDivider'>
+            <button title="View Prereqs" onClick={() => displayPreReq(cell.row.original)}>↪️</button>
+            </div>
+        )
+    },
     {
         Header: "Course Name",
         accessor: "courseID"
@@ -56,7 +74,6 @@ export default function ReqTable({major, minor, requirements}) {
      },
     ], []);
     
-    console.log(major)
     
     major ? requirements = requirements.filter(item => (item.majorID === major)):
     requirements = requirements.filter(item => (item.minorID === minor));

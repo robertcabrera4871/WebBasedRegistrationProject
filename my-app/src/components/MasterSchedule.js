@@ -40,6 +40,8 @@ export default function MasterSchedule(){
      
      async function addClassStudent(row){
       const student = await dbUtil.getStudent(user.userID)
+      if(await checkPreReq(row.courseID, user.userID)){window.alert("You have not completed the prerequisite"); return("")}
+      if(await checkDoubleCourse(row.courseID, user.userID)){window.alert("You have already enrolled in this course"); return("")}
       if(await checkAlreadyComplete(row.CRN, user.userID)){window.alert("You have already taken this class"); return("")}
       if(row.availableSeats === 0){window.alert("Class is full"); return("")}
       if(await checkGradUndergrad(row, student)){return("")}  
@@ -66,10 +68,47 @@ export default function MasterSchedule(){
         }
      }
 
+     async function checkPreReq(courseID, userID){
+      const prereq = await getPrereqByID(courseID);
+      if(prereq !== undefined){
+         const res = await dbUtil.checkPreReq(prereq, userID)
+         if(res.err){
+            window.alert(res.err.sqlMessage)
+            return true
+         }else if(res.length === 0){
+             return true
+         }
+         return false
+        }
+      return true
+      }
+
+      
+
+     
+
+     async function getPrereqByID(courseID){
+      const res = await dbUtil.getPrereqByID(courseID)
+      if(res.err){
+          window.alert(res.err.sqlMessage)
+          console.log(res.err)
+      }
+      return(res[0]?.prereqCourseID)
+}
+
+     async function checkDoubleCourse(courseID, userID){
+        const res = await dbUtil.checkDoubleCourse(courseID, userID)
+        if(res.err){
+           window.alert(res.err.sqlMessage)
+           return true
+        }else if(res.length !== 0){
+            return true
+        }
+        return false
+     }
+
      async function checkAlreadyComplete(CRN, userID){
         const res = await dbUtil.checkStudentHistory(userID, CRN)
-        console.log(CRN)
-        console.log(res)
         if(res.err){
            window.alert(res.err.sqlMessage)
            console.log(res)

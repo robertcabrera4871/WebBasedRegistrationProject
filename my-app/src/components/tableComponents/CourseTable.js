@@ -4,6 +4,7 @@ import dbUtil from "../../utilities/dbUtil";
 import Table from 'react-bootstrap/Table'
 import checkPrivs from "../../utilities/checkPrivs";
 import { useHistory } from "react-router";
+import PreReqTable from "./PreReqTable";
 
 
 export default function CourseTable() {
@@ -42,6 +43,13 @@ export default function CourseTable() {
      })
     }
 
+    async function addPrereq(row){
+        history.push({
+          pathname: '/addPreReq',
+          state: row.courseID
+        })
+    }
+
     const columns = React.useMemo( () =>[
       {
         accessor: 'Actions',
@@ -56,6 +64,8 @@ export default function CourseTable() {
               deleteCourse(cell.row.original)
            }}
             }>❌</button>
+            <div className='bigDivider'/>
+            <button onClick={()=>{addPrereq(cell.row.original)}}title="Add Prereq"> ↪️</button>
           </div>
         )
       },
@@ -127,6 +137,7 @@ export default function CourseTable() {
        })}
      </tbody>
    </Table>
+   
     <span className='align-center'>
     Page{' '}
     <strong>
@@ -134,6 +145,12 @@ export default function CourseTable() {
     </strong>
     <button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</button>
     <button onClick={() => nextPage()} disabled={!canNextPage}>Next</button>
- </span></div>
+ </span>
+ <div>
+   <PreReqTable/>
+   </div>
+ </div>
+
+
     );
 }

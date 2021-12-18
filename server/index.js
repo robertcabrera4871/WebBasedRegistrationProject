@@ -667,6 +667,21 @@ app.put('/editMS', (req, res) =>{
         }
     )
  })
+ app.post('/changeNumOfCredits', (req, res) =>{
+    const params = req.body.params
+    db.query(
+        `UPDATE Course SET numOfCredits = ? WHERE courseID = ?` ,
+        [params.numOfCredits, params.courseID],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            } else{
+                res.send(result)
+            }
+            
+        }
+    )
+ })
  app.post('/deleteUser', (req, res) => {
      const userID = req.body.params.userID;
      db.query(
@@ -1101,6 +1116,56 @@ app.post('/getLoginInfo', (req, res) => {
         }
     )
 })
+
+app.put('/addPreReq', (req, res) => {
+    const params = req.body.params.newCourse;
+    db.query(
+        "INSERT INTO Prerequisite VALUES(?,?,?)",
+        [params.courseID, params.prereqCourseID, params.gradeReq],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+        }
+    )
+})
+
+app.post('/deletePrereq', (req, res) => {
+    const courseID = req.body.params.courseID;
+    db.query(
+        "DELETE FROM Prerequisite WHERE courseID = ?",
+        [courseID],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+        }
+    )
+})
+
+
+app.post('/checkReveseReq', (req, res) => {
+    const params = req.body.params.newCourse;
+    db.query(
+        `SELECT * FROM Prerequisite WHERE (courseID = ? AND prereqCourseID = ?)
+         OR (courseID = ? AND prereqCourseID= ?)`,
+        [params.courseID,  params.prereqCourseID,  params.prereqCourseID,  params.courseID],
+        (err, result) =>{
+           if(err){
+               res.send({err: err})
+           }
+           else{
+               res.send(result)
+           }
+        }
+    )})
+
 
 app.post('/emailExist', (req, res) =>{
     var email = req.body.params.email;
@@ -1718,7 +1783,47 @@ app.post('/getUserSched', (req, res) =>{
 app.post('/getStudentHistory', (req, res) =>{
     const userID = req.body.params.userID;
     db.query(
-        `SELECT * FROM StudentHistory where studentID = ?`, [userID],
+        `SELECT c.courseID, s.CRN, s.semesterYearID, s.grade
+        FROM StudentHistory s
+        JOIN CourseSection c
+        ON s.CRN = c.CRN
+        WHERE s.studentID = 'u';`, [userID],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        }else{
+            res.send(result)
+        }
+    }
+    )
+})
+
+app.post('/checkDoubleCourse', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `SELECT * From CourseSection cs
+        JOIN Enrollment e 
+       ON cs.CRN = e.CRN
+       WHERE cs.courseID = ? AND e.studentID = ?`,
+        [params.courseID, params.userID],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        }else{
+            res.send(result)
+        }
+    }
+    )
+})
+
+app.post('/checkPreReq', (req, res) =>{
+    const params = req.body.params;
+    db.query(
+        `SELECT * From CourseSection cs
+        JOIN StudentHistory h
+       ON cs.CRN = h.CRN
+       WHERE cs.courseID = ? AND h.studentID = ?`,
+        [params.courseID, params.userID],
     (err, result) =>{
         if(err){
             res.send({err: err})
@@ -1927,7 +2032,7 @@ app.post('/addTeachClass', (req, res) => {
 app.get('/getGradCourses', (req,res) =>{
 
     db.query(
-        `SELECT cs.courseID, c.departmentID, c.numOfCredits
+        `SELECT DISTINC cs.courseID, c.departmentID, c.numOfCredits
         FROM CourseSection cs
         JOIN Course c
         ON cs.courseID = c.courseID
@@ -1945,7 +2050,7 @@ app.get('/getGradCourses', (req,res) =>{
 app.get('/getUndergradCourses', (req,res) =>{
 
     db.query(
-        `SELECT cs.courseID, c.departmentID, c.numOfCredits
+        `SELECT DISTINCT cs.courseID, c.departmentID, c.numOfCredits
         FROM CourseSection cs
         JOIN Course c
         ON cs.courseID = c.courseID
@@ -1966,6 +2071,37 @@ app.get('/courses',  (req, res) =>{
     db.query(
         'SELECT * FROM Course',
         [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
+app.get('/getPrereqs',  (req, res) =>{
+    db.query(
+        'SELECT * FROM Prerequisite',
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+app.post('/getPrereqByID',  (req, res) =>{
+    const courseID = req.body.params.courseID;
+
+    db.query(
+        'SELECT prereqCourseID FROM Prerequisite WHERE courseID = ?',
+        [courseID],
         (err, result) =>{
             if(err){
                 res.send({err: err})

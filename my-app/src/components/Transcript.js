@@ -36,6 +36,16 @@ export default function Transcript(){
             state: user.userID
          })
     }
+    async function displayPreReq(row){
+      const res = await dbUtil.getPrereqByID(row.courseID)
+      if(res.err){
+          window.alert(res.err.sqlMessage)
+      }else if(res.length === 0){
+          window.alert("There are no prereqs for this course")
+      }else{
+          window.alert(res[0].prereqCourseID)
+      }
+}
 
     async function deleteHistory(row){
       console.log(row.CRN)
@@ -54,17 +64,23 @@ export default function Transcript(){
             accessor: 'Actions',
             width: 10,
             Cell: ({cell}) => (
-              <div>
+              <div id='parent' >
               <div className='bigDivider'/>
-              <button onClick={() => {
+              <button className='child' onClick={() => {
                if (window.confirm('Are you sure you wish to delete this item?')) 
                {
                 deleteHistory(cell.row.original)
                }}
                 }>❌</button>
+                <div className='bigDivider'/>
+              <button className='child' title="View Prereqs" onClick={() => displayPreReq(cell.row.original)}>↪️</button>
               </div>
             )
           },
+        {
+          Header: "Course ID",
+          accessor: 'courseID'
+        },
         {
           Header: "CRN",
           accessor: "CRN",

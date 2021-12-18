@@ -14,6 +14,7 @@ export default function EditMS(rowData){
     const row = rowData.location.state
     var rowChanges = {...row}
 
+    console.log(rowChanges)
 
     let history = useHistory();
     
@@ -26,7 +27,21 @@ export default function EditMS(rowData){
         if(rowChanges.startTime !== row.startTime && rowChanges.endTime !== row.endTime){
             if (await checkAvailability() === ""){return("")}
         }
+        if(rowChanges.numOfCredits !== row.numOfCredits){
+            if(await changeNumOfCredits() === ""){return("")}
+        }
         await editMS();
+    }
+
+    async function changeNumOfCredits(){
+        const res = await dbUtil.changeNumOfCredits(rowChanges.courseID, rowChanges.numOfCredits)
+        if(res.err){
+            window.alert(res.err.sqlMessage)
+            console.log(res)
+            return("")
+        }else{
+            return("changed")
+        }
     }
 
     async function trimWhiteSpace(rowChanges){
@@ -58,13 +73,18 @@ export default function EditMS(rowData){
         }
     }
     async function checkFaculty(){
+        if(rowChanges.firstName === "TBD"){
+            rowChanges.facultyID = "TBD"
+            return("tbd")
+        }
         const facResult = await dbUtil.getFacultyID(rowChanges.firstName, rowChanges.lastName);
         if(facResult.err){
                 window.alert(facResult.err.sqlMessage)
             }else if(facResult.length !== 1){
                window.alert("No faculty found with that name")
                return("");
-            }else{
+            }
+            else{
                 rowChanges.facultyID = facResult[0].userID;
             }
             return facResult
@@ -125,6 +145,8 @@ export default function EditMS(rowData){
             <Form.Control disabled={true} placeholder={row.availableSeats}></Form.Control>
             <Form.Label>Capacity</Form.Label>
             <Form.Control onChange={e => rowChanges.capacity = e.target.value} placeholder={row.capacity}></Form.Control>
+            <Form.Label>Credits</Form.Label>
+            <Form.Control onChange={e => rowChanges.numOfCredits = e.target.value} placeholder={row.numOfCredits}></Form.Control>
             </Col>
             </Row>
             <Row>

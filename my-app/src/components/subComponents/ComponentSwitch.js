@@ -48,6 +48,7 @@ import AddTranscript from './AddTranscript';
 import AddFacDept from './AddFacDept';
 import AddFacHistory from './AddFacHistory';
 import CourseTable from '../tableComponents/CourseTable';
+import AddPreReq from './AddPrereq';
 
 function ComponentSwitch() {
 
@@ -159,6 +160,11 @@ function ComponentSwitch() {
                 <ProtectedRoute exact path ="/EditCourse" component={EditCourse} allowed={false}></ProtectedRoute> 
             }
             {
+                (privs.isAdmin) ?
+                <ProtectedRoute exact path ="/addPreReq" component={AddPreReq} allowed={true}></ProtectedRoute> : 
+                <ProtectedRoute exact path ="/addPreReq" component={AddPreReq} allowed={false}></ProtectedRoute> 
+            }
+                {
                 (privs.isAdmin) ?
                 <ProtectedRoute exact path ="/AddCourse" component={AddCourse} allowed={true}></ProtectedRoute> : 
                 <ProtectedRoute exact path ="/AddCourse" component={AddCourse} allowed={false}></ProtectedRoute> 
