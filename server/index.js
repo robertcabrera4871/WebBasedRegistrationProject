@@ -11,21 +11,21 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors());
 
 
-const db = mysql.createConnection({
-    user: "root",
-    host: "localhost",
-    password: "password",
-    database: "test",
-    multipleStatements: true
-});
-
 // const db = mysql.createConnection({
-//     user: "admin",
-//     host: "webregistrationdb.cmfdjpexlzt4.us-east-2.rds.amazonaws.com",
+//     user: "root",
+//     host: "localhost",
 //     password: "password",
 //     database: "test",
 //     multipleStatements: true
 // });
+
+const db = mysql.createConnection({
+    user: "admin",
+    host: "webregistrationdb.cmfdjpexlzt4.us-east-2.rds.amazonaws.com",
+    password: "password",
+    database: "test",
+    multipleStatements: true
+});
 
 
 function getDate(){
@@ -90,7 +90,11 @@ app.post('/deleteDepAppt', (req,res) =>{
 app.post('/getFacultyDepartment', (req,res) =>{
     const params = req.body.params
     db.query(
-        `SELECT * FROM FacultyDepartment WHERE departmentID = ?`,
+        `SELECT u.firstName, u.lastName, d.facultyID, d.departmentID, d.percTimeCommitment, d.dateOfAppt 
+        FROM FacultyDepartment d
+        JOIN User u
+        ON d.facultyID = u.userID
+        WHERE departmentID = ?`,
         [params.departmentID],
             (err, result) => {
                 if(err){
@@ -344,7 +348,7 @@ app.put('/createUndergrad', (req, res) =>{
 app.put('/createFullGrad', (req, res) =>{
     const params = req.body.params;
     db.query(
-        `INSERT INTO GradFullTime VALUES(?,?,?)`,
+        `INSERT INTO GradFulltime VALUES(?,?,?)`,
         [params.studentID, params.minCredit, params.maxCredit],
         (err, result) => {
             if(err){
@@ -357,21 +361,6 @@ app.put('/createFullGrad', (req, res) =>{
 
     )
 })
-app.post('/login', (req, res) =>{
-    var email = req.body.email;
-    email = email+'%'
-    const password = req.body.password;
-    db.query(
-        "SELECT * FROM LoginInfo WHERE email LIKE ? AND password = ?",
-        [email, password],
-        (err, result) => {
-            if(err){
-                res.send({err: err})
-            } 
-            else{
-                res.send(result)
-            }
-        })});
 
 app.get('/getBuildings', (req, res) => {
     db.query(`SELECT * FROM Building`,
@@ -1037,7 +1026,7 @@ app.put('/addFacHistory', (req, res) => {
  app.post('/getFacRank', (req, res) => {
     const params = req.body.params;
    db.query(
-       `SELECT rank FROM Faculty WHERE facultyID = ?`,
+       `SELECT Faculty.rank FROM Faculty WHERE facultyID = ?`,
         [params.userID],
         (err, result) =>{
            if(err){
@@ -1171,7 +1160,7 @@ app.post('/emailExist', (req, res) =>{
     var email = req.body.params.email;
     email = email + "%";
     db.query(
-        `SELECT 1 FROM LoginInfo WHERE email LIKE ? `,
+        `SELECT * FROM LoginInfo WHERE email LIKE ? `,
         [email],
         (err, result) =>{
             if(err){
@@ -1183,13 +1172,15 @@ app.post('/emailExist', (req, res) =>{
         }
     )
 })
+
 
 app.put('/resetPassword', (req, res) =>{
-    const email = req.body.params.email;
-    const tempPassword = Math.random().toString(16).substr(2, 8);
+    var email = req.body.params.email;
+    email = email + "%";
+    const tempPassword = Math.random().toString(16).substring(2, 8);
 
     db.query(
-        `UPDATE logininfo SET password = "${tempPassword}" , status = "locked" WHERE email = ?`,
+        `UPDATE LoginInfo SET password = '${tempPassword}' , status = "locked" WHERE email LIKE ?`,
         [email],
         (err, result) =>{
             if(err){
@@ -1201,6 +1192,42 @@ app.put('/resetPassword', (req, res) =>{
         }
     )
 })
+
+app.post('/login', (req, res) =>{
+    var email = req.body.email;
+    email = email+'%'
+    const password = req.body.password;
+    db.query(
+        "SELECT * FROM LoginInfo WHERE email LIKE ? AND password = ?",
+        [email, password],
+        (err, result) => {
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+            }
+        })});
+
+app.put('/updateAndUnlock', (req, res) =>{
+    var email = req.body.params.email;
+    email = email+'%'
+    const newPass = req.body.params.newPass;
+
+    db.query(
+        `UPDATE LoginInfo SET password = "${newPass}", status="active" WHERE email LIKE ?`,
+        [email],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            } 
+            else{
+                res.send(result)
+                } 
+        }
+    )
+})
+        
 
 
 app.get('/masterSchedule', (req, res) =>{
@@ -1660,23 +1687,6 @@ app.get('/minorRequirements',  (req, res) =>{
         }
     )
 })
-app.put('/updateAndUnlock', (req, res) =>{
-    const email = req.body.params.email;
-    const newPass = req.body.params.newPass;
-
-    db.query(
-        `UPDATE logininfo SET password = "${newPass}", status="active" WHERE email = ?`,
-        [email, newPass],
-        (err, result) =>{
-            if(err){
-                res.send({err: err})
-            } 
-            else{
-                res.send(result)
-             } 
-        }
-    )
-})
 
 app.post('/myAdvisors', (req, res) =>{
     const studentID = req.body.params.userID;
@@ -1973,13 +1983,13 @@ app.post('/creditCheck', (req, res) => {
     const studentID = req.body.params.studentID;
 
     db.query(
-        `SELECT studentID, minCredit, maxCredit FROM GradFullTime
+        `SELECT studentID, minCredit, maxCredit FROM GradFulltime
         WHERE studentID = ?
         UNION
         SELECT studentID, minCredit, maxCredit  FROM GradPartTime
         WHERE studentID = ?
         UNION
-        SELECT studentID, minCredit, maxCredit FROM UndergradFullTime
+        SELECT studentID, minCredit, maxCredit FROM UndergradFulltime
         WHERE studentID = ?
         UNION
         SELECT studentID, minCredit, maxCredit FROM UndergradPartTime
@@ -1999,7 +2009,7 @@ app.post('/courseMinMaxCheck', (req, res) => {
     const userID = req.body.params.userID;
 
     db.query(
-        `SELECT minCourse, maxCourse FROM FullTimeFac
+        `SELECT minCourse, maxCourse FROM FulltimeFac
         WHERE facultyID = ?
         UNION
         SELECT minCourse, maxCourse FROM PartTimeFac
@@ -2447,6 +2457,22 @@ app.get('/getGradStudents', (req, res) =>{
     )
 })
 
+app.get('/getCourseAmount', (req, res) =>{
+    db.query(
+        `SELECT COUNT(DISTINCT courseID) FROM 
+        Course`,
+        [],
+        (err, result) =>{
+            if(err){
+                res.send({err: err})
+            }
+            else{
+                res.send(result)
+            }
+        }
+    )
+})
+
 app.get('/getGrades', (req, res) =>{
     db.query(
         `SELECT grade FROM StudentHistory
@@ -2464,6 +2490,8 @@ app.get('/getGrades', (req, res) =>{
         }
     )
 })
+
+
 
 
 

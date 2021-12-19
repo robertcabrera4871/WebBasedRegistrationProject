@@ -22,6 +22,7 @@ export default function ViewHolds(adminAccess){
         if(privs.isAdmin){user.userID = adminAccess.location.state}
         dbUtil.getHolds(user.userID).then(
             data =>{
+              console.log(data)
                 setHolds(data)
             }
         )

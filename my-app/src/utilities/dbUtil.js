@@ -572,7 +572,6 @@ static async getSpringCal(){
             email: email
           }
         })
-        console.log(resetResponse)
         return resetResponse.data
       }
       
@@ -1336,6 +1335,11 @@ static async getSpringCal(){
     }
     static async getGrades(){
       const getResponse = await Axios.get("http://localhost:8000/getGrades")
+      return getResponse.data
+    }
+
+    static async getCourseAmount(){
+      const getResponse = await Axios.get("http://localhost:8000/getCourses")
       return getResponse.data
     }
 

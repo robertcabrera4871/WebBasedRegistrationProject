@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import {useTable} from 'react-table'
+import {useTable, usePagination} from 'react-table'
 import Table from 'react-bootstrap/Table'
 import dbUtil from "../../utilities/dbUtil";
 import { useHistory } from "react-router-dom";
@@ -17,6 +17,7 @@ export default function FacultyDeptTable({deptChosen}){
 
     async function getFacultyDepartment(){
         const res = await dbUtil.getFacultyDepartment(deptChosen)
+        console.log(res)
     if(!res.err){
             formatDate(res, 'dateOfAppt')
             setFacDept(res)
@@ -56,9 +57,13 @@ export default function FacultyDeptTable({deptChosen}){
               </div>
             )
           },
+          {
+            Header: "First Name",
+            accessor: "firstName"
+        },
         {
-            Header: "FacultyID",
-            accessor: "facultyID"
+            Header: "Last Name",
+            accessor: "lastName"
         },
         { 
             Header: "DepartmentID",
@@ -77,13 +82,23 @@ export default function FacultyDeptTable({deptChosen}){
 
     
     
+    
     const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        rows,
-        prepareRow,
-    } = useTable({columns, data: facDept})
+      getTableProps,
+      getTableBodyProps,
+      headerGroups,
+      page,
+       nextPage,
+       previousPage,
+       canNextPage,
+       canPreviousPage,
+       pageOptions,
+       state,
+      prepareRow,
+    } = useTable({columns, data: facDept, initialState: {hiddenColumns:['facultyID']}}, usePagination)
+
+    const {pageIndex} = state
+
     
 
     return (
@@ -107,7 +122,7 @@ export default function FacultyDeptTable({deptChosen}){
         </thead>
    
         <tbody {...getTableBodyProps()}>
-          {rows.map(row => {
+          {page.map(row => {
             prepareRow(row)
             return (
               <tr {...row.getRowProps()}>
@@ -123,6 +138,14 @@ export default function FacultyDeptTable({deptChosen}){
           })}
         </tbody>
       </Table>
+      <span className='align-center'>
+       Page{' '}
+       <strong>
+          {pageIndex + 1} of {pageOptions.length}
+       </strong>
+       <button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</button>
+       <button onClick={() => nextPage()} disabled={!canNextPage}>Next</button>
+    </span>
       </div> }
       </div>
        );

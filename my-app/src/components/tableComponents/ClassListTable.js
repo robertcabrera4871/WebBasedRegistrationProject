@@ -25,12 +25,13 @@ import globalDate from '../../utilities/globalDate';
 
     // if(privs.isAdmin){user.userID = adminAccess.location.state}
 
-
+    console.log(row.location.state.CRN)
     async function getClassList(){
         const response = await dbUtil.getClassList(row.location.state.CRN);
         if(response.err){
           console.log(response.err)
         }
+        console.log(response)
         setClassList(response)
     }
 

@@ -20,6 +20,7 @@ export default function CourseTable() {
     function getCourses() {
         dbUtil.getCourses().then(
             data => {
+              console.log(data)
                 setCourses(data);     
                  }
         )

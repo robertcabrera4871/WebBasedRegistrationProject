@@ -199,7 +199,7 @@ export default function AddUser(chosenType){
     async function checkFullOrPartFac(){
         if(newRow.rank === 'other'){
             newRow.minCourse = 0
-            newRow.maxCourse = 99999
+            newRow.maxCourse = 0
             return "other"
         }
 

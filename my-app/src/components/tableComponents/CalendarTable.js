@@ -80,7 +80,7 @@ export default function CalendarTable(semesterSelect){
 
       if(moment(date, "YYYY-MM-DD", true).isValid()){
         switch(row.Title){
-          case funcs.addDrop: if(date <= await getDate(funcs.firstDay)){canEdit = true}break;
+          case funcs.addDrop: if(date <= await getDate(calendar, funcs.firstDay)){canEdit = true}break;
           //Fall Specific
           case funcs.firstDay: if(semester === "Fall" && date < await getDate(calendar, funcs.springRegSen) && date >= await getDate(calendar, funcs.addDrop))  {canEdit = true}break;
           case funcs.springRegSen: if(date < await getDate(calendar, funcs.springRegJun) && date > await getDate(calendar, funcs.firstDay))                      {canEdit = true}break;

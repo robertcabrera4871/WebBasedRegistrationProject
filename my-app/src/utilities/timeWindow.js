@@ -8,6 +8,8 @@ export default async function timeWindow(func, alertDisabled){
 
     const springCalendar = await dbUtil.getSpringCal();
     const fallCalendar = await dbUtil.getFallCal();
+
+
     const date = globalDate.getGlobalDate()
     var semester = ""
     var response = false;
@@ -19,7 +21,10 @@ export default async function timeWindow(func, alertDisabled){
     const FsemesterEnd = fallCalendar[FsemesterEndIndex].Date.substring(0,10)
 
      const FfinalExamsInd = fallCalendar.map(e => e.Title).indexOf(funcs.finalExams)
+
+
      const FfinalExams = fallCalendar[FfinalExamsInd].Date.substring(0,10)
+
 
      const SfinalExamsInd = springCalendar.map(e => e.Title).indexOf(funcs.finalExams)
      const SfinalExams = springCalendar[SfinalExamsInd].Date.substring(0,10)
@@ -49,8 +54,12 @@ export default async function timeWindow(func, alertDisabled){
             window.alert("No timewindow event for that title")
         }
 
+        console.log(funcs.springRegSen)
+
+
         const FRegStartInd = fallCalendar.map(e => e.Title).indexOf(funcs.springRegSen)
         const FRegStart = fallCalendar[FRegStartInd].Date.substring(0,10)
+
 
         // console.log(date)
         // console.log(calDate)

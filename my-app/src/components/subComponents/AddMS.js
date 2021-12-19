@@ -87,7 +87,9 @@ export default function AddMS(){
                 newRow.facultyID = "TBD"
                 return("changed")
             }
+            console.log(newRow)
             const facResult = await dbUtil.getFacultyID(newRow.firstName, newRow.lastName);
+            console.log(facResult)
             if(facResult.err){
                     window.alert(facResult.err.sqlMessage)
                 }else if(facResult.length !== 1){
@@ -129,6 +131,7 @@ export default function AddMS(){
 
         async function checkTimeSlotID(){
             const timeSlotResult = await dbUtil.getTimeSlotID(newRow.startTime, newRow.endTime, newRow.day);
+            console.log(timeSlotResult)
             if(timeSlotResult.err){
                 window.alert(timeSlotResult.err.sqlMessage)
             } else if(timeSlotResult.length !==1){

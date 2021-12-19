@@ -21,10 +21,12 @@ export default function MasterSchedule(){
     let history = useHistory();
     const privs = checkPrivs();
     var user = decryptUser();
-   
+    
+
     if(history.location.state !== undefined){
        user.userID = history.location.state
     }
+
 
 
      useEffect(() =>{
@@ -37,6 +39,24 @@ export default function MasterSchedule(){
          setSemester(semesterChosen) 
          getSchedule()
      }
+
+     
+     function getSchedule(){
+      dbUtil.getMasterSchedule().then(
+          data =>{
+             if(history.location.pathname==="/teachSchedule"){
+                data = data.filter(row => row.userID === user.userID)
+             }
+              if(semesterSelect === "Fall 2021"){
+                data = data.filter(item => (item.semesterYearID === "F21"))
+             }
+             else if(semesterSelect === "Spring 2022"){
+                data = data.filter(item => (item.semesterYearID === "S22"))
+             }
+             setSchedule(data)
+          }
+      )
+   }
      
      async function addClassStudent(row){
       const student = await dbUtil.getStudent(user.userID)
@@ -122,6 +142,7 @@ export default function MasterSchedule(){
      async function creditCheck(row, student){
       const minMax = await dbUtil.creditCheck(student[0].studentID)
       const credTaking = await dbUtil.getCreditsTaking(student[0].studentID)
+      console.log(minMax)
       const maxCredit = (minMax[0].maxCredit)
       const newClassCred = row.numOfCredits
       const currentCreds = credTaking[0]?.numOfCredits
@@ -139,7 +160,6 @@ export default function MasterSchedule(){
      }
 
      async function yearLevelCheck(res){
-        console.log(res[0].studentType)
       if(res[0].studentType === 'Grad Student'){
          return false
       } 
@@ -201,6 +221,7 @@ export default function MasterSchedule(){
       if(await courseMaxCheck()){return("")}
        const CRN = window.prompt("Enter CRN of Class you wish to add")
       const response = await dbUtil.addTeachClass(CRN, user.userID); 
+      console.log(response)
       if(response.err){
          window.alert("Teacher is already teaching this class")
       } else if(response.affectedRows === 1){
@@ -213,7 +234,6 @@ export default function MasterSchedule(){
       if(await courseMinCheck()){return("")}
       if(window.confirm("Are you sure you wish to delete this item?")){
          const res = await dbUtil.addTeachClass(row.CRN, "TBD");
-         console.log(res)
          if(res.err){
             window.alert(res.err.sqlMessage)
             return("")
@@ -239,6 +259,8 @@ export default function MasterSchedule(){
 
    async function courseMaxCheck(){
       const minMax = await dbUtil.courseMinMaxCheck(user.userID)
+      console.log(minMax)
+
       const currentTeaching =  await getCoursesTeaching(user.userID)
       const maxCourse = minMax[0].maxCourse;
 
@@ -260,23 +282,7 @@ export default function MasterSchedule(){
   }
 
  
- 
-      function getSchedule(){
-        dbUtil.getMasterSchedule().then(
-            data =>{
-               if(history.location.pathname==="/teachSchedule"){
-                  data = data.filter(row => row.userID === user.userID)
-               }
-                if(semesterSelect === "Fall 2021"){
-                  data = data.filter(item => (item.semesterYearID === "F21"))
-               }
-               else if(semesterSelect === "Spring 2022"){
-                  data = data.filter(item => (item.semesterYearID === "S22"))
-               }
-               setSchedule(data)
-            }
-        )
-     } 
+  
 
 
      function newRow(startNum){
@@ -295,6 +301,16 @@ export default function MasterSchedule(){
       history.push({
           pathname: '/AddCourse'
        })
+   }
+
+   function homeSchedule(){
+      if(history.location.pathname === '/home'){
+         return 'table-center'
+      }else{
+         return ""
+      }
+
+
    }
    
 
@@ -478,8 +494,8 @@ export default function MasterSchedule(){
       <ChoseSemester onClick={choseSemester} semesterSelect={semesterSelect} />
       <h1 className='text-align'>{history.location.pathname==="/teachSchedule" ? "Teaching Schedule":"Master Schedule"}</h1>
 
-      <b>Hover column to search, Click column to sort</b>
       <div id='parent'>
+
          { privs.isAdmin &&  history.location.pathname === "/home" &&
           <div className="child">
             <Dropdown>
@@ -494,8 +510,12 @@ export default function MasterSchedule(){
          {privs.isAdmin && history.location.pathname === '/home' && <button className="child" onClick={() =>{addCourse()}}>➕ Add Course</button>}
          {privs.isAdmin && history.location.pathname === '/teachSchedule' && <button onClick={() =>addClassTeach()}>➕ Add Teacher to Class</button>}
          </div>
-      
-      <Table size="sm" striped bordered hover {...getTableProps()}>
+
+         <div className={homeSchedule()}>
+         <b>Hover column to search, Click column to sort</b>
+
+      <Table  size="sm" striped bordered hover {...getTableProps()}>
+
       <thead>
         { headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
@@ -537,6 +557,8 @@ export default function MasterSchedule(){
        <button onClick={() => nextPage()} disabled={!canNextPage}>Next</button>
     </span>
       {(history.location.pathname === "/home") && <CalendarTable semesterSelect={semesterSelect}/>}
+    </div>
+   
     </div>
  )
 }

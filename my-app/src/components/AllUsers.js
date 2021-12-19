@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from "react";
-import { useTable,usePagination, useFilters } from "react-table";
+import { useTable, usePagination, useFilters, useSortBy } from "react-table";
 import dbUtil from '../utilities/dbUtil'
 import Table from 'react-bootstrap/Table'
 import { useHistory } from 'react-router';
@@ -28,8 +28,8 @@ export default function AllUsers(){
 
     async function getUsers(){
         var res = await dbUtil.getAllUsers()
-        res = res.filter(item => (item.userID !== "guest"))
-        res = res.filter(item => (item.userID !== "TBD"))
+        res = res.filter(item => (item.userID.toLowerCase() !== "guest"))
+        res = res.filter(item => (item.userID.toLowerCase()  !== "TBD"))
         if(privs.isFaculty){
           res = res.filter(item => (item.userType === "Grad Student" || item.userType === "Undergrad Student"))
         }
@@ -85,7 +85,7 @@ export default function AllUsers(){
           return true
         }
         return false
-    }
+  }
     async function deleteSHistory(row){
       const res = await dbUtil.deleteAllStudentHistory(row.userID)
         if(res.err){
@@ -174,6 +174,7 @@ export default function AllUsers(){
 
     async function checkOther(userID){
       const res = await dbUtil.getFacRank(userID)
+      console.log(res)
       if(res[0].rank === 'other'){
         console.log(res[0].rank === "other")
         return false
@@ -283,7 +284,6 @@ export default function AllUsers(){
       users[i].DOB = users[i].DOB.substring(0, 10)
     }
 
-
    
      const {
        getTableProps,
@@ -297,7 +297,7 @@ export default function AllUsers(){
         pageOptions,
         state,
        prepareRow,
-     } = useTable({ columns, data: users}, useFilters, usePagination)
+     } = useTable({ columns, data: users, initialState: {pageSize: 20}}, useFilters, useSortBy, usePagination)
       
 
      const {pageIndex} = state
@@ -315,36 +315,35 @@ export default function AllUsers(){
         </DropdownButton>}
         <Table size="sm" striped bordered hover {...getTableProps()}>
       <thead>
-        {// Loop over the header rows
+        {
         headerGroups.map(headerGroup => (
-          // Apply the header row props
+          
           <tr {...headerGroup.getHeaderGroupProps()}>
-            {// Loop over the headers in each row
-            headerGroup.headers.map(column => (
-              // Apply the header cell props
-              <th {...column.getHeaderProps()}>
-                {// Render the header
+            {headerGroup.headers.map(column => (
+              
+              <th className='column'{...column.getHeaderProps()}>
+                {
                 column.render('Header')}
+                <div className='filter'>{column.canFilter? column.render('Filter') : null }</div>
               </th>
             ))}
           </tr>
         ))}
       </thead>
-      {/* Apply the table body props */}
       <tbody {...getTableBodyProps()}>
-        {// Loop over the table rows
+        {
         page.map(row => {
-          // Prepare the row for display
+          
           prepareRow(row)
           return (
-            // Apply the row props
+            
             <tr {...row.getRowProps()}>
-              {// Loop over the rows cells
+              {
               row.cells.map(cell => {
-                // Apply the cell props
+                
                 return (
                   <td {...cell.getCellProps()}>
-                    {// Render the cell contents
+                    {
                     cell.render('Cell')}
                   </td>
                 )

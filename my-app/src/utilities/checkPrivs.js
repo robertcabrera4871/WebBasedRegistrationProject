@@ -12,11 +12,11 @@ export default function checkPrivs(){
     var isResearch = false;
     var isGuest = false;
   
-    switch(user.userType){
+    switch(user?.userType?.toLowerCase()){
       case 'admin': isAdmin = true; break;
       case 'student': isStudent = true; break;
       case 'faculty': isFaculty = true; break;
-      case 'research': isResearch = true; break;
+      case 'researcher': isResearch = true; break;
       case 'guest': isGuest = true; break;
       default:
     }

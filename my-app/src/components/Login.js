@@ -23,14 +23,20 @@ export default function Login({ setUser, setToken }) {
 
   let history = useHistory();
 
-  function resetCounter() {
+  async function resetCounter() {
 
     if (incorrectCount === 0) {
-      dbUtil.resetPassword(email).then(
-        setAlertMessage("Password reset. Check email for temporary password"),
-        setIncorrectCount(incorrectCount - 1),
-      )
-    } else if (incorrectCount !== -1) {
+      const res = await dbUtil.resetPassword(email)
+      console.log(res)
+      if(res.err){
+        window.alert(res.err.sqlMessage)
+        console.log(res)
+      } else{
+        setAlertMessage("Password reset. Check email for temporary password")
+        setIncorrectCount(incorrectCount - 1)
+      }
+        
+    }else if (incorrectCount !== -1) {
       setIncorrectCount(incorrectCount - 1)
       setAlertMessage("Incorrect password. Attempts left:  " + incorrectCount)
     }
@@ -52,11 +58,12 @@ export default function Login({ setUser, setToken }) {
   }
 
   function privSwitch(data) {
-    if (data.message) {
+    console.log(data)
+    if (data.length === 0) {
       setInvalidCred(true);
       resetCounter()
     }
-    else if (data[0].status === "locked") {
+    else if (data[0].status.toLowerCase() === "locked") {
       setInReset(true)
     }
     else if (data === 0) {
@@ -64,22 +71,22 @@ export default function Login({ setUser, setToken }) {
       setAlertMessage("No user with that name")
     }
 
-    else if (data[0].userType === "admin") {
+    else if (data[0].userType.toLowerCase() === "admin") {
       setUser(data[0]);
       setToken({ token: randomToken() });
       redirect();
     }
-    else if (data[0].userType === "student") {
+    else if (data[0].userType.toLowerCase() === "student") {
       setUser(data[0])
       setToken({ token: randomToken() });
       redirect();
     }
-    else if (data[0].userType === "faculty") {
+    else if (data[0].userType.toLowerCase() === "faculty") {
       setUser(data[0])
       setToken({ token: randomToken() });
       redirect();
     }
-    else if (data[0].userType === "research") {
+    else if (data[0].userType.toLowerCase() === "researcher") {
       setUser(data[0])
       setToken({ token: randomToken() });
       redirect();
@@ -101,14 +108,25 @@ export default function Login({ setUser, setToken }) {
 
 
     const response = await dbUtil.userExists(email)
+    console.log(response)
     var loginResponse = ""
     if(response.length === 0){
       window.alert("User not found");
-    } else{
+    } else if(response.err){
+      window.alert(response.err.sqlMessage)
+      return("")
+    }
+    else if(response.length > 1){
+      window.alert("User not found")
+      return("")
+    }
+    else{
       loginResponse = await dbUtil.login(email, password)
+      console.log(loginResponse)
       if(loginResponse.err){
         window.alert(loginResponse.err.sqlMessage)
-      }
+      } 
+      console.log(loginResponse)
       privSwitch(loginResponse)
     }
   }
@@ -116,9 +134,10 @@ export default function Login({ setUser, setToken }) {
   const guestLogin = (e) => {
     e.preventDefault();
     dbUtil.login("guest", "guest").then(data => {
+      console.log(data)
       if (data.message) {
         console.log(data.message)
-      } else if (data[0].userType === "guest") {
+      } else if (data[0].userType.toLowerCase() === "guest") {
         console.log(data)
         setUser(data[0])
         setToken({ token: 'guest' });
@@ -131,6 +150,7 @@ export default function Login({ setUser, setToken }) {
   //Yikes
   const unlockAndLogin = (e) => {
     e.preventDefault();
+
     dbUtil.unlockAccount(email, newPass).then(data => {
       if (data.affectedRows === 1) {
         dbUtil.login(email, newPass).then(data => {
@@ -139,6 +159,7 @@ export default function Login({ setUser, setToken }) {
       }
       else {
         setInvalidNewPass(true);
+        console.log(data)
       }
     })
 
