@@ -12,6 +12,7 @@
     "classnames": "^2.3.1",
     "crypto-js": "^4.1.1",
     "encrypt-storage": "^2.2.3",
+    "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-bootstrap": "^2.0.0",
     "react-chartjs-2": "^4.0.0",

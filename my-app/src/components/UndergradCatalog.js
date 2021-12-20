@@ -3,7 +3,7 @@ import dbUtil from '../utilities/dbUtil'
 import ReqTable from "./tableComponents/ReqTable";
 import checkPrivs from "../utilities/checkPrivs";
 import { useHistory } from 'react-router';
-import { useTable } from "react-table";
+import { useTable, usePagination } from "react-table";
 import Table from 'react-bootstrap/Table'
 
 
@@ -138,9 +138,17 @@ useEffect(() => {
         getTableProps,
         getTableBodyProps,
         headerGroups,
-        rows,
+        page,
+        nextPage,
+        previousPage,
+        canNextPage,
+        canPreviousPage,
+        pageOptions,
+        state,
         prepareRow,
-      } = useTable({columns, data: courses, initialState})
+      } = useTable({columns, data: courses, initialState}, usePagination)
+
+      const {pageIndex} = state
 
     function addMajor(){
         history.push({
@@ -167,46 +175,70 @@ useEffect(() => {
         }
      }
 
+     function checkReqsMaj(majorID, requirements){
+        history.push({
+            pathname: '/majorRequirements',
+            state: {majorID, requirements}
+        })
+     }
+
+     function checkReqsMin(minorID, requirements){
+        history.push({
+            pathname: '/minorRequirements',
+            state: {minorID, requirements}
+        })
+     }
+
      
 
 
     let majorsTables = majors.map((major, index) =>{
         return (
+            <div id ='parent'>
+            <h4>{major.majorID}:</h4>
+            <button className="child" onClick={() => {checkReqsMaj(major.majorID, majorRequire)}}>View Requirements ✔️</button>
             <span>
-            {privs.isAdmin && <button onClick={() => {history.push({
+            {privs.isAdmin &&  <button className="child" onClick={() => {history.push({
                 pathname: '/AddMRequire',
                 state: major
             })}}
             >➕ Add Requirement</button>}
-            <div key={index}>
+            <div className="child" key={index}>
             {privs.isAdmin && <button onClick={() => {
            if (window.confirm('Are you sure you wish to delete this item?')) 
            {
               deleteMajor(major)
            }}}>❌ Delete Major</button>}
-            <h4>{major.majorID}:</h4>
+         
             </div>  
-            <ReqTable major={major.majorID} requirements={majorRequire}/>
+            {/* <ReqTable major={major.majorID} requirements={majorRequire}/> */}
+         
             </span>
+            </div>
         )});
 
      let minorsTables = minors.map((minor, index) =>{
         return (
+            <div id="parent">
             <span>
-            {privs.isAdmin && <button onClick={() => {history.push({
+            <h4 key={index}>{minor.minorID}:</h4>
+            <button className="child" onClick={() => {checkReqsMin(minor.minorID, minorRequire)}}>View Requirements ✔️</button>
+            {privs.isAdmin && <button className="child" onClick={() => {history.push({
                 pathname: '/AddMinorRequire',
                 state: minor
             })}}>➕ Add Requirement</button>}
-            <div key={index}>
-            {privs.isAdmin && <button onClick={() => {
+            <div className="child" key={index}>
+            {privs.isAdmin && <button  onClick={() => {
            if (window.confirm('Are you sure you wish to delete this item?')) 
            {
               deleteMinor(minor)
            }} }>❌ Delete Minor</button>}
-            <h4 key={index}>{minor.minorID}:</h4>
+            
             </div>
-            <ReqTable minor={minor.minorID} requirements={minorRequire}/>
+            {/* <ReqTable minor={minor.minorID} requirements={minorRequire}/> */}
+           
             </span>
+            </div>
         )});
 
     return (
@@ -228,7 +260,7 @@ useEffect(() => {
             </thead>
         
             <tbody {...getTableBodyProps()}>
-                {rows.map(row => {
+                {page.map(row => {
                 prepareRow(row)
                 return (
                     <tr {...row.getRowProps()}>
@@ -244,12 +276,21 @@ useEffect(() => {
                 })}
             </tbody>
             </Table>
+                        <span className='align-center'>
+                Page{' '}
+                <strong>
+                    {pageIndex + 1} of {pageOptions.length}
+                </strong>
+                <button onClick={() => previousPage()} disabled={!canPreviousPage}>Previous</button>
+                <button onClick={() => nextPage()} disabled={!canNextPage}>Next</button>
+                </span>
+          
+            <h1 className="text-align">Major Requirements</h1>
             {privs.isAdmin && <button onClick={() =>{addMajor()}}
             >📘 Add Major</button>}
-            <h1 className="text-align">Major Requirements</h1>
             {majorsTables}
-            {privs.isAdmin && <button onClick={() => {history.push('/AddMinor')}}>📙 Add Minor</button>}
             <h1 className="text-align">Minor Requirements</h1>
+            {privs.isAdmin && <button onClick={() => {history.push('/AddMinor')}}>📙 Add Minor</button>}
             {minorsTables}
         </div>
     )

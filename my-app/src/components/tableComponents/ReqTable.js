@@ -1,15 +1,20 @@
-import React from "react";
-import { useTable } from "react-table";
+import React, { useState } from "react";
+import { useTable, usePagination } from "react-table";
 import Table from 'react-bootstrap/Table';
 import checkPrivs from "../../utilities/checkPrivs";
 import dbUtil from "../../utilities/dbUtil";
+import { useHistory } from "react-router-dom";
 
-export default function ReqTable({major, minor, requirements}) {
+export default function ReqTable() {
 
     const grades = ['A', 'B', 'C', 'D', 'F', 'IP'];
 
-
     const privs = checkPrivs();
+    let history = useHistory();
+    let major = history.location.state.majorID
+    let minor = history.location.state.minorID
+    // console.log(history.location.state.majorID.trim())
+    // console.log(history.location.state)
 
     async function deleteMajorReq(row){
       const response = await dbUtil.deleteMajorReq(major, row.courseID)
@@ -73,11 +78,39 @@ export default function ReqTable({major, minor, requirements}) {
         accessor: "minCourseGrade"
      },
     ], []);
-    
-    
-    major ? requirements = requirements.filter(item => (item.majorID === major)):
-    requirements = requirements.filter(item => (item.minorID === minor));
 
+
+
+    var specReqs = [...history.location.state.requirements]
+    var specific = []
+
+    
+    if(major !== undefined){
+      for(const i in specReqs){
+        console.log(specReqs[i].majorID.replace(/\s+/g, '') , major.replace(/\s+/g, ''))
+        if(specReqs[i].majorID.replace(/\s+/g, '') === major.replace(/\s+/g, '')){
+
+          specific.push(specReqs[i])
+
+        }
+      }
+    }
+
+    else if(minor !== undefined){
+      for(const i in specReqs){
+        if(specReqs[i].minorID.replace(/\s+/g, '') === minor.replace(/\s+/g, '')){
+          specific.push(specReqs[i])
+        }
+      }
+    }
+
+
+  
+
+    // major ? specReqs = specReqs.filter(item => (item.majorID === major)):
+    // specReqs = specReqs.filter(item => (item.minorID === minor));
+    // major ? requirements = requirements.filter(item => (item.majorID === major)):
+    // requirements = requirements.filter(item => (item.minorID === minor));
 
     var initialState = ""
     if(!privs.isAdmin){
@@ -90,12 +123,15 @@ export default function ReqTable({major, minor, requirements}) {
         headerGroups,
         rows,
         prepareRow,
-    } = useTable({columns, data: requirements, initialState})
+    } = useTable({columns, data: specific, initialState})
     
 
-
+    // const {pageIndex} = state
 
     return (
+      <div className="table-center">
+        {major !== undefined ? <h1 className="text-align">Requirements for {major}</h1>:
+        <h1 className="text-align">Requirements for {minor}</h1>}
      <Table size="sm" striped bordered hover {...getTableProps()}>
      <thead>
        { headerGroups.map(headerGroup => (
@@ -128,5 +164,7 @@ export default function ReqTable({major, minor, requirements}) {
        })}
      </tbody>
    </Table>
+          
+            </div>
     );
 }

@@ -49,6 +49,7 @@ import AddFacDept from './AddFacDept';
 import AddFacHistory from './AddFacHistory';
 import CourseTable from '../tableComponents/CourseTable';
 import AddPreReq from './AddPrereq';
+import ReqTable from '../tableComponents/ReqTable';
 
 function ComponentSwitch() {
 
@@ -66,6 +67,8 @@ function ComponentSwitch() {
             <Route exact path="/undergradCatalog" component={UndergradCatalog}></Route>
             <Route exact path="/masterSchedule" component={MasterSchedule}></Route>
             <Route exact path="/allCourses" component={CourseTable}></Route>
+            <Route exact path="/majorRequirements" component={ReqTable}></Route>
+            <Route exact path="/minorRequirements" component={ReqTable}></Route>
 
 
             {
@@ -155,7 +158,8 @@ function ComponentSwitch() {
             }
              
               {
-                (privs.isAdmin) ?
+             
+             (privs.isAdmin) ?
                 <ProtectedRoute exact path ="/EditCourse" component={EditCourse} allowed={true}></ProtectedRoute> : 
                 <ProtectedRoute exact path ="/EditCourse" component={EditCourse} allowed={false}></ProtectedRoute> 
             }

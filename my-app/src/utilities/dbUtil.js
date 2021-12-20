@@ -3,7 +3,7 @@ import Axios from 'axios';
     export default class dbUtil {
         
      static async login(email, password) {
-          const loginResponse = await Axios.post("http://localhost:8000/login", {
+          const loginResponse = await Axios.post("https://web-registration-app.herokuapp.com/login", {
             email: email,
             password: password
           })
@@ -11,7 +11,7 @@ import Axios from 'axios';
       }
       
       static async userExists(email){
-        const response = await Axios.post("http://localhost:8000/emailExist",{
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/emailExist",{
           params: {
             email: email
           }
@@ -21,7 +21,7 @@ import Axios from 'axios';
 
 
       static async AddDepartment(dep){
-        const response = await Axios.post("http://localhost:8000/AddDepartment",{
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/AddDepartment",{
           params:{
             departmentID: dep.departmentID,
             roomID: dep.roomID,
@@ -35,7 +35,7 @@ import Axios from 'axios';
       }
 
       static async newDepAssign(newRow){
-        const response = await Axios.put("http://localhost:8000/newDepAssign",{
+        const response = await Axios.put("https://web-registration-app.herokuapp.com/newDepAssign",{
           params: {
             newRow: newRow
           }
@@ -44,7 +44,7 @@ import Axios from 'axios';
       }
 
       static async deleteDepAppt(row){
-        const response = await Axios.post("http://localhost:8000/deleteDepAppt",{
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/deleteDepAppt",{
           params: {
             row: row
           }
@@ -55,7 +55,7 @@ import Axios from 'axios';
 
       
       static async getFacultyDepartment(departmentID){
-        const response = await Axios.post("http://localhost:8000/getFacultyDepartment",{
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/getFacultyDepartment",{
           params:{
             departmentID: departmentID,
           }
@@ -64,7 +64,7 @@ import Axios from 'axios';
       }
 
       static async getFacultyHistory(facultyID){
-        const response = await Axios.post("http://localhost:8000/getFacultyHistory",{
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/getFacultyHistory",{
           params:{
             facultyID: facultyID,
           }
@@ -73,7 +73,7 @@ import Axios from 'axios';
       }
 
       static async addFacHistory(newRow){
-        const response = await Axios.put("http://localhost:8000/addFacHistory",{
+        const response = await Axios.put("https://web-registration-app.herokuapp.com/addFacHistory",{
           params:{
             newRow: newRow,
           }
@@ -81,7 +81,7 @@ import Axios from 'axios';
         return response.data;
       }
       static async deleteFacHistory(CRN){
-        const response = await Axios.post("http://localhost:8000/deleteFacHistory",{
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/deleteFacHistory",{
           params:{
             CRN: CRN,
           }
@@ -92,7 +92,7 @@ import Axios from 'axios';
 
 
       static async editRoom(room, oldid){
-        const response = await Axios.post('http://localhost:8000/editRoom', {
+        const response = await Axios.post('https://web-registration-app.herokuapp.com/editRoom', {
           params:{
             roomID: room.roomID,
             buildingID: room.buildingID,
@@ -104,7 +104,7 @@ import Axios from 'axios';
       }
 
       static async deleteDepartment(depoID){
-        const response = await Axios.put("http://localhost:8000/deleteDepartment",{
+        const response = await Axios.put("https://web-registration-app.herokuapp.com/deleteDepartment",{
           params: {
             departmentID: depoID
           }
@@ -112,7 +112,7 @@ import Axios from 'axios';
         return response;
       }
       static async editDepartment(newDepo, oldID){
-        const response = await Axios.put("http://localhost:8000/editDepartment", {
+        const response = await Axios.put("https://web-registration-app.herokuapp.com/editDepartment", {
           params: {
             departmentID: newDepo.departmentID,
             roomID: newDepo.roomID,
@@ -127,7 +127,7 @@ import Axios from 'axios';
       }
 
       static async editBuilding(newbuild, oldid){
-        const response = await Axios.put("http://localhost:8000/editBuilding", {
+        const response = await Axios.put("https://web-registration-app.herokuapp.com/editBuilding", {
           params: {
             buildingID: newbuild.buildingID,
             buildingUse: newbuild.buidingUse,
@@ -138,12 +138,12 @@ import Axios from 'axios';
       }
 
       static async getDepartments(){
-        const response = await Axios.get("http://localhost:8000/getDepartments")
+        const response = await Axios.get("https://web-registration-app.herokuapp.com/getDepartments")
         return response.data
       }
 
       static async deleteRoom(row){
-        const response = await Axios.put("http://localhost:8000/deleteRoom",{
+        const response = await Axios.put("https://web-registration-app.herokuapp.com/deleteRoom",{
           params:{
             roomID: row.roomID
           }
@@ -153,7 +153,7 @@ import Axios from 'axios';
 
       static async editMS(row, oldCRN){
     
-        const editResponse = await Axios.put("http://localhost:8000/editMS", {
+        const editResponse = await Axios.put("https://web-registration-app.herokuapp.com/editMS", {
           params: {
         OldCRN: oldCRN,
         CRN: row.CRN,
@@ -172,7 +172,7 @@ import Axios from 'axios';
         return editResponse.data
       }
       static async addMS(row){
-        const addResponse = await Axios.put("http://localhost:8000/addMS", {
+        const addResponse = await Axios.put("https://web-registration-app.herokuapp.com/addMS", {
           params:{
          CRN: row.CRN,
          timeSlotID: row.timeSlotID,
@@ -190,7 +190,7 @@ import Axios from 'axios';
         return addResponse.data
       }
       static async generateAttendance(CRN, studentID, meetingDate){
-        const addResponse = await Axios.put("http://localhost:8000/generateAttendance", {
+        const addResponse = await Axios.put("https://web-registration-app.herokuapp.com/generateAttendance", {
           params:{
            CRN: CRN,
            studentID: studentID,
@@ -201,7 +201,7 @@ import Axios from 'axios';
       }
 
       static async getSemesterFromCRN(CRN){
-        const addResponse = await Axios.post("http://localhost:8000/getSemesterFromCRN", {
+        const addResponse = await Axios.post("https://web-registration-app.herokuapp.com/getSemesterFromCRN", {
           params:{
            CRN: CRN
           }
@@ -210,7 +210,7 @@ import Axios from 'axios';
       }
 
       static async checkSemesterYear(row){
-        const response = await Axios.post("http://localhost:8000/checkSemesterYear", {
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/checkSemesterYear", {
           params: {
             semesterYearID: row.semesterYearID
           }
@@ -219,7 +219,7 @@ import Axios from 'axios';
       }
 
       static async checkSemID(semesterID, CRN){
-        const response = await Axios.post("http://localhost:8000/checkSemID", {
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/checkSemID", {
           params: {
             semesterID: semesterID,
             CRN: CRN
@@ -229,7 +229,7 @@ import Axios from 'axios';
       }
 
       static async checkCRNsemester(row){
-        const response = await Axios.post("http://localhost:8000/checkCRNsemester", {
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/checkCRNsemester", {
           params: {
             row: row
           }
@@ -237,7 +237,7 @@ import Axios from 'axios';
         return response.data
       }
     static async unenrollAll(row){
-      const response = await Axios.put("http://localhost:8000/unenrollAll", {
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/unenrollAll", {
         params: {
           CRN: row.CRN
         }
@@ -245,7 +245,7 @@ import Axios from 'axios';
       return response.data
     }
     static async checkEnrollment(studentID, CRN){
-      const response = await Axios.post("http://localhost:8000/checkEnrollment", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/checkEnrollment", {
         params: {
           studentID: studentID,
           CRN: CRN
@@ -254,7 +254,7 @@ import Axios from 'axios';
       return response.data
     }
     static async checkAnyEnrollment(CRN){
-      const response = await Axios.post("http://localhost:8000/checkAnyEnrollment", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/checkAnyEnrollment", {
         params: {
           CRN: CRN
         }
@@ -262,7 +262,7 @@ import Axios from 'axios';
       return response.data
     }
     static async updateEnroll(row, oldCRN){
-      const response = await Axios.put("http://localhost:8000/updateEnroll", {
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/updateEnroll", {
         params: {
           OldCRN : oldCRN,
           CRN: row.CRN
@@ -273,7 +273,7 @@ import Axios from 'axios';
 
     
     static async editCourse(row, oldCourseID){
-      const editResponse = await Axios.put("http://localhost:8000/editCourse", {
+      const editResponse = await Axios.put("https://web-registration-app.herokuapp.com/editCourse", {
         params:{
           oldCourseID: oldCourseID,
           courseID: row.courseID,
@@ -285,7 +285,7 @@ import Axios from 'axios';
     }
 
     static async checkAvailability(row){
-      const response = await Axios.post("http://localhost:8000/checkAvailability", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/checkAvailability", {
         params : {
           timeSlotID: row.timeSlotID,
           roomID: row.roomID
@@ -295,7 +295,7 @@ import Axios from 'axios';
     }
 
     static async checkAvailableSeats(CRN){
-      const response = await Axios.post("http://localhost:8000/checkAvailableSeats", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/checkAvailableSeats", {
         params : {
           CRN: CRN
         }
@@ -303,7 +303,7 @@ import Axios from 'axios';
       return response.data
     }
     static async minusAvailableSeats(CRN){
-      const response = await Axios.post("http://localhost:8000/minusAvailableSeats", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/minusAvailableSeats", {
         params : {
           CRN: CRN
         }
@@ -311,7 +311,7 @@ import Axios from 'axios';
       return response.data
     }
     static async plusAvailableSeats(CRN){
-      const response = await Axios.post("http://localhost:8000/minusAvailableSeats", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/minusAvailableSeats", {
         params : {
           CRN: CRN
         }
@@ -320,7 +320,7 @@ import Axios from 'axios';
     }
 
     static async addRoom(room){
-      const response = await Axios.put("http://localhost:8000/addRoom",{
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/addRoom",{
         params: {
           roomID: room.roomID,
           buildingID: room.buildingID,
@@ -331,7 +331,7 @@ import Axios from 'axios';
     }
 
     static async checkRoomOfType(roomType){
-      const response = await Axios.post("http://localhost:8000/checkRoomOfType", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/checkRoomOfType", {
         params: {
           roomType: roomType
         }
@@ -340,7 +340,7 @@ import Axios from 'axios';
     }
 
     static async addRoomOfType(room){
-      const response = await Axios.put("http://localhost:8000/addRoomOfType",{
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/addRoomOfType",{
         params: {
           roomID: room.roomID,
           capacity: room.capacity,
@@ -351,7 +351,7 @@ import Axios from 'axios';
     }
 
     static async addBuilding(building){
-      const response = await Axios.put("http://localhost:8000/addBuilding", {
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/addBuilding", {
       params: {
         buildingID: building.buildingID,
         buildingUse: building.buildingUse
@@ -361,7 +361,7 @@ import Axios from 'axios';
     }
 
     static async deleteBuilding(row){
-      const response = await Axios.put("http://localhost:8000/deleteBuilding",{
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/deleteBuilding",{
         params: {
           buildingID: row.buildingID
         }
@@ -372,7 +372,7 @@ import Axios from 'axios';
     
      
     static async addMajor(newMajor){
-      const addResponse = await Axios.put("http://localhost:8000/addMajor",{
+      const addResponse = await Axios.put("https://web-registration-app.herokuapp.com/addMajor",{
         params :{
           majorID: newMajor.majorID,
           departmentID: newMajor.departmentID,
@@ -383,7 +383,7 @@ import Axios from 'axios';
     }
 
     static async addMinor(newMinor){
-      const addResponse = await Axios.put("http://localhost:8000/addMinor",{
+      const addResponse = await Axios.put("https://web-registration-app.herokuapp.com/addMinor",{
         params :{
           minorID: newMinor.minorID,
           departmentID: newMinor.departmentID,
@@ -394,7 +394,7 @@ import Axios from 'axios';
     }
 
     static async addMajReq(newReq, majorID){
-      const addResponse = await Axios.put("http://localhost:8000/addMajReq",{
+      const addResponse = await Axios.put("https://web-registration-app.herokuapp.com/addMajReq",{
         params :{
           newReq: newReq,
           majorID: majorID
@@ -405,7 +405,7 @@ import Axios from 'axios';
 
     
     static async addMinReq(newReq, minorID){
-      const addResponse = await Axios.put("http://localhost:8000/addMinReq",{
+      const addResponse = await Axios.put("https://web-registration-app.herokuapp.com/addMinReq",{
         params :{
           newReq: newReq,
           minorID: minorID
@@ -417,12 +417,12 @@ import Axios from 'axios';
 
 
     static async getRooms(){
-      const response = await Axios.get("http://localhost:8000/getRooms")
+      const response = await Axios.get("https://web-registration-app.herokuapp.com/getRooms")
       return response.data
     }
 
     static async getAttendence(CRN){
-      const response = await Axios.post("http://localhost:8000/getAttendence", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/getAttendence", {
         params:{
           CRN: CRN
         }
@@ -430,7 +430,7 @@ import Axios from 'axios';
       return response.data
     }
     static async switchAttendence(userID, meetingDate, presence){
-      const response = await Axios.post("http://localhost:8000/switchAttendence", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/switchAttendence", {
         params:{
           userID: userID,
           meetingDate: meetingDate,
@@ -441,7 +441,7 @@ import Axios from 'axios';
     }
 
     static async createAttendence(CRN, studentID, date){
-      const response = await Axios.post("http://localhost:8000/createAttendence", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/createAttendence", {
         params:{
           CRN: CRN,
           studentID: studentID,
@@ -452,7 +452,7 @@ import Axios from 'axios';
     }
 
     static async assignGrade(studentID, grade){
-      const response = await Axios.post("http://localhost:8000/assignGrade", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/assignGrade", {
         params:{
           studentID: studentID,
           grade: grade
@@ -462,7 +462,7 @@ import Axios from 'axios';
     }
 
     static async deleteAttendence(date){
-      const response = await Axios.post("http://localhost:8000/deleteAttendence", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/deleteAttendence", {
         params:{
           date: date
         }
@@ -471,7 +471,7 @@ import Axios from 'axios';
     }
 
     static async deleteAttendenceByID(userID){
-      const response = await Axios.post("http://localhost:8000/deleteAttendenceByID", {
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/deleteAttendenceByID", {
         params:{
           userID: userID
         }
@@ -481,26 +481,26 @@ import Axios from 'axios';
     
 
     static async getBuildings(){
-      const response = await Axios.get("http://localhost:8000/getBuildings")
+      const response = await Axios.get("https://web-registration-app.herokuapp.com/getBuildings")
       return response.data
     }
 
     
     static async getMasterSchedule(){
-      const mSchedResponse = await Axios.get("http://localhost:8000/masterSchedule")
+      const mSchedResponse = await Axios.get("https://web-registration-app.herokuapp.com/masterSchedule")
       return mSchedResponse.data
   }
   static async getFallCal(){
-    const mSchedResponse = await Axios.get("http://localhost:8000/getFallCal")
+    const mSchedResponse = await Axios.get("https://web-registration-app.herokuapp.com/getFallCal")
     return mSchedResponse.data
 }
 static async getSpringCal(){
-  const mSchedResponse = await Axios.get("http://localhost:8000/getSpringCal")
+  const mSchedResponse = await Axios.get("https://web-registration-app.herokuapp.com/getSpringCal")
   return mSchedResponse.data
 }
 
   static async getClassList(crn){
-    const res = await Axios.post("http://localhost:8000/getClassList", {
+    const res = await Axios.post("https://web-registration-app.herokuapp.com/getClassList", {
       params:{
         CRN: crn
       }
@@ -509,7 +509,7 @@ static async getSpringCal(){
 }
 
     static async addCourse(newCourse){
-      const addResponse = await Axios.put("http://localhost:8000/addCourse", {
+      const addResponse = await Axios.put("https://web-registration-app.herokuapp.com/addCourse", {
         params: {
           courseID: newCourse.courseName,
           departmentID: newCourse.departmentID,
@@ -520,7 +520,7 @@ static async getSpringCal(){
     }
 
     static async addPreReq(newCourse){
-      const addResponse = await Axios.put("http://localhost:8000/addPreReq", {
+      const addResponse = await Axios.put("https://web-registration-app.herokuapp.com/addPreReq", {
         params: {
           newCourse: newCourse
         }
@@ -529,7 +529,7 @@ static async getSpringCal(){
     }
 
     static async checkReveseReq(newCourse){
-      const addResponse = await Axios.post("http://localhost:8000/checkReveseReq", {
+      const addResponse = await Axios.post("https://web-registration-app.herokuapp.com/checkReveseReq", {
         params: {
           newCourse: newCourse
         }
@@ -539,7 +539,7 @@ static async getSpringCal(){
     
 
       static async deleteMS(row){
-        const deleteResponse = await Axios.put("http://localhost:8000/deleteMS", {
+        const deleteResponse = await Axios.put("https://web-registration-app.herokuapp.com/deleteMS", {
           params: {
             CRN: row.CRN
           }
@@ -548,7 +548,7 @@ static async getSpringCal(){
       } 
 
       static async deleteUser(userID){
-        const response = await Axios.post("http://localhost:8000/deleteUser" , {
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/deleteUser" , {
           params: {
             userID: userID
           }
@@ -558,7 +558,7 @@ static async getSpringCal(){
 
       static async deleteCourse(row){
         console.log(row.courseID)
-        const deleteResponse = await Axios.put("http://localhost:8000/deleteCourse", {
+        const deleteResponse = await Axios.put("https://web-registration-app.herokuapp.com/deleteCourse", {
           params: {
             courseID: row.courseID
           }
@@ -567,7 +567,7 @@ static async getSpringCal(){
       }
       
        static async resetPassword(email) {
-        const resetResponse = await Axios.put("http://localhost:8000/resetPassword", {
+        const resetResponse = await Axios.put("https://web-registration-app.herokuapp.com/resetPassword", {
           params: {
             email: email
           }
@@ -576,7 +576,7 @@ static async getSpringCal(){
       }
       
        static async unlockAccount(email, newPass) {
-        const unlockResponse = await Axios.put("http://localhost:8000/updateAndUnlock", {
+        const unlockResponse = await Axios.put("https://web-registration-app.herokuapp.com/updateAndUnlock", {
           params: {
             email: email,
             newPass: newPass
@@ -585,7 +585,7 @@ static async getSpringCal(){
         return unlockResponse.data
       }
       static async getMyAdvisors(userID){
-        const myAdvisorsResponse = await Axios.post("http://localhost:8000/myAdvisors", {
+        const myAdvisorsResponse = await Axios.post("https://web-registration-app.herokuapp.com/myAdvisors", {
           params: {
             userID: userID
           }
@@ -594,7 +594,7 @@ static async getSpringCal(){
       }
 
       static async addAdvising(newRow){
-        const myAdvisorsResponse = await Axios.put("http://localhost:8000/addAdvising", {
+        const myAdvisorsResponse = await Axios.put("https://web-registration-app.herokuapp.com/addAdvising", {
           params: {
             newRow: newRow
           }
@@ -603,7 +603,7 @@ static async getSpringCal(){
       }
 
       static async deleteAdvising(facultyID, studentID){
-        const myAdvisorsResponse = await Axios.post("http://localhost:8000/deleteAdvising", {
+        const myAdvisorsResponse = await Axios.post("https://web-registration-app.herokuapp.com/deleteAdvising", {
           params: {
             facultyID: facultyID,
             studentID: studentID
@@ -613,7 +613,7 @@ static async getSpringCal(){
       }
 
       static async getMyAdvisees(userID){
-        const myAdvisorsResponse = await Axios.post("http://localhost:8000/myAdvisees", {
+        const myAdvisorsResponse = await Axios.post("https://web-registration-app.herokuapp.com/myAdvisees", {
           params: {
             userID: userID
           }
@@ -622,7 +622,7 @@ static async getSpringCal(){
       }
 
       static async getUserSched(userID){
-        const userSchedResponse = await Axios.post("http://localhost:8000/getUserSched", {
+        const userSchedResponse = await Axios.post("https://web-registration-app.herokuapp.com/getUserSched", {
           params: {
             userID: userID
           }
@@ -630,7 +630,7 @@ static async getSpringCal(){
         return userSchedResponse.data
       }
       static async getStudentHistory(userID){
-        const userSchedResponse = await Axios.post("http://localhost:8000/getStudentHistory", {
+        const userSchedResponse = await Axios.post("https://web-registration-app.herokuapp.com/getStudentHistory", {
           params: {
             userID: userID
           }
@@ -639,7 +639,7 @@ static async getSpringCal(){
       }
 
       static async getCoursesTeaching(userID){
-        const userSchedResponse = await Axios.post("http://localhost:8000/getCoursesTeaching", {
+        const userSchedResponse = await Axios.post("https://web-registration-app.herokuapp.com/getCoursesTeaching", {
           params: {
             userID: userID
           }
@@ -647,7 +647,7 @@ static async getSpringCal(){
         return userSchedResponse.data
       }
       static async checkStudentHistory(userID, CRN){
-        const userSchedResponse = await Axios.post("http://localhost:8000/checkStudentHistory", {
+        const userSchedResponse = await Axios.post("https://web-registration-app.herokuapp.com/checkStudentHistory", {
           params: {
             userID: userID,
             CRN: CRN
@@ -657,7 +657,7 @@ static async getSpringCal(){
       }
 
       static async checkDoubleCourse(courseID, userID){
-        const userSchedResponse = await Axios.post("http://localhost:8000/checkDoubleCourse", {
+        const userSchedResponse = await Axios.post("https://web-registration-app.herokuapp.com/checkDoubleCourse", {
           params: {
             userID: userID,
             courseID: courseID
@@ -667,7 +667,7 @@ static async getSpringCal(){
       }
 
       static async checkPreReq(courseID, userID){
-        const userSchedResponse = await Axios.post("http://localhost:8000/checkPreReq", {
+        const userSchedResponse = await Axios.post("https://web-registration-app.herokuapp.com/checkPreReq", {
           params: {
             userID: userID,
             courseID: courseID
@@ -677,7 +677,7 @@ static async getSpringCal(){
       }
 
       static async addStudentHistory(newRow){
-        const userSchedResponse = await Axios.post("http://localhost:8000/addStudentHistory", {
+        const userSchedResponse = await Axios.post("https://web-registration-app.herokuapp.com/addStudentHistory", {
           params: {
             newRow: newRow
           }
@@ -686,7 +686,7 @@ static async getSpringCal(){
       }
 
       static async addMyClass(CRN, userID){
-        const response = await Axios.post("http://localhost:8000/addMyClass", {
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/addMyClass", {
           params: {
             CRN: CRN,
             userID: userID
@@ -695,7 +695,7 @@ static async getSpringCal(){
         return response.data;
       }
       static async creditCheck(studentID){
-        const response = await Axios.post("http://localhost:8000/creditCheck", {
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/creditCheck", {
           params: {
             studentID: studentID
           }
@@ -703,7 +703,7 @@ static async getSpringCal(){
         return response.data;
       }
       static async courseMinMaxCheck(userID){
-        const response = await Axios.post("http://localhost:8000/courseMinMaxCheck", {
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/courseMinMaxCheck", {
           params: {
             userID: userID
           }
@@ -711,7 +711,7 @@ static async getSpringCal(){
         return response.data;
       }
       static async getCreditsTaking(studentID){
-        const response = await Axios.post("http://localhost:8000/getCreditsTaking", {
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/getCreditsTaking", {
           params: {
             studentID: studentID
           }
@@ -719,7 +719,7 @@ static async getSpringCal(){
         return response.data;
       }
       static async addTeachClass(CRN, userID){
-        const response = await Axios.post("http://localhost:8000/addTeachClass", {
+        const response = await Axios.post("https://web-registration-app.herokuapp.com/addTeachClass", {
           params: {
             CRN: CRN,
             userID: userID
@@ -729,7 +729,7 @@ static async getSpringCal(){
       }
 
       static async getMyMajors(userID){
-        const myMajorsResponse = await Axios.post("http://localhost:8000/myMajors", {
+        const myMajorsResponse = await Axios.post("https://web-registration-app.herokuapp.com/myMajors", {
         params: {
           userID: userID
         }
@@ -737,7 +737,7 @@ static async getSpringCal(){
         return myMajorsResponse.data
       }
       static async getMyMinors(userID){
-        const myMinorsResponse = await Axios.post("http://localhost:8000/myMinors", {
+        const myMinorsResponse = await Axios.post("https://web-registration-app.herokuapp.com/myMinors", {
           params: {
             userID: userID
           }
@@ -747,11 +747,11 @@ static async getSpringCal(){
 
 
       static async getAllUsers(){
-        const userResponse = await Axios.get("http://localhost:8000/allUsers")
+        const userResponse = await Axios.get("https://web-registration-app.herokuapp.com/allUsers")
         return userResponse.data
       }
       static async getUser(userID){
-        const userResponse = await Axios.post("http://localhost:8000/getUser", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/getUser", {
           params: {
             userID: userID
           }
@@ -760,7 +760,7 @@ static async getSpringCal(){
       }
 
       static async updateUser(newRow){
-        const userResponse = await Axios.post("http://localhost:8000/updateUser", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/updateUser", {
           params: {
             newRow: newRow
           }
@@ -768,7 +768,7 @@ static async getSpringCal(){
         return userResponse.data
       }
       static async updateLogin(newRow){
-        const userResponse = await Axios.post("http://localhost:8000/updateLogin", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/updateLogin", {
           params: {
             newRow: newRow
           }
@@ -778,7 +778,7 @@ static async getSpringCal(){
       }
 
       static async getStudent(userID){
-        const userResponse = await Axios.post("http://localhost:8000/getStudent", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/getStudent", {
           params: {
             userID: userID
           }
@@ -787,7 +787,7 @@ static async getSpringCal(){
       }
 
       static async getGrad(userID){
-        const userResponse = await Axios.post("http://localhost:8000/getGrad", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/getGrad", {
           params: {
             userID: userID
           }
@@ -796,7 +796,7 @@ static async getSpringCal(){
       }
 
       static async getFacRank(userID){
-        const userResponse = await Axios.post("http://localhost:8000/getFacRank", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/getFacRank", {
           params: {
             userID: userID
           }
@@ -804,7 +804,7 @@ static async getSpringCal(){
         return userResponse.data
       }
       static async updateFullPartFac(newRow){
-        const userResponse = await Axios.post("http://localhost:8000/updateFullPartFac", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/updateFullPartFac", {
           params: {
             userID: newRow.userID,
             fullpart: newRow.rank,
@@ -816,7 +816,7 @@ static async getSpringCal(){
       }
 
       static async updateResearch(newRow){
-        const userResponse = await Axios.post("http://localhost:8000/updateResearch", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/updateResearch", {
           params: {
            newRow: newRow
           }
@@ -825,7 +825,7 @@ static async getSpringCal(){
       }
 
       static async updateStudent(newRow){
-        const userResponse = await Axios.post("http://localhost:8000/updateStudent", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/updateStudent", {
           params: {
            newRow: newRow
           }
@@ -833,7 +833,7 @@ static async getSpringCal(){
         return userResponse.data
       }
       static async updateUndergrad(newRow){
-        const userResponse = await Axios.post("http://localhost:8000/updateUndergrad", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/updateUndergrad", {
           params: {
            newRow: newRow
           }
@@ -841,7 +841,7 @@ static async getSpringCal(){
         return userResponse.data
       }
       static async updateGrad(newRow){
-        const userResponse = await Axios.post("http://localhost:8000/updateGrad", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/updateGrad", {
           params: {
            newRow: newRow
           }
@@ -849,7 +849,7 @@ static async getSpringCal(){
         return userResponse.data
       }
       static async getMinMaxFac(newRow, facRank){
-        const userResponse = await Axios.post("http://localhost:8000/getMinMax", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/getMinMax", {
           params: {
             userID: newRow.userID,
             fullpart: facRank
@@ -859,7 +859,7 @@ static async getSpringCal(){
       }
       
       static async getLoginInfo(userID){
-        const userResponse = await Axios.post("http://localhost:8000/getLoginInfo", {
+        const userResponse = await Axios.post("https://web-registration-app.herokuapp.com/getLoginInfo", {
           params: {
             userID: userID
           }
@@ -871,16 +871,16 @@ static async getSpringCal(){
 
 
       static async getMajors(){
-        const majorsResponse = await Axios.get("http://localhost:8000/majors")
+        const majorsResponse = await Axios.get("https://web-registration-app.herokuapp.com/majors")
         return majorsResponse.data      
       }
       static async getMajorRequirements(){
-        const majorRequireResponse = await Axios.get("http://localhost:8000/majorRequirements")
+        const majorRequireResponse = await Axios.get("https://web-registration-app.herokuapp.com/majorRequirements")
         return majorRequireResponse.data      
       }
 
       static async myMajorRequirements(userID, majorID){
-        const majorsResponse = await Axios.post("http://localhost:8000/myMajorRequirements",{
+        const majorsResponse = await Axios.post("https://web-registration-app.herokuapp.com/myMajorRequirements",{
           params: {
             userID: userID,
             majorID:majorID
@@ -889,7 +889,7 @@ static async getSpringCal(){
         return majorsResponse.data      
       }
       static async myMinorRequirements(userID, minorID){
-        const majorRequireResponse = await Axios.post("http://localhost:8000/myMinorRequirements",{
+        const majorRequireResponse = await Axios.post("https://web-registration-app.herokuapp.com/myMinorRequirements",{
           params: {
             userID: userID,
             minorID: minorID
@@ -899,7 +899,7 @@ static async getSpringCal(){
       }
 
       static async editCalDesc(title, description, semester){
-        const majorRequireResponse = await Axios.post("http://localhost:8000/editCalDesc",{
+        const majorRequireResponse = await Axios.post("https://web-registration-app.herokuapp.com/editCalDesc",{
           params: {
             title: title,
             description: description,
@@ -909,7 +909,7 @@ static async getSpringCal(){
         return majorRequireResponse.data      
       }
       static async updateCalDate(title, date, semester){
-        const majorRequireResponse = await Axios.post("http://localhost:8000/updateCalDate",{
+        const majorRequireResponse = await Axios.post("https://web-registration-app.herokuapp.com/updateCalDate",{
           params: {
             title: title,
             date: date,
@@ -919,7 +919,7 @@ static async getSpringCal(){
         return majorRequireResponse.data      
       }
       static async deleteCalEvent(title, semester){
-        const res = await Axios.post("http://localhost:8000/deleteCalEvent",{
+        const res = await Axios.post("https://web-registration-app.herokuapp.com/deleteCalEvent",{
           params: {
             title: title,
             semester: semester
@@ -930,7 +930,7 @@ static async getSpringCal(){
 
 
       static async deleteMajorReq(majorID, courseID){
-        const majorRequireResponse = await Axios.post("http://localhost:8000/deleteMajorReq",
+        const majorRequireResponse = await Axios.post("https://web-registration-app.herokuapp.com/deleteMajorReq",
         {
           params:{
             majorID: majorID,
@@ -940,7 +940,7 @@ static async getSpringCal(){
         return majorRequireResponse.data      
       }
       static async deleteMinorReq(minorID, courseID){
-        const majorRequireResponse = await Axios.post("http://localhost:8000/deleteMinorReq",{
+        const majorRequireResponse = await Axios.post("https://web-registration-app.herokuapp.com/deleteMinorReq",{
           params:{
             minorID: minorID,
             courseID: courseID
@@ -949,7 +949,7 @@ static async getSpringCal(){
         return majorRequireResponse.data      
       }
       static async deleteMajor(majorID){
-        const majorRequireResponse = await Axios.post("http://localhost:8000/deleteMajor",{
+        const majorRequireResponse = await Axios.post("https://web-registration-app.herokuapp.com/deleteMajor",{
           params:{
             majorID: majorID,
           }
@@ -957,7 +957,7 @@ static async getSpringCal(){
         return majorRequireResponse.data      
       }
       static async deleteMinor(minorID){
-        const majorRequireResponse = await Axios.post("http://localhost:8000/deleteMinor",{
+        const majorRequireResponse = await Axios.post("https://web-registration-app.herokuapp.com/deleteMinor",{
           params:{
             minorID: minorID,
           }
@@ -965,25 +965,25 @@ static async getSpringCal(){
         return majorRequireResponse.data      
       }
       static async getMinors(){
-        const minorsResponse = await Axios.get("http://localhost:8000/minors")
+        const minorsResponse = await Axios.get("https://web-registration-app.herokuapp.com/minors")
         return minorsResponse.data
       }
       static async getMinorRequirements(){
-        const minorRequireResponse = await Axios.get("http://localhost:8000/minorRequirements")
+        const minorRequireResponse = await Axios.get("https://web-registration-app.herokuapp.com/minorRequirements")
         return minorRequireResponse.data      
       }
       static async getCourses(){
-        const courseResponse = await Axios.get("http://localhost:8000/courses")
+        const courseResponse = await Axios.get("https://web-registration-app.herokuapp.com/courses")
         return courseResponse.data
       }
 
          static async getPrereqs(){
-        const courseResponse = await Axios.get("http://localhost:8000/getPrereqs")
+        const courseResponse = await Axios.get("https://web-registration-app.herokuapp.com/getPrereqs")
         return courseResponse.data
       }
 
       static async getPrereqByID(courseID){
-        const courseResponse = await Axios.post("http://localhost:8000/getPrereqByID",{
+        const courseResponse = await Axios.post("https://web-registration-app.herokuapp.com/getPrereqByID",{
           params:{
             courseID: courseID
           }
@@ -992,7 +992,7 @@ static async getSpringCal(){
       }
 
       static async deletePrereq(courseID){
-        const courseResponse = await Axios.post("http://localhost:8000/deletePrereq",{
+        const courseResponse = await Axios.post("https://web-registration-app.herokuapp.com/deletePrereq",{
           params:{
             courseID: courseID
           }
@@ -1000,7 +1000,7 @@ static async getSpringCal(){
         return courseResponse.data
       }
       static async getHolds(userID){
-        const holdResponse = await Axios.post("http://localhost:8000/getHolds", {
+        const holdResponse = await Axios.post("https://web-registration-app.herokuapp.com/getHolds", {
         params: {
           userID: userID
         }
@@ -1008,7 +1008,7 @@ static async getSpringCal(){
         return holdResponse.data
     }
     static async dropHold(holdID, userID){
-      const holdResponse = await Axios.post("http://localhost:8000/dropHold", {
+      const holdResponse = await Axios.post("https://web-registration-app.herokuapp.com/dropHold", {
       params: {
         holdID: holdID,
         userID: userID
@@ -1017,7 +1017,7 @@ static async getSpringCal(){
       return holdResponse.data
   }
     static async assignHold(holdID, userID){
-      const holdResponse = await Axios.post("http://localhost:8000/assignHold", {
+      const holdResponse = await Axios.post("https://web-registration-app.herokuapp.com/assignHold", {
       params: {
         userID: userID,
         holdID: holdID
@@ -1027,7 +1027,7 @@ static async getSpringCal(){
   }
 
     static async createFullUndergrad(student){
-      const response = await Axios.put("http://localhost:8000/createFullUndergrad",{
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createFullUndergrad",{
         params: {
           studentID: student.userID,
           minCredit: student.minCredit,
@@ -1038,7 +1038,7 @@ static async getSpringCal(){
     }
 
     static async createFaculty(fac){
-      const response = await Axios.put("http://localhost:8000/createFaculty",{
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createFaculty",{
         params: {
           userID: fac.userID,
           rank: fac.rank
@@ -1049,7 +1049,7 @@ static async getSpringCal(){
 
     static async createPartUndergrad(student){
       console.log(student)
-      const response = await Axios.put("http://localhost:8000/createPartUndergrad",{
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createPartUndergrad",{
         params: {
           studentID: student.userID,
           minCredit: student.minCredit,
@@ -1059,7 +1059,7 @@ static async getSpringCal(){
       return response.data
     }
     static async createPartGrad(student){
-      const response = await Axios.put("http://localhost:8000/createPartGrad",{
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createPartGrad",{
         params: {
           studentID: student.userID,
           minCredit: student.minCredit,
@@ -1069,7 +1069,7 @@ static async getSpringCal(){
       return response.data
     }
     static async createFullGrad(student){
-      const response = await Axios.put("http://localhost:8000/createFullGrad",{
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createFullGrad",{
         params: {
           studentID: student.userID,
           minCredit: student.minCredit,
@@ -1079,7 +1079,7 @@ static async getSpringCal(){
       return response.data
     }
     static async createFullPartFac(fac, fullPart){
-      const response = await Axios.put("http://localhost:8000/createFullPartFac",{
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createFullPartFac",{
         params: {
           facultyID: fac.userID,
           minCourse: fac.minCourse,
@@ -1093,7 +1093,7 @@ static async getSpringCal(){
 
 
     static async createGrad(user){
-      const response = await Axios.put("http://localhost:8000/createGrad",{
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createGrad",{
         params: {
           studentID: user.userID,
           program: user.program,
@@ -1106,7 +1106,7 @@ static async getSpringCal(){
     }
 
     static async createUndergrad(user){
-      const response = await Axios.put("http://localhost:8000/createUndergrad",{
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createUndergrad",{
         params: {
           studentID: user.userID,
           yearLevel: user.yearLevel
@@ -1116,7 +1116,7 @@ static async getSpringCal(){
     }
 
     static async createStudent(user){
-      const response = await Axios.put("http://localhost:8000/createStudent", {
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createStudent", {
         params: {
           studentID: user.userID,
           creditsEarned: user.creditsEarned,
@@ -1130,7 +1130,7 @@ static async getSpringCal(){
 
 
     static async createLogin(user){
-      const response = await Axios.put("http://localhost:8000/createLogin", {
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createLogin", {
         params: {
           userID: user.userID,
           email: user.email,
@@ -1143,7 +1143,7 @@ static async getSpringCal(){
     }
 
     static async createAdmin(user){
-      const response = await Axios.put("http://localhost:8000/createAdmin" , {
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createAdmin" , {
         params: {
           userID: user.userID,
           status: user.status
@@ -1152,7 +1152,7 @@ static async getSpringCal(){
       return response.data
     }
     static async createResearch(user){
-      const response = await Axios.put("http://localhost:8000/createResearch" , {
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createResearch" , {
         params: {
           userID: user.userID,
           status: user.status
@@ -1163,7 +1163,7 @@ static async getSpringCal(){
     
     
     static async createUser(user){
-      const response = await Axios.put("http://localhost:8000/createUser", {
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/createUser", {
         params: {
           userID: user.userID,
           firstName: user.firstName,
@@ -1180,7 +1180,7 @@ static async getSpringCal(){
     }
 
     static async addUserOfType(user){
-      const response = await Axios.put("http://localhost:8000/addUserOfType",{
+      const response = await Axios.put("https://web-registration-app.herokuapp.com/addUserOfType",{
       params: {
         userType: user.userType,
         userID: user.userID,
@@ -1190,18 +1190,18 @@ static async getSpringCal(){
     }
 
     static async getGradCourses(){
-      const gradResponse = await Axios.get("http://localhost:8000/getGradCourses")
+      const gradResponse = await Axios.get("https://web-registration-app.herokuapp.com/getGradCourses")
       return gradResponse.data
     }
     static async getUndergradCourses(){
-      const gradResponse = await Axios.get("http://localhost:8000/getUndergradCourses")
+      const gradResponse = await Axios.get("https://web-registration-app.herokuapp.com/getUndergradCourses")
       return gradResponse.data
     }
      
      
 
     static async dropMyMajor(majorID, userID){
-      const dropResponse = await Axios.put("http://localhost:8000/dropMyMajor", {
+      const dropResponse = await Axios.put("https://web-registration-app.herokuapp.com/dropMyMajor", {
         params: {
           majorID: majorID,
           userID: userID
@@ -1211,7 +1211,7 @@ static async getSpringCal(){
     }
 
     static async dropMyMinor(minorID, userID){
-      const dropResponse = await Axios.put("http://localhost:8000/dropMyMinor", {
+      const dropResponse = await Axios.put("https://web-registration-app.herokuapp.com/dropMyMinor", {
         params: {
           minorID: minorID,
           userID: userID
@@ -1221,7 +1221,7 @@ static async getSpringCal(){
     }
 
     static async dropMyClass(CRN, userID){
-      const response = await Axios.post("http://localhost:8000/dropMyClass",{
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/dropMyClass",{
         params: {
           CRN: CRN,
           userID: userID
@@ -1232,7 +1232,7 @@ static async getSpringCal(){
 
     
     static async changeNumOfCredits(courseID, numOfCredits){
-      const response = await Axios.post("http://localhost:8000/changeNumOfCredits",{
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/changeNumOfCredits",{
         params: {
           courseID: courseID,
           numOfCredits: numOfCredits
@@ -1244,7 +1244,7 @@ static async getSpringCal(){
 
   
     static async dropAllClasses(userID){
-      const response = await Axios.post("http://localhost:8000/dropAllClasses",{
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/dropAllClasses",{
         params: {
           userID: userID
         }
@@ -1252,7 +1252,7 @@ static async getSpringCal(){
       return response.data
     }
     static async deleteAllStudentHistory(userID){
-      const response = await Axios.post("http://localhost:8000/deleteAllStudentHistory",{
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/deleteAllStudentHistory",{
         params: {
           userID: userID
         }
@@ -1261,7 +1261,7 @@ static async getSpringCal(){
     }
 
     static async deleteStudentHistory(CRN, userID){
-      const response = await Axios.post("http://localhost:8000/deleteStudentHistory",{
+      const response = await Axios.post("https://web-registration-app.herokuapp.com/deleteStudentHistory",{
         params: {
           userID: userID,
           CRN: CRN
@@ -1274,7 +1274,7 @@ static async getSpringCal(){
 
 
     static async declareMyMajor(majorID, userID){
-      const addResponse = await Axios.put("http://localhost:8000/declareMyMajor" ,{
+      const addResponse = await Axios.put("https://web-registration-app.herokuapp.com/declareMyMajor" ,{
         params: {
           majorID: majorID,
           userID: userID
@@ -1283,7 +1283,7 @@ static async getSpringCal(){
       return addResponse.data
     }
     static async declareMyMinor(minorID, userID){
-      const addResponse = await Axios.put("http://localhost:8000/declareMyMinor" ,{
+      const addResponse = await Axios.put("https://web-registration-app.herokuapp.com/declareMyMinor" ,{
         params: {
           minorID: minorID,
           userID: userID
@@ -1292,7 +1292,7 @@ static async getSpringCal(){
       return addResponse.data
     }
     static async getFacultyID(firstName, lastName){
-      const getResponse = await Axios.post("http://localhost:8000/getFacultyID",{
+      const getResponse = await Axios.post("https://web-registration-app.herokuapp.com/getFacultyID",{
         params: {
           firstName: firstName,
           lastName: lastName
@@ -1301,7 +1301,7 @@ static async getSpringCal(){
       return getResponse.data
     }
     static async getFacRank(userID){
-      const getResponse = await Axios.post("http://localhost:8000/getFacRank",{
+      const getResponse = await Axios.post("https://web-registration-app.herokuapp.com/getFacRank",{
         params: {
           userID: userID
         }
@@ -1310,7 +1310,7 @@ static async getSpringCal(){
     }
 
     static async getTimeSlotID(startTime, endTime, day){
-      const getResponse = await Axios.post("http://localhost:8000/getTimeSlotID",{
+      const getResponse = await Axios.post("https://web-registration-app.herokuapp.com/getTimeSlotID",{
         params: {
           startTime: startTime,
           endTime: endTime,
@@ -1321,25 +1321,25 @@ static async getSpringCal(){
     }
 
     static async getStudentsEnrolled(){
-      const getResponse = await Axios.get("http://localhost:8000/getStudentsEnrolled")
+      const getResponse = await Axios.get("https://web-registration-app.herokuapp.com/getStudentsEnrolled")
       return getResponse.data
     }
 
     static async getUndergradStudents(){
-      const getResponse = await Axios.get("http://localhost:8000/getUndergradStudents")
+      const getResponse = await Axios.get("https://web-registration-app.herokuapp.com/getUndergradStudents")
       return getResponse.data
     }
     static async getGradStudents(){
-      const getResponse = await Axios.get("http://localhost:8000/getGradStudents")
+      const getResponse = await Axios.get("https://web-registration-app.herokuapp.com/getGradStudents")
       return getResponse.data
     }
     static async getGrades(){
-      const getResponse = await Axios.get("http://localhost:8000/getGrades")
+      const getResponse = await Axios.get("https://web-registration-app.herokuapp.com/getGrades")
       return getResponse.data
     }
 
     static async getCourseAmount(){
-      const getResponse = await Axios.get("http://localhost:8000/getCourses")
+      const getResponse = await Axios.get("https://web-registration-app.herokuapp.com/getCourseAmount")
       return getResponse.data
     }
 
