@@ -10,7 +10,7 @@ export default function AddMinorRequirement(minorInfo){
     let history = useHistory();
     const minor = minorInfo.location.state;
 
-    const grades = ['A', 'B', 'C', 'D', 'E', 'IP'];
+    const grades = ['A', 'B', 'C', 'D', 'F', 'IP'];
 
 
     const newReq = {

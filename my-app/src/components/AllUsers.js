@@ -16,6 +16,7 @@ import funcs from "../utilities/timeWindowFunc";
 export default function AllUsers(){
 
     const [users, setUsers] = useState([]);
+    const [minMax, setMinMax] = useState([])
     let history = useHistory();
     let privs = checkPrivs();
    
@@ -28,6 +29,10 @@ export default function AllUsers(){
 
     async function getUsers(){
         var res = await dbUtil.getAllUsers()
+        // for(const i in res){
+        //   res.minCredit = (await dbUtil.creditCheck(res[i].userID).minCredit)
+        //   res.maxCredit = (await dbUtil.creditCheck(res[i].userID).maxCredit)
+        // }
         res = res.filter(item => (item.userID.toLowerCase() !== "guest"))
         res = res.filter(item => (item.userID.toLowerCase()  !== "TBD"))
         if(privs.isFaculty){
@@ -276,7 +281,7 @@ export default function AllUsers(){
             accessor: "userType",
             id: "typeFilter",
             Filter: ColumnFilter
-        }
+        },
 
      ], []);
 

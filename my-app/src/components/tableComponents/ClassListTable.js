@@ -36,19 +36,18 @@ import globalDate from '../../utilities/globalDate';
     }
 
     async function assignGrade(row){
-      console.log(row)
-      if(!(await timeWindow( funcs.finalExams, false))){return("")}
+      const timeRes = await timeWindow(funcs.finalExams, false);
+      console.log(timeRes)
+      if(!timeRes){return("")}
 
        const newGrade = window.prompt("Enter Grade")
        if(!grades.includes(newGrade)){
            window.alert(`Valid entries are ${grades}`)
            return("")
-       }
-       
+       }       
        const response = await dbUtil.assignGrade(row.studentID, newGrade);
-       if(response.affectedRows === 1){
-           window.location.reload(false)
-       }
+       console.log("here")
+       window.location.reload(false)
     }
 
 

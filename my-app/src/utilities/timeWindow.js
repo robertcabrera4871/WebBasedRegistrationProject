@@ -61,9 +61,9 @@ export default async function timeWindow(func, alertDisabled){
         const FRegStart = fallCalendar[FRegStartInd].Date.substring(0,10)
 
 
-        // console.log(date)
-        // console.log(calDate)
-        // console.log(FRegStart)
+        console.log(date)
+        console.log(calDate)
+        console.log(FfinalExams)
         switch(func){
             case funcs.addDrop: {
                 console.log()

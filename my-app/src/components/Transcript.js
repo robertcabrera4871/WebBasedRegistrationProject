@@ -27,6 +27,13 @@ export default function Transcript(){
 
     async function getStudentHistory(){
         const res =  await dbUtil.getStudentHistory(user.userID)
+        const updateRes = await dbUtil.updateCreditsEarned(user.userID)
+        console.log(updateRes)
+        const courses = []
+        for(const i in res){
+            courses.push(res[i].courseID)
+        }
+        console.log(courses)
         setTranscript(res)
     }
 

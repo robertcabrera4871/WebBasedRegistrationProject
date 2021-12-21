@@ -637,6 +637,14 @@ static async getSpringCal(){
         })
         return userSchedResponse.data
       }
+      static async updateCreditsEarned(userID){
+        const userSchedResponse = await Axios.post("https://web-registration-app.herokuapp.com/updateCreditsEarned", {
+          params: {
+            userID: userID
+          }
+        })
+        return userSchedResponse.data
+      }
 
       static async getCoursesTeaching(userID){
         const userSchedResponse = await Axios.post("https://web-registration-app.herokuapp.com/getCoursesTeaching", {
@@ -710,9 +718,10 @@ static async getSpringCal(){
         })
         return response.data;
       }
-      static async getCreditsTaking(studentID){
+      static async getCreditsTaking(studentID, semesterYearID){
         const response = await Axios.post("https://web-registration-app.herokuapp.com/getCreditsTaking", {
           params: {
+            semesterYearID: semesterYearID,
             studentID: studentID
           }
         })
@@ -880,6 +889,7 @@ static async getSpringCal(){
       }
 
       static async myMajorRequirements(userID, majorID){
+        console.log(userID, majorID)
         const majorsResponse = await Axios.post("https://web-registration-app.herokuapp.com/myMajorRequirements",{
           params: {
             userID: userID,

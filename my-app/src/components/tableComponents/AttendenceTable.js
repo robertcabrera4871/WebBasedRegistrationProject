@@ -7,10 +7,13 @@ import checkPrivs from "../../utilities/checkPrivs";
 import { useHistory } from 'react-router-dom';
 import Form from 'react-bootstrap/Form'
 import funcs from '../../utilities/timeWindowFunc';
+import Spinner from 'react-bootstrap/Spinner'
 
 
     export default function AttendenceTable({row, classList}){
     const[attList, setAttList] = useState([]);
+    const[loading, setLoading] = useState(false)
+
 
     let privs = checkPrivs()
     let history = useHistory()
@@ -46,7 +49,7 @@ import funcs from '../../utilities/timeWindowFunc';
     async function generateAttendance(){
       const firstLast = await getFirstLastDay()
       const meetingDates = await getDates(firstLast);
-
+      setLoading(true)
       for(const i in classList){
         for(const x in meetingDates)
         {
@@ -58,7 +61,7 @@ import funcs from '../../utilities/timeWindowFunc';
            console.log(res.err.sqlMessage)
          }
       }
-
+      setLoading(false)
       window.location.reload(false);
   }
 
@@ -174,7 +177,14 @@ import funcs from '../../utilities/timeWindowFunc';
 
       const {pageIndex} = state
 
-    
+    if(loading){
+      return(
+        <div>
+         <Spinner animation="grow" variant="primary" />
+        <span>Loading... Please do not leave page or attempt to change grades</span>
+        </div>
+      )
+    }
 
     return(<div  className="table-center">
         <h5>Click column to sort</h5>

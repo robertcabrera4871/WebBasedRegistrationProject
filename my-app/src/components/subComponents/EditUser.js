@@ -57,6 +57,7 @@ export default function EditUser(rowData){
     const [gradInfo, setGradInfo] = useState([])
     const [facRank, setFacRank] = useState([])
     const [minMax, setMinMax] = useState([])
+    const [minMaxCred, setMinMaxCred] = useState([])
 
 
 
@@ -86,17 +87,24 @@ export default function EditUser(rowData){
     }
     async function getUserData(){
         if(row.userType === 'Undergrad Student'){
+            const test = await dbUtil.creditCheck(row.userID)
+            setMinMaxCred(test)
             setStudentInfo(await dbUtil.getStudent(row.userID))
         } else if(row.userType === 'Grad Student'){
             setGradInfo(await dbUtil.getGrad(row.userID))
+            setMinMaxCred(await dbUtil.creditCheck(row.userID))
             setStudentInfo(await dbUtil.getStudent(row.userID))
 
         } else if(row.userType === 'Faculty')
         {   
             const tempRank = await dbUtil.getFacRank(row.userID)
             setFacRank(tempRank)
-            setMinMax(await dbUtil.getMinMaxFac(row, tempRank[0]?.rank))
-            
+            if(tempRank[0]?.rank === 'full'){
+                setMinMax(await dbUtil.getMinMaxFac(row, 'FulltimeFac'))
+            }else if(tempRank[0]?.rank === 'part'){
+                setMinMax(await dbUtil.getMinMaxFac(row, 'PartTimeFac'))
+
+            }
 
         }
             setLoginInfo(await dbUtil.getLoginInfo(row.userID))
@@ -194,8 +202,6 @@ export default function EditUser(rowData){
         return true
     }
 
-
-
     if(userInfo.length > 0){
         userData = {
             ...gradInfo[0],
@@ -203,7 +209,8 @@ export default function EditUser(rowData){
             ...facRank[0],
             ...loginInfo[0],
             ...userInfo[0],
-            ...minMax[0]
+            ...minMax[0],
+            ...minMaxCred[0]
         }
         newRow = {
             ...userData
@@ -212,10 +219,8 @@ export default function EditUser(rowData){
             newRow.DOB = newRow.DOB.substring(0, 10)
             userData.DOB = userData.DOB.substring(0, 10)
           }
+
     }
-
-   
-
 
     
 
@@ -269,6 +274,11 @@ export default function EditUser(rowData){
         <Form.Control placeholder ={userData.yearLevel} onChange={e => newRow.yearLevel = e.target.value} ></Form.Control>
         <Form.Label>Year of Entrance</Form.Label>
         <Form.Control placeholder ={userData.yearOfEntrance} onChange={e => newRow.yearOfEntrance = e.target.value} ></Form.Control>
+        <Form.Label>Min Credit</Form.Label>
+        <Form.Control placeholder ={userData.minCredit} disabled={true} ></Form.Control>
+        <Form.Label>Max Credit</Form.Label>
+        <Form.Control placeholder ={userData.maxCredit} disabled={true} ></Form.Control>
+        
         </div>
         }
           </Col>    

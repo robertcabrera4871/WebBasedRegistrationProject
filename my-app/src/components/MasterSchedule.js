@@ -60,20 +60,20 @@ export default function MasterSchedule(){
      
      async function addClassStudent(row){
       const student = await dbUtil.getStudent(user.userID)
+      const currentTaking = await creditCheck(row, student);
       if(await checkPreReq(row.courseID, user.userID)){window.alert("You have not completed the prerequisite"); return("")}
       if(await checkDoubleCourse(row.courseID, user.userID)){window.alert("You have already enrolled in this course"); return("")}
       if(await checkAlreadyComplete(row.CRN, user.userID)){window.alert("You have already taken this class"); return("")}
       if(row.availableSeats === 0){window.alert("Class is full"); return("")}
       if(await checkGradUndergrad(row, student)){return("")}  
       if(await yearLevelCheck(student)){return("")}
-      if(await creditCheck(row, student)){return("")}
-      
-
+      if(currentTaking === -1){return("")}
       if(!privs.isAdmin){
          if(await yearLevelCheck(student)){return("")}
          if(await addClassTimeCheck()){return("")}}
 
         const response = await dbUtil.addMyClass(row.CRN, user.userID); 
+        const updateCredits = await dbUtil.updateCreditsEarned(user.userID, currentTaking)
         if(response.err){
            console.log(response)
            window.alert("You are already enrolled in this class")
@@ -87,6 +87,26 @@ export default function MasterSchedule(){
            }
         }
      }
+
+     async function creditCheck(row, student){
+      console.log(row.semesterYearID)
+      const minMax = await dbUtil.creditCheck(student[0].studentID)
+      const creds = await dbUtil.getCreditsTaking(student[0].studentID, row.semesterYearID);
+      console.log(creds)
+      var currentCreds = 0;
+      for(const i in creds){
+         currentCreds = currentCreds + creds[i].numOfCredits
+      }
+      const maxCredit = (minMax[0].maxCredit)
+      const newClassCred = row.numOfCredits
+
+      console.log(maxCredit, newClassCred, currentCreds)
+      if(currentCreds + newClassCred > maxCredit){
+         window.alert("You are taking too more than your maximum credits")
+         return(-1)
+      }
+      return currentCreds      
+   }
 
      async function checkPreReq(courseID, userID){
       const prereq = await getPrereqByID(courseID);
@@ -139,19 +159,7 @@ export default function MasterSchedule(){
         return false
      }
 
-     async function creditCheck(row, student){
-      const minMax = await dbUtil.creditCheck(student[0].studentID)
-      const credTaking = await dbUtil.getCreditsTaking(student[0].studentID)
-      console.log(minMax)
-      const maxCredit = (minMax[0].maxCredit)
-      const newClassCred = row.numOfCredits
-      const currentCreds = credTaking[0]?.numOfCredits
-      if(currentCreds + newClassCred > maxCredit){
-         window.alert("You are taking too more than your maximum credits")
-         return(true)
-      }
-      return(false)      
-   }
+
 
 
      async function addClassTimeCheck(){

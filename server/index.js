@@ -13,7 +13,7 @@ app.use(cors());
 
 // const db = mysql.createConnection({
 //     user: "root",
-//     host: "localhost",
+//     host: "localhost",ndex
 //     password: "password",
 //     database: "test",
 //     multipleStatements: true
@@ -1042,7 +1042,7 @@ app.put('/addFacHistory', (req, res) => {
 app.post('/getMinMax', (req, res) => {
     const params = req.body.params;
    db.query(
-       `SELECT minCourse, maxCourse FROM ${params.fullpart}timefac WHERE facultyID = ?`,
+       `SELECT minCourse, maxCourse FROM ${params.fullpart} WHERE facultyID = ?`,
         [params.userID],
         (err, result) =>{
            if(err){
@@ -1505,7 +1505,7 @@ app.post('/myMinorRequirements',  (req, res) =>{
     const minorID = req.body.params.minorID
     db.query(
         `SELECT * FROM MinorRequirements r
-        WHERE r.minorID = ? AND r.courseID NOT IN(
+        WHERE  REPLACE(r.minorID,' ','') AND r.courseID NOT IN(
         SELECT c.courseID  FROM StudentHistory h
         JOIN Enrollment e
         ON h.studentID = ? OR e.studentID = ?
@@ -1527,7 +1527,7 @@ app.post('/myMajorRequirements',  (req, res) =>{
     const majorID = req.body.params.majorID
     db.query(
         `SELECT * FROM MajorRequirements r
-        WHERE  r.majorID = ? AND r.courseID NOT IN(
+        WHERE REPLACE(r.majorID,' ','') = ? AND r.courseID NOT IN(
         SELECT c.courseID  FROM StudentHistory h
         JOIN Enrollment e
         ON h.studentID = ? OR e.studentID = ?
@@ -1801,6 +1801,29 @@ app.post('/getStudentHistory', (req, res) =>{
         JOIN CourseSection c
         ON s.CRN = c.CRN
         WHERE s.studentID = ?`, [userID],
+    (err, result) =>{
+        if(err){
+            res.send({err: err})
+        }else{
+            res.send(result)
+        }
+    }
+    )
+})
+
+app.post('/updateCreditsEarned', (req, res) =>{
+    const userID = req.body.params.userID;
+    db.query(
+        `UPDATE Student s SET creditsEarned = (
+            SELECT SUM(c.numOfCredits)
+            FROM StudentHistory h 
+            JOIN CourseSection cs 
+            ON h.CRN = cs.CRN
+            JOIN Course c
+            ON cs.courseID = c.courseID
+            WHERE h.studentID = ?
+            )
+            WHERE s.studentID = ?`, [userID, userID],
     (err, result) =>{
         if(err){
             res.send({err: err})
@@ -2262,17 +2285,18 @@ app.post('/dropMyClass', (req, res) =>{
 })
 
 app.post('/getCreditsTaking', (req, res) =>{
+    const semesterYearID = req.body.params.semesterYearID
     const studentID = req.body.params.studentID;
 
     db.query(
         `SELECT c.numOfCredits FROM Course c
         JOIN CourseSection cs
-        ON cs.courseID = c.courseID
+        ON cs.courseID = c.courseID AND cs.semesterYearID = ?
         JOIN Enrollment e
         ON cs.CRN = e.CRN
         WHERE e.studentID = ?;
         `,
-        [studentID],
+        [semesterYearID, studentID],
         (err, result) => {
             if(err){
                 res.send({err: err})

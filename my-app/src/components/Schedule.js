@@ -39,11 +39,14 @@ export default function Schedule({title, semesterPicker}){
 
    async function dropClass(row){
      const student = await dbUtil.getStudent(user.userID)
-      if(await creditCheck(row, student)){{return("")}}
+     const currentTaking = await creditCheck(row, student);
+     if(currentTaking === -1){return("")}
       if(!privs.isAdmin){
       if(!checkDropTime()){return("")}}
       const attRes = await dbUtil.deleteAttendenceByID(user.userID)
       const response = await dbUtil.dropMyClass(row.CRN, user.userID)
+      const updateCredits = await dbUtil.updateCreditsEarned(user.userID, currentTaking)
+
       if(response.err){
         window.alert(response.err.sqlMessage)
       } else {
@@ -54,16 +57,22 @@ export default function Schedule({title, semesterPicker}){
 
    async function creditCheck(row, student){
     const minMax = await dbUtil.creditCheck(student[0].studentID)
-    const credTaking = await dbUtil.getCreditsTaking(student[0].studentID)
+    const credTaking = await dbUtil.getCreditsTaking(student[0].studentID, row.semesterYearID)
     const minCredit = (minMax[0].minCredit)
     const dropClass = row.numOfCredits
-    const currentCreds = (credTaking[0].numOfCredits)
+    var currentCreds = 0
+
+    console.log(credTaking)
+
+    for(const i in credTaking){
+      currentCreds = currentCreds + credTaking[i].numOfCredits
+   }
 
     if(currentCreds - dropClass < minCredit){
        window.alert("You will not have enough credits to be fulltime")
-       return(true)
+       return(-1)
     }
-    return(false)      
+    return(currentCreds)      
  }
 
    async function checkDropTime(){
@@ -215,7 +224,7 @@ export default function Schedule({title, semesterPicker}){
       </tbody>
     </Table>
     {history.location.state !== undefined && 
-    history.location.pathname != '/degreeAudit' && history.location.pathname != '/dropClass' &&<MasterSchedule/>}
+    history.location.pathname != '/degreeAudit' && history.location.pathname != '/dropClass' && <MasterSchedule/>}
         </div>
     );
 }

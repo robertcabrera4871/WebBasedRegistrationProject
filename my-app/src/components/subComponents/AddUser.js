@@ -96,6 +96,7 @@ export default function AddUser(chosenType){
 
     async function handleUndergrad(){
         var fullRes = ""
+        newRow.userType="student";
         if(!yearLevels.includes(newRow.yearLevel.toLowerCase())){window.alert(`Valid year level: ${yearLevels}`); return("")}
         if(await checkBlanksUndergrad()){return("")}
         const checkTime = await checkFullOrPart();

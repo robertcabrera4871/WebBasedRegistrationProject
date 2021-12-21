@@ -41,7 +41,7 @@ export default function DegreeAudit(){
     async function getMinorRequirements(minors) {
         const requirements = [];
         for(const minor in minors){
-           const reqs = await dbUtil.myMinorRequirements(user.userID, minors[minor].minorID)
+           const reqs = await dbUtil.myMinorRequirements(user.userID, minors[minor].minorID.replace(/\s+/g, ''))
             for(const req in reqs)
             requirements.push(reqs[req])
         }
@@ -50,7 +50,7 @@ export default function DegreeAudit(){
     async function getMajorRequirements(majors) {
         const requirements = [];
         for(const major in majors){
-           const reqs = await dbUtil.myMajorRequirements(user.userID, majors[major].majorID)
+           const reqs = await dbUtil.myMajorRequirements(user.userID, majors[major].majorID.replace(/\s+/g, ''))
             for(const req in reqs)
             requirements.push(reqs[req])
         }
@@ -82,7 +82,7 @@ export default function DegreeAudit(){
     })
     return(
     <div>
-    <h1 className="text-align">Degree Audit 🎓</h1>
+    <h1 className="text-align">🎓 Degree Audit For: {user.userID}</h1>
     <Transcript/>
     <Schedule/>
     <h2 className="text-align">Majors Enrolled:</h2>
